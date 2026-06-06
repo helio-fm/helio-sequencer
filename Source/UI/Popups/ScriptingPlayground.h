@@ -35,8 +35,12 @@ class ScriptingPlaygroundEditor final :
 {
 public:
 
-    ScriptingPlaygroundEditor(CodeDocument &document, CodeTokeniser *codeTokeniser) noexcept;
+    ScriptingPlaygroundEditor(CodeDocument &document,
+        UniquePointer<ScriptTokeniser> codeTokeniser) noexcept;
     ~ScriptingPlaygroundEditor() override;
+
+    void configure(int defaultCaretPosition,
+        int defaultStartLine, int tabSize = 2) noexcept;
 
     void selectNext();
     void selectPrevious();
@@ -54,19 +58,28 @@ public:
     bool keyPressed(const KeyPress &key) override;
     void editorViewportPositionChanged() override;
     void caretPositionMoved() override;
+    bool pasteFromClipboard() override;
 
     const String &getHighlightedToken() const noexcept;
-    const Optional<ScriptEngine::Breakpoint> &getBreakpoint() const;
+    Optional<ScriptEngine::Breakpoint> getBreakpoint() const;
     void setBreakpointInfo(const String &info);
     void setError(const Range<int> &charRange, const String &text);
 
+    void updateParsingData(const Array<Range<int>> &ranges);
+    void updateEvaluationData(const StringArray &functionNames);
+    void retokenise();
+
 private:
+
+    UniquePointer<ScriptTokeniser> tokeniser;
 
     UniquePointer<ScriptingPlaygroundPopup> popup;
 
     UniquePointer<ScriptingPlaygroundErrorMark> errorMark;
     Range<int> errorRange;
     void updateErrorRangeBounds();
+
+    Array<Range<int>> bracketRanges;
 
     void timerCallback() override;
     Point<int> lastMouseMovePosition;
@@ -100,8 +113,7 @@ class ScriptingPlayground final :
 {
 public:
 
-    ScriptingPlayground(ProjectNode &project, RollBase *roll) noexcept;
-
+    explicit ScriptingPlayground(ProjectNode &project) noexcept;
     ~ScriptingPlayground() override;
 
     static Array<KeyPress> getAllScriptingPlaygroundHotkeys();
@@ -130,7 +142,7 @@ public:
     MidiTrack *findPianoTrackById(const String &trackId) override;
     void addNotes(MidiTrack *track, Array<Note> &notes, bool undoable) override;
 
-    ScriptEngine::SideEffects::HostContext fillHostContext() const override;
+    ScriptEngine::SideEffects::ReadOnlyContext fillHostContext() const override;
 
     void updateBounds();
 
@@ -152,11 +164,6 @@ private:
 
     ProjectNode &project;
 
-    SafePointer<RollBase> roll;
-
-    UniquePointer<ScriptEngine> scriptEngine;
-    UniquePointer<ScriptTokeniser> tokeniser;
-
     UniquePointer<Component> shadowUp;
     UniquePointer<Component> shadowBottom;
     UniquePointer<Component> shadowLeft;
@@ -165,8 +172,12 @@ private:
 
     UniquePointer<ScriptingPlaygroundEditor> codeEditor;
     UniquePointer<TextEditor> outputText;
+    UniquePointer<IconButton> copyOutputButton;
     UniquePointer<IconButton> runButton;
-    ComponentFader fader;
+
+    bool hadErrors = false;
+
+    static constexpr int iconSize = 20;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlayground)
 };

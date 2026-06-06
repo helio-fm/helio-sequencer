@@ -4500,7 +4500,7 @@ static const unsigned char temp_binary_data_116[] =
 "          \"timeline\": \"ff292d3e\",\n"
 "          \"iconBase\": \"55ffffff\",\n"
 "          \"scriptText\": \"ff959dcb\",\n"
-"          \"scriptKeyword\": \"ffe06c75\",\n"
+"          \"scriptKeyword\": \"ffe0628a\",\n"
 "          \"scriptFunction\": \"ff6fa1ee\",\n"
 "          \"scriptLiteral\": \"fff78c6b\",\n"
 "          \"scriptBracket\": \"ff959dcb\",\n"
@@ -4692,8 +4692,8 @@ static const unsigned char temp_binary_data_117[] =
 "  { \"command\": \"BreadcrumbsMenu\", \"key\": \"F10\" },\n"
 "  { \"command\": \"BreadcrumbsMenu\", \"key\": \"Shift + /\" },\n"
 "\n"
-"  { \"command\": \"ScriptingPlayground\", \"key\": \"Control + `\" },\n"
-"  { \"command\": \"ScriptingPlayground\", \"key\": \"Command + `\" },\n"
+"  { \"command\": \"ScriptEditor\", \"key\": \"Control + `\" },\n"
+"  { \"command\": \"ScriptEditor\", \"key\": \"Command + `\" },\n"
 "\n"
 "  { \"command\": \"ShowPreviousPage\", \"key\": \"Command + Cursor Left\" },\n"
 "  { \"command\": \"ShowPreviousPage\", \"key\": \"Control + Cursor Left\" },\n"
@@ -5226,18 +5226,18 @@ static const unsigned char temp_binary_data_117[] =
 "  ]\n"
 "},\n"
 "{\n"
-"  \"receiver\": \"ScriptingPlayground\",\n"
+"  \"receiver\": \"ScriptEditor\",\n"
 "  \"keyPress\": [\n"
-"  // ANCHOR: ScriptingPlayground\n"
-"  { \"command\": \"ScriptingPlaygroundDismiss\", \"key\": \"Escape\" },\n"
-"  { \"command\": \"ScriptingPlaygroundDismiss\", \"key\": \"Control + `\" },\n"
-"  { \"command\": \"ScriptingPlaygroundDismiss\", \"key\": \"Command + `\" },\n"
-"  { \"command\": \"ScriptingPlaygroundRunScript\", \"key\": \"F5\" },\n"
+"  // ANCHOR: ScriptEditor\n"
+"  { \"command\": \"ScriptEditorDismiss\", \"key\": \"Escape\" },\n"
+"  { \"command\": \"ScriptEditorDismiss\", \"key\": \"Control + `\" },\n"
+"  { \"command\": \"ScriptEditorDismiss\", \"key\": \"Command + `\" },\n"
+"  { \"command\": \"ScriptEditorRunScript\", \"key\": \"F5\" },\n"
 "  { \"command\": \"ScriptEditorToggleComment\", \"key\": \"Control + /\" },\n"
 "  { \"command\": \"ScriptEditorToggleComment\", \"key\": \"Command + /\" },\n"
 "  { \"command\": \"ScriptEditorSelectNext\", \"key\": \"F3\" },\n"
 "  { \"command\": \"ScriptEditorSelectPrevious\", \"key\": \"Shift + F3\" }\n"
-"  // ANCHOR_END: ScriptingPlayground\n"
+"  // ANCHOR_END: ScriptEditor\n"
 "  ]\n"
 "}\n"
 "]}}}\n";
@@ -5724,7 +5724,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 5930; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 26137; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 26074; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 13262; return scales_json;

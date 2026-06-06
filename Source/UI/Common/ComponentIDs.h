@@ -31,7 +31,7 @@ namespace ComponentIDs
     static const String orchestraPit = "OrchestraPit";
     static const String keyboardMapping = "KeyboardMapping";
     static const String commandPalette = "CommandPalette";
-    static const String scriptingPlayground = "ScriptingPlayground";
+    static const String scriptEditor = "ScriptEditor";
     static const String chordTool = "ChordTool";
     static const String menu = "Menu";
     static const String dialog = "Dialog";

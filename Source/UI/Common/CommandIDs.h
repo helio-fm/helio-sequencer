@@ -225,7 +225,7 @@ namespace CommandIDs
         CommandPalette                  = 0x4200,
         CommandPaletteWithMode          = 0x4201,
         BreadcrumbsMenu                 = 0x4202,
-        ScriptingPlayground             = 0x4203,
+        ScriptEditor                    = 0x4203,
 
         KeyMapReset                     = 0x4210,
         KeyMapLoadScala                 = 0x4211,
@@ -306,10 +306,10 @@ namespace CommandIDs
         ComboCursorPageUp               = 0x4754,
         ComboCursorPageDown             = 0x4755,
 
-        ScriptingPlaygroundDismiss      = 0x4760,
-        ScriptingPlaygroundRunScript    = 0x4761,
-        ScriptingPlaygroundRetokenise   = 0x4762,
-        ScriptingPlaygroundReevaluate   = 0x4763,
+        ScriptEditorDismiss             = 0x4760,
+        ScriptEditorRunScript           = 0x4761,
+        ScriptEditorReevaluate          = 0x4762,
+        ScriptEditorCopyOutput          = 0x4763,
         ScriptEditorToggleComment       = 0x4764,
         ScriptEditorSelectNext          = 0x4765,
         ScriptEditorSelectPrevious      = 0x4766,

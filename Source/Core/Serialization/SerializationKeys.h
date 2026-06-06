@@ -45,6 +45,11 @@ namespace Serialization
         static const Identifier projectTimeline = "projectTimeline";
         static const Identifier filePath = "filePath";
 
+        static const Identifier scriptEditor = "scriptEditor";
+        static const Identifier scriptEditorSeed = "lastSeed";
+        static const Identifier scriptEditorCaret = "caretPosition";
+        static const Identifier scriptEditorLine = "firstLine";
+
         // Properties
         static const Identifier trackId = "trackId";
         static const Identifier trackColour = "colour";
@@ -456,6 +461,7 @@ namespace Serialization
             static const Identifier projectAuthor = "author";
             static const Identifier projectDescription = "description";
             static const Identifier projectTemperament = "temperament";
+            static const Identifier projectScript = "script";
         }
 
         namespace MidiTrackDeltas

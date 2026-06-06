@@ -27,12 +27,14 @@ static SerializedData mergeFullName(const SerializedData &state, const Serialize
 static SerializedData mergeAuthor(const SerializedData &state, const SerializedData &changes);
 static SerializedData mergeDescription(const SerializedData &state, const SerializedData &changes);
 static SerializedData mergeTemperament(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeScript(const SerializedData &state, const SerializedData &changes);
 
 static DeltaDiff createLicenseDiff(const SerializedData &state, const SerializedData &changes);
 static DeltaDiff createFullNameDiff(const SerializedData &state, const SerializedData &changes);
 static DeltaDiff createAuthorDiff(const SerializedData &state, const SerializedData &changes);
 static DeltaDiff createDescriptionDiff(const SerializedData &state, const SerializedData &changes);
 static DeltaDiff createTemperamentDiff(const SerializedData &state, const SerializedData &changes);
+static DeltaDiff createScriptDiff(const SerializedData &state, const SerializedData &changes);
 
 ProjectInfoDiffLogic::ProjectInfoDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem) {}
@@ -98,6 +100,10 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const no
             {
                 diff->applyDelta(createTemperamentDiff(stateDeltaData, myDeltaData));
             }
+            else if (myDelta->hasType(ProjectInfoDeltas::projectScript))
+            {
+                diff->applyDelta(createScriptDiff(stateDeltaData, myDeltaData));
+            }
         }
     }
 
@@ -160,6 +166,12 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
                     auto diffDeltaData = mergeTemperament(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
+                else if (targetDelta->hasType(ProjectInfoDeltas::projectScript))
+                {
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
+                    auto diffDeltaData = mergeScript(stateDeltaData, targetDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
+                }
             }
         }
 
@@ -173,12 +185,15 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
     // step 2:
     // resolve new delta types that may be missing in project history state
 
+    // todo scripts?
     bool stateHasTemperaments = false;
+    bool stateHasScripts = false;
 
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         const auto *stateDelta = initialState.getDelta(i);
         stateHasTemperaments = stateHasTemperaments || stateDelta->hasType(ProjectInfoDeltas::projectTemperament);
+        stateHasScripts = stateHasScripts || stateDelta->hasType(ProjectInfoDeltas::projectScript);
     }
 
     if (!stateHasTemperaments)
@@ -210,6 +225,36 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
         }
     }
 
+    if (!stateHasScripts)
+    {
+        SerializedData mergedScriptsDeltaData;
+        SerializedData emptyScriptDeltaData(ProjectInfoDeltas::projectScript);
+        emptyScriptDeltaData.setProperty(Serialization::VCS::delta, "");
+        auto scriptsDelta = make<Delta>(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            ProjectInfoDeltas::projectScript);
+
+        for (int j = 0; j < this->target.getNumDeltas(); ++j)
+        {
+            const auto *targetDelta = this->target.getDelta(j);
+            const auto targetDeltaData(this->target.getDeltaData(j));
+
+            if (targetDelta->hasType(ProjectInfoDeltas::projectScript))
+            {
+                mergedScriptsDeltaData = mergeScript(emptyScriptDeltaData, targetDeltaData);
+            }
+        }
+
+        if (mergedScriptsDeltaData.isValid())
+        {
+            diff->applyDelta(scriptsDelta.release(), mergedScriptsDeltaData);
+        }
+        else
+        {
+            diff->applyDelta(scriptsDelta.release(), emptyScriptDeltaData);
+        }
+    }
+
     return diff;
 }
 
@@ -238,6 +283,11 @@ SerializedData mergeDescription(const SerializedData &state, const SerializedDat
 }
 
 SerializedData mergeTemperament(const SerializedData &state, const SerializedData &changes)
+{
+    return changes.createCopy();
+}
+
+SerializedData mergeScript(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
 }
@@ -283,6 +333,15 @@ DeltaDiff createTemperamentDiff(const SerializedData &state, const SerializedDat
     DeltaDiff res;
     using namespace Serialization::VCS;
     res.delta = make<Delta>(DeltaDescription("temperament changed"), ProjectInfoDeltas::projectTemperament);
+    res.deltaData = changes.createCopy();
+    return res;
+}
+
+DeltaDiff createScriptDiff(const SerializedData &state, const SerializedData &changes)
+{
+    DeltaDiff res;
+    using namespace Serialization::VCS;
+    res.delta = make<Delta>(DeltaDescription("script changed"), ProjectInfoDeltas::projectScript);
     res.deltaData = changes.createCopy();
     return res;
 }

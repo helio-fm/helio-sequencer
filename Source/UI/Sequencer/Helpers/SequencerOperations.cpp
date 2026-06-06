@@ -1636,7 +1636,7 @@ void SequencerOperations::invertChord(const NoteListBase &notes,
             :
             (selectedNotes[i].getKey() > prevKey &&
                 selectedNotes[i].getKey() > nextKey);
-            
+
         if (isRootKey)
         {
             targetNotes.add(selectedNotes[i]);
@@ -2153,7 +2153,7 @@ TimeSignatureEvent *SequencerOperations::findTimeContext(float startBeat,
         timeSignatures->getSequence() == nullptr ||
         timeSignatures->getSequence()->size() == 0)
     {
-        jassertfalse;
+        // jassertfalse;
         return nullptr;
     }
 

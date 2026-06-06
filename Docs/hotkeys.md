@@ -55,5 +55,5 @@ If you don't see any hotkeys here, you're reading the markdown source of this pa
 ```
 
 ```json
-{{#include ../Resources/hotkeySchemes.json:ScriptingPlayground}}
+{{#include ../Resources/hotkeySchemes.json:ScriptEditor}}
 ```

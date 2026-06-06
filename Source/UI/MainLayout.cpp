@@ -513,7 +513,7 @@ static void emitScriptingPlayground()
         // the scripting playground will manage its modal state
         // to avoid being deleted automatically while updating the project
         const bool autoDelete = false;
-        App::showModalComponent(make<ScriptingPlayground>(*project, activeRoll), false);
+        App::showModalComponent(make<ScriptingPlayground>(*project), false);
     }
 }
 
@@ -564,7 +564,7 @@ void MainLayout::handleCommandMessage(int commandId)
         emitCommandPalette(String::charToString(modeKey));
         break;
     }
-    case CommandIDs::ScriptingPlayground:
+    case CommandIDs::ScriptEditor:
         emitScriptingPlayground();
         break;
     case CommandIDs::BreadcrumbsMenu:

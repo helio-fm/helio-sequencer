@@ -20,6 +20,7 @@
 class Note;
 class MidiTrack;
 
+#include "Serializable.h"
 #include "Interpreter.h"
 #include "Scale.h"
 #include "Arpeggiator.h"
@@ -29,10 +30,13 @@ class MidiTrack;
 
 class ScriptEngine final :
     public script::EvaluationContext,
+    public Serializable,
     public Thread,
     public Timer
 {
 public:
+
+    ScriptEngine();
 
     //===------------------------------------------------------------------===//
     // Interop with project
@@ -53,7 +57,7 @@ public:
         virtual MidiTrack *findPianoTrackById(const String &trackId) = 0;
         virtual void addNotes(MidiTrack *track, Array<Note> &notes, bool undoable) = 0;
 
-        struct HostContext final
+        struct ReadOnlyContext final
         {
             Temperament::Ptr temperament;
             WeakReference<KeySignaturesSequence> keySignatures;
@@ -61,8 +65,14 @@ public:
             Array<Scale::Ptr> allScales;
         };
 
-        virtual HostContext fillHostContext() const = 0;
+        virtual ReadOnlyContext fillHostContext() const = 0;
+
+        JUCE_DECLARE_WEAK_REFERENCEABLE(SideEffects)
     };
+
+    ReadWriteLock hostLock;
+    WeakReference<SideEffects> hostSideEffects;
+    SideEffects::ReadOnlyContext hostContext;
 
     struct Breakpoint final
     {
@@ -70,28 +80,77 @@ public:
         Range<int> parentListRange;
     };
 
-    SideEffects &sideEffects;
-
-    SideEffects::HostContext hostContext;
-    ReadWriteLock hostContextLock;
-
-    explicit ScriptEngine(SideEffects &sideEffects);
-
     bool evaluate(const String &code,
+        WeakReference<SideEffects> sideEffects,
         bool shouldEvaluateInPlayground,
         Optional<Breakpoint> breakpoint = {});
+
+    //===------------------------------------------------------------------===//
+    // Rng
+    //===------------------------------------------------------------------===//
+
+    // a wrapper around JUCE's Random that remembers the original seed
+    struct Random final
+    {
+        void randomize()
+        {
+            this->generator.setSeedRandomly();
+            // when generating a random seed, let's make it look nicer: shorter
+            // and always positive, 2 billion numbers should be enough for anybody
+            this->randomize(std::abs(script::Value::Integer(this->generator.getSeed())));
+        }
+
+        void randomize(script::Value::Integer seed)
+        {
+            this->originalSeed = seed;
+            this->generator.setSeed(seed);
+        }
+
+        inline script::Value rollDie(int d) noexcept
+        {
+            const bool result = (this->generator.nextInt() % d) == 0;
+            return script::Value(result);
+        }
+
+        inline script::Value getNextInteger(Range<script::Value::Integer> range) noexcept
+        {
+            return script::Value(this->generator.nextInt(range));
+        }
+
+        inline script::Value getNextFloat(Range<script::Value::Float> range) noexcept
+        {
+            return script::Value(range.getStart() +
+                script::Value::Float(this->generator.nextDouble() * range.getLength()));
+        }
+
+        inline script::Value pickListItem(const script::Value::List &list) noexcept
+        {
+            return list.getUnchecked(this->generator.nextInt(list.size()));
+        }
+
+        juce::Random generator;
+
+        script::Value::Integer originalSeed = 0;
+    };
+
+    Random random;
 
     //===------------------------------------------------------------------===//
     // Accessors
     //===------------------------------------------------------------------===//
 
     bool isPlayground() const noexcept;
+    script::Scope &getRootScope() noexcept;
     StringArray getTopLevelFunctionNames() const;
     const Array<Range<int>> &getBlockRanges() const;
     const script::Value &getParsingResult() const;
     const script::Value &getEvaluationResult() const;
     const Optional<script::ParsingError> &getParsingError() const;
     const Optional<script::EvaluationError> &getEvaluationError() const;
+
+    int getEditorDefaultCaretPosition() const noexcept;
+    int getEditorDefaultStartLine() const noexcept;
+    void updateEditorDefaults(int caretPosition, int startLine) noexcept;
 
     //===------------------------------------------------------------------===//
     // EvaluationContext
@@ -108,6 +167,14 @@ public:
 
     int getMaxCallStackSize() const override;
     int getMaxEvaluationTimeMs() const override;
+
+    //===------------------------------------------------------------------===//
+    // Serializable
+    //===------------------------------------------------------------------===//
+
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
+    void reset() noexcept override;
 
 private:
 
@@ -130,6 +197,10 @@ private:
     Optional<Breakpoint> breakpoint;
     ReadWriteLock breakpointLock;
 
+    // these fields are here only for serialization:
+    int editorDefaultCaretPosition = 0;
+    int editorDefaultStartLine = 0;
+
     //===------------------------------------------------------------------===//
     // Timer and thread for evaluating in background
     //===------------------------------------------------------------------===//
@@ -139,7 +210,7 @@ private:
         if (!this->isThreadRunning())
         {
             this->stopTimer();
-            this->startThread();
+            this->startThread(7);
         }
         else
         {
@@ -191,11 +262,15 @@ private:
                 return;
             }
 
-            const MessageManagerLock lock(Thread::getCurrentThread());
-            jassert(lock.lockWasGained());
-            if (lock.lockWasGained())
+            const MessageManagerLock mmLock(Thread::getCurrentThread());
+            jassert(mmLock.lockWasGained());
+            if (mmLock.lockWasGained())
             {
-                this->sideEffects.onProgramTerminated(true);
+                const ScopedWriteLock lock(this->hostLock);
+                if (this->hostSideEffects != nullptr)
+                {
+                    this->hostSideEffects->onProgramTerminated(true);
+                }
             }
         }
         catch (script::EvaluationError error)
@@ -213,11 +288,15 @@ private:
                 return;
             }
 
-            const MessageManagerLock lock(Thread::getCurrentThread());
-            jassert(lock.lockWasGained());
-            if (lock.lockWasGained())
+            const MessageManagerLock mmLock(Thread::getCurrentThread());
+            jassert(mmLock.lockWasGained());
+            if (mmLock.lockWasGained())
             {
-                this->sideEffects.onProgramTerminated(false);
+                const ScopedWriteLock lock(this->hostLock);
+                if (this->hostSideEffects != nullptr)
+                {
+                    this->hostSideEffects->onProgramTerminated(false);
+                }
             }
         }
     }

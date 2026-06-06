@@ -128,10 +128,9 @@ public:
         return cs;
     }
 
-    void updateParsingData(const Array<Range<int>> &ranges, int caretPosition)
+    void updateParsingData(const Array<Range<int>> &ranges)
     {
         this->bracketRanges = ranges;
-        this->setCaretPosition(caretPosition);
     }
 
     void updateEvaluationData(const StringArray &functionNames)
@@ -249,15 +248,19 @@ private:
         static const char *const keywords1Char[] =
             { "\xce\xbb", "\xcf\x80", nullptr }; // lambda and pi
         static const char *const keywords2Char[] =
-            { "if", "or", "pi", "->", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", nullptr };
+            { "if", "or", "pi", "->",
+              "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", nullptr };
         static const char *const keywords3Char[] =
-            { "and", "not", "map", "let", "nil", "->>", nullptr };
+            { "and", "not", "map", "let", "nil", "->>",
+              "d10", "d11", "d12", "d13", "d14", "d15", "d16", nullptr };
         static const char *const keywords4Char[] =
-            { "eval", "cond", "true", "else", nullptr };
+            { "cond", "else", "true", nullptr };
         static const char *const keywords5Char[] =
-            { "begin", "quote", "parse", "false", nullptr };
+            { "begin", "quote", "false", nullptr };
         static const char *const keywords6Char[] =
-            { "define", "lambda", "filter", "reduce", nullptr };
+            { "define", "lambda", "filter", "reduce", "while", nullptr };
+        static const char *const keywordsOther[] =
+            { "map-indexed", nullptr };
 
         const char *const *k;
         switch (tokenLength)
@@ -268,7 +271,13 @@ private:
         case 4: k = keywords4Char; break;
         case 5: k = keywords5Char; break;
         case 6: k = keywords6Char; break;
-        default: return false;
+        default:
+            if (tokenLength > 11)
+            {
+                return false;
+            }
+            k = keywordsOther;
+            break;
         }
 
         for (int i = 0; k[i] != nullptr; ++i)
@@ -285,28 +294,36 @@ private:
     static bool isBuiltInSymbol(String::CharPointerType token, const int tokenLength) noexcept
     {
         static const char *const keywords3Char[] =
-            { "abs", "min", "max", "sin", "cos", "int", "nth", nullptr };
+            { "abs", "min", "max", "sin", "cos", "nth", nullptr };
         static const char *const keywords4Char[] =
-            { "list", "head", "tail", "last", "push", "type", nullptr };
+            { "list", "head", "tail", "last", "push", nullptr };
         static const char *const keywords5Char[] =
-            { "empty", "first", "float", "debug", "range",
-              "scope", "while", "round", "floor", "tonic", nullptr };
+            { "empty", "first", "range", "round", "floor", "tonic", nullptr };
         static const char *const keywords6Char[] =
             { "append", "insert", "length", "random", "remove", nullptr };
         static const char *const keywordsOther[] =
-            { "reverse",
-              "project:reset", "project:period-size",
-              "timeline:reset", "timeline:add-key",
-              "track:make", "track:add-notes",
-              "scale:find", "scale:render-key",
-              "refactor:join-adjacent", 
-              "refactor:arpeggiate", 
-              "refactor:align-to-scale",
+            { "reverse", "randomize",
               "supertonic", "mediant", "subdominant",
               "dominant", "submediant", "subtonic",
               "chord:triad", "chord:seventh", "chord:supertonic",
               "chord:mediant", "chord:subdominant", "chord:dominant",
-              "chord:submediant", "chord:subtonic", nullptr };
+              "chord:submediant", "chord:subtonic",
+              "project:reset", "project:period-size",
+              "timeline:reset", "timeline:add-key",
+              "track:make", "track:add-notes",
+              "scale:find", "scale:render-key",
+              "refactor:align-to-scale",
+              "refactor:arpeggiate", 
+              "refactor:cleanup-overlaps",
+              "refactor:invert-chord",
+              "refactor:invert-melody",
+              "refactor:join-adjacent", 
+              "refactor:legato",
+              "refactor:quantize",
+              "refactor:retrograde",
+              "refactor:staccato",
+              "refactor:transpose-in-scale",
+               nullptr };
 
         const char *const *k;
         switch (tokenLength)
@@ -316,7 +333,7 @@ private:
         case 5: k = keywords5Char; break;
         case 6: k = keywords6Char; break;
         default:
-            if (tokenLength < 3 || tokenLength > 25)
+            if (tokenLength < 3 || tokenLength > 27)
             {
                 return false;
             }
@@ -357,13 +374,13 @@ private:
 
         const auto tokenCharPointer = String::CharPointerType(possibleIdentifier);
 
-        if (tokenLength <= 6 &&
+        if (tokenLength <= 11 &&
             isReservedKeyword(tokenCharPointer, tokenLength))
         {
             return TokenType::tokenTypeReservedKeyword;
         }
 
-        if (tokenLength <= 25 &&
+        if (tokenLength <= 27 &&
             isBuiltInSymbol(tokenCharPointer, tokenLength))
         {
             return TokenType::tokenTypeFunction;

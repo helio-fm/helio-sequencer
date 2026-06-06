@@ -52,6 +52,8 @@ public:
     int getPeriodSize() const noexcept;
     double getPeriodRange() const noexcept;
 
+    CodeDocument &getScriptCodeDocument() noexcept;
+
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem
     //===------------------------------------------------------------------===//
@@ -82,12 +84,14 @@ public:
     SerializedData serializeAuthorDelta() const;
     SerializedData serializeDescriptionDelta() const;
     SerializedData serializeTemperamentDelta() const;
+    SerializedData serializeScriptDelta() const;
 
     void resetLicenseDelta(const SerializedData &state);
     void resetFullNameDelta(const SerializedData &state);
     void resetAuthorDelta(const SerializedData &state);
     void resetDescriptionDelta(const SerializedData &state);
     void resetTemperamentDelta(const SerializedData &state);
+    void resetScriptDelta(const SerializedData &state);
 
 private:
 
@@ -105,6 +109,8 @@ private:
 
     Temperament::Ptr temperament;
     void deserializeTemperament(const SerializedData &state);
+
+    CodeDocument script;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectMetadata)
 };

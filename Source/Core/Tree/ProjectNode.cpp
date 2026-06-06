@@ -96,6 +96,8 @@ void ProjectNode::initialize()
     this->consoleTimelineEvents = make<CommandPaletteTimelineEvents>(*this);
     this->generatedSequenceBuilder = make<GeneratedSequenceBuilder>(*this);
 
+    this->scriptEngine = make<ScriptEngine>();
+
     this->recreatePage();
 
     this->transport->seekToBeat(this->beatRange.getStart());
@@ -115,6 +117,8 @@ ProjectNode::~ProjectNode()
 
     this->removeAllListeners();
     this->sequencerLayout = nullptr;
+
+    this->scriptEngine = nullptr;
 
     this->generatedSequenceBuilder = nullptr;
     this->consoleTimelineEvents = nullptr;
@@ -183,9 +187,14 @@ GeneratedSequenceBuilder *ProjectNode::getGeneratedSequences() const
     return this->generatedSequenceBuilder.get();
 }
 
-CodeDocument &ProjectNode::getScriptCodeDocument()
+ScriptEngine &ProjectNode::getScriptEngine() noexcept
 {
-    return this->scripts;
+    return *this->scriptEngine.get();
+}
+
+CodeDocument &ProjectNode::getScriptCodeDocument() noexcept
+{
+    return this->metadata->getScriptCodeDocument();
 }
 
 Image ProjectNode::getIcon() const noexcept
@@ -257,7 +266,7 @@ void ProjectNode::setMidiRecordingTarget(const Clip *clip)
         instrumentId = this->handleChangeActiveMidiInputInstrument(track);
     }
 
-    // if clip == nullptr, pass empty instrment id meaning "disconnect everyone"
+    // if clip == nullptr, pass empty instrument id meaning "disconnect everyone"
     this->midiRecorder->setTargetScope(clip, instrumentId);
 }
 
@@ -552,6 +561,7 @@ SerializedData ProjectNode::save() const
     tree.setProperty(Serialization::UI::trackGrouping, int(this->trackGroupingMode));
 
     tree.appendChild(this->metadata->serialize());
+    tree.appendChild(this->scriptEngine->serialize());
     tree.appendChild(this->timeline->serialize());
     tree.appendChild(this->undoStack->serialize());
     tree.appendChild(this->transport->serialize());
@@ -581,15 +591,15 @@ void ProjectNode::load(const SerializedData &tree)
     this->trackGroupingMode = MidiTrack::Grouping(int(grouping));
 
     this->metadata->deserialize(root);
+    this->scriptEngine->deserialize(root);
     this->timeline->deserialize(root);
 
-    // Proceed with basic properties and children
     TreeNode::deserialize(root);
 
-    // Legacy support: if no pattern set manager found, create one
     if (nullptr == this->findChildOfType<PatternEditorNode>())
     {
-        // Try to place it after 'Versions' (presumably, index 1)
+        // if no patterns node found for whatever reason, create one,
+        // try to place it after 'Versions' (presumably, index 1)
         this->addChildNode(new PatternEditorNode(), 1);
     }
 
@@ -601,7 +611,7 @@ void ProjectNode::load(const SerializedData &tree)
 
     this->undoStack->deserialize(root);
 
-    // At least, when all tracks are ready:
+    // at last, when all tracks are ready:
     this->transport->deserialize(root);
     this->sequencerLayout->deserialize(root);
 }

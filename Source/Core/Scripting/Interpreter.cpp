@@ -361,19 +361,6 @@ Value whileLoop(const Value::List &unevaluatedArgs, Scope &scope, EvaluationCont
     return acc;
 }
 
-Value scope(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
-{
-    Scope e = scope;
-    Value acc;
-
-    for (const auto &value : unevaluatedArgs)
-    {
-        acc = value.evaluate(e, context);
-    }
-
-    return acc;
-}
-
 Value quote(const Value::List &unevaluatedArgs, Scope &, EvaluationContext &)
 {
     Value::List list;
@@ -387,39 +374,6 @@ Value quote(const Value::List &unevaluatedArgs, Scope &, EvaluationContext &)
 }
 
 } // namespace specialForms
-
-namespace meta
-{
-
-Value parse(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
-{
-    const auto args = evaluateArgs(unevaluatedArgs, scope, context);
-    checkNumArgs(args, 1);
-
-    if (!args.getReference(0).isString())
-    {
-        throw EvaluationError(EvaluationError::Type::InvalidArgument);
-    }
-
-    Array<Range<int>> blockRanges;
-    return script::parse(args.getReference(0).asString(), blockRanges);
-}
-
-Value evaluate(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
-{
-    const auto args = evaluateArgs(unevaluatedArgs, scope, context);
-    checkNumArgs(args, 1);
-    return args.getReference(0).evaluate(scope, context);
-}
-
-Value getTypeName(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
-{
-    const auto args = evaluateArgs(unevaluatedArgs, scope, context);
-    checkNumArgs(args, 1);
-    return Value::makeString(args.getReference(0).getTypeName());
-}
-
-} // namespace meta
 
 namespace math
 {
@@ -669,13 +623,13 @@ Value make(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &
     return Value(evaluateArgs(unevaluatedArgs, scope, context));
 }
 
-Value index(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
+Value nth(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
 {
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
     checkNumArgs(args, 2);
 
-    const auto i = args.getReference(0).castToInteger();
-    const auto &list = args.getReference(1).asList();
+    const auto &list = args.getReference(0).asList();
+    const auto i = args.getReference(1).castToInteger();
     if (list.isEmpty() || i >= list.size())
     {
         throw args.getReference(0).makeError(EvaluationError::Type::IndexOutOfRange);
@@ -811,8 +765,8 @@ Value first(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext 
     }
     else if (args.size() == 2)
     {
-        const auto numElements = args.getReference(0).castToInteger();
-        const auto &list = args.getReference(1).asList();
+        const auto &list = args.getReference(0).asList();
+        const auto numElements = args.getReference(1).castToInteger();
         if (numElements <= 0 || numElements > list.size())
         {
             throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
@@ -847,8 +801,8 @@ Value last(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &
     }
     else if (args.size() == 2)
     {
-        const auto numElements = args.getReference(0).castToInteger();
-        const auto &list = args.getReference(1).asList();
+        const auto &list = args.getReference(0).asList();
+        const auto numElements = args.getReference(1).castToInteger();
         if (numElements <= 0 || numElements > list.size())
         {
             throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
@@ -903,6 +857,24 @@ Value range(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext 
 
 namespace functional
 {
+
+Value mapIndexed(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
+{
+    const auto args = evaluateArgs(unevaluatedArgs, scope, context);
+    checkNumArgs(args, 2);
+
+    Value::List result, tmp;
+    const auto &list = args.getReference(1).asList();
+    for (int i = 0; i < list.size(); i++)
+    {
+        tmp.add(Value(Value::Integer(i)));
+        tmp.add(list.getUnchecked(i));
+        result.add(args.getReference(0).apply(tmp, scope, context));
+        tmp.clear();
+    }
+
+    return Value(move(result));
+}
 
 Value map(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
 {
@@ -963,33 +935,6 @@ Value reduce(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
 }
 
 } // namespace functional
-
-namespace cast
-{
-
-Value toFloat(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
-{
-    const auto args = evaluateArgs(unevaluatedArgs, scope, context);
-    checkNumArgs(args, 1);
-    return Value(args.getReference(0).castToFloat());
-}
-
-Value toInt(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
-{
-    const auto args = evaluateArgs(unevaluatedArgs, scope, context);
-    checkNumArgs(args, 1);
-    return Value(args.getReference(0).castToInteger());
-}
-
-} // namespace cast
-
-Value debug(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
-{
-    const auto args = evaluateArgs(unevaluatedArgs, scope, context);
-    checkNumArgs(args, 1);
-    return Value::makeString(args.getReference(0).toString());
-}
-
 } // namespace builtin
 
 bool Scope::hasValue(const String &name) const
@@ -1038,10 +983,6 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
 
     using namespace builtin;
 
-    if (name == "parse") return Value::makeBuiltInFunction(name, meta::parse);
-    if (name == "eval") return Value::makeBuiltInFunction(name, meta::evaluate);
-    if (name == "type") return Value::makeBuiltInFunction(name, meta::getTypeName);
-
     if (name == "->") return Value::makeBuiltInFunction(name, specialForms::arrowFirst);
     if (name == "->>") return Value::makeBuiltInFunction(name, specialForms::arrowLast);
     if (name == "begin") return Value::makeBuiltInFunction(name, specialForms::beginBlock);
@@ -1049,7 +990,6 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
     if (name == "cond") return Value::makeBuiltInFunction(name, specialForms::cond);
     if (name == "else") return Value::makeSymbol(name); // a self-evaluating symbol only used in "cond"
     if (name == "while") return Value::makeBuiltInFunction(name, specialForms::whileLoop);
-    if (name == "scope") return Value::makeBuiltInFunction(name, specialForms::scope);
     if (name == "quote") return Value::makeBuiltInFunction(name, specialForms::quote);
     if (name == "define") return Value::makeBuiltInFunction(name, specialForms::define);
     if (name == "let") return Value::makeBuiltInFunction(name, specialForms::let);
@@ -1081,7 +1021,7 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
 
     if (name == "list") return Value::makeBuiltInFunction(name, list::make);
     if (name == "insert") return Value::makeBuiltInFunction(name, list::insert);
-    if (name == "nth") return Value::makeBuiltInFunction(name, list::index);
+    if (name == "nth") return Value::makeBuiltInFunction(name, list::nth);
     if (name == "remove") return Value::makeBuiltInFunction(name, list::remove);
     if (name == "length") return Value::makeBuiltInFunction(name, list::length);
     if (name == "empty") return Value::makeBuiltInFunction(name, list::empty);
@@ -1094,13 +1034,9 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
     if (name == "range") return Value::makeBuiltInFunction(name, list::range);
 
     if (name == "map") return Value::makeBuiltInFunction(name, functional::map);
+    if (name == "map-indexed") return Value::makeBuiltInFunction(name, functional::mapIndexed);
     if (name == "filter") return Value::makeBuiltInFunction(name, functional::filter);
     if (name == "reduce") return Value::makeBuiltInFunction(name, functional::reduce);
-
-    if (name == "int") return Value::makeBuiltInFunction(name, cast::toInt);
-    if (name == "float") return Value::makeBuiltInFunction(name, cast::toFloat);
-
-    if (name == "debug") return Value::makeBuiltInFunction(name, builtin::debug);
 
     if (name == "true" || name == "#t") return Value(true);
     if (name == "false" || name == "#f") return Value(false);
@@ -1248,7 +1184,7 @@ Value Value::apply(const List &args, Scope &scope, EvaluationContext &context) c
                 parameterName = parameterValue.asSymbol();
                 parameterListRange = params.sourceCodeRange;
             }
-            else if (parameterValue.isList())
+            else if (parameterValue.isList()) // optional arguments
             {
                 const auto &optionalParameter = parameterValue.asList();
                 if (optionalParameter.size() != 2 ||
@@ -1263,50 +1199,39 @@ Value Value::apply(const List &args, Scope &scope, EvaluationContext &context) c
             }
 
             jassert(parameterName.isNotEmpty());
-            if (!captures.hasValue(parameterName))
+            if (args.size() > i)
             {
-                if (args.size() > i)
+                if (context.shouldBreakAt(parameterValue, parameterListRange))
                 {
-                    if (context.shouldBreakAt(parameterValue, parameterListRange))
-                    {
-                        throw EvaluationError(EvaluationError::Type::BreakpointHit,
-                            args.getReference(i).getTypeName(),
-                            // parameterName + ", " + args.getReference(i).getTypeName(),
-                            args.getReference(i).debug());
-                    }
-
-                    // DBG("Set " + parameterName + " to " + args.getReference(i).toString());
-                    evaluationScope.setValue(parameterName, args.getReference(i));
+                    throw EvaluationError(EvaluationError::Type::BreakpointHit,
+                        args.getReference(i).getTypeName(),
+                        // parameterName + ", " + args.getReference(i).getTypeName(),
+                        args.getReference(i).debug());
                 }
-                else if (defaultValue.hasValue())
-                {
-                    Scope defaultScope;
-                    defaultScope.setParent(&evaluationScope);
-                    const auto evaluatedDefault = defaultValue->evaluate(defaultScope, context);
 
-                    jassert(parameterValue.isList());
-                    if (context.shouldBreakAt(parameterValue.asList().getReference(0), parameterListRange))
-                    {
-                        throw EvaluationError(EvaluationError::Type::BreakpointHit,
-                            evaluatedDefault.getTypeName(),
-                            // parameterName + ", " + evaluatedDefault.getTypeName(),
-                            evaluatedDefault.debug());
-                    }
-
-                    evaluationScope.setValue(parameterName, evaluatedDefault);
-                }
-                else
-                {
-                    throw this->makeError(EvaluationError::Type::TooFewArguments);
-                }
+                // DBG("Set " + parameterName + " to " + args.getReference(i).toString());
+                evaluationScope.setValue(parameterName, args.getReference(i));
             }
-            else if (context.shouldBreakAt(parameterValue, params.sourceCodeRange))
+            else if (defaultValue.hasValue())
             {
-                const auto &capturedValue = captures.findValue(parameterName);
-                throw EvaluationError(EvaluationError::Type::BreakpointHit,
-                    capturedValue.getTypeName(),
-                    // parameterName + ", " + capturedValue.getTypeName(),
-                    capturedValue.debug());
+                Scope defaultScope;
+                defaultScope.setParent(&evaluationScope);
+                const auto evaluatedDefault = defaultValue->evaluate(defaultScope, context);
+
+                jassert(parameterValue.isList());
+                if (context.shouldBreakAt(parameterValue.asList().getReference(0), parameterListRange))
+                {
+                    throw EvaluationError(EvaluationError::Type::BreakpointHit,
+                        evaluatedDefault.getTypeName(),
+                        // parameterName + ", " + evaluatedDefault.getTypeName(),
+                        evaluatedDefault.debug());
+                }
+
+                evaluationScope.setValue(parameterName, evaluatedDefault);
+            }
+            else
+            {
+                throw this->makeError(EvaluationError::Type::TooFewArguments);
             }
         }
 
@@ -1662,7 +1587,7 @@ static Value parseString(CharPointer &t)
 static Value parseNumber(CharPointer &t, bool isNegative)
 {
     const auto oldT = t;
-    int intValue = t.getAndAdvance() - '0';
+    Value::Integer intValue = t.getAndAdvance() - '0';
     jassert(intValue >= 0 && intValue < 10);
     for (;;)
     {
@@ -1869,7 +1794,7 @@ public:
 
         {
             Scope scope;
-            const auto result = evaluate("\
+            auto result = evaluate("\
                 (define y 69)             \
                 (define (add-69 x)        \
                   (+ x y))                \
@@ -1881,6 +1806,25 @@ public:
                 scope);
             expect(result.isNumber());
             expect(result.castToInteger() == 489);
+
+            scope = {};
+            result = evaluate("\
+                (define x (list 9 10 11))\
+                (define (inner number-list)\
+                    (map (lambda (y) (+ (first x) y)) number-list))\
+                (map (lambda (x) (inner x))\
+                    (list (list 1 1 1) (list 2 2 2)))",
+                scope);
+            expect(result.isList());
+            expect(result.toString() == "((10 10 10) (11 11 11))");
+
+            scope = {};
+            result = evaluate("\
+                (map (lambda (x) (map (lambda (x) (+ 2 x)) x))\
+                    (list (list 1 1 1) (list 2 2 2) (list 3 3 3)))",
+                scope);
+            expect(result.isList());
+            expect(result.toString() == "((3 3 3) (4 4 4) (5 5 5))");
         }
 
         beginTest("Short circuit test");
@@ -1913,6 +1857,7 @@ public:
                 scope);
             expect(result.isList());
             expect(result.toString() == "((1 69 (1 2 3)) (1 2 (1 2 3)) (1 2 3))");
+
             result = evaluate("\
                 ((lambda                        \
                   (a (b 69) (c (list 1 2 3)))   \
@@ -1948,6 +1893,7 @@ public:
                 scope);
             expect(result.isBoolean());
             expect(result.castToBoolean());
+
             result = evaluate("\
                 (->> (list 1 2 3) (map (lambda (x) (* 2 x))))",
                 scope);

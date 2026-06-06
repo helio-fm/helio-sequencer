@@ -18,86 +18,116 @@
 #include "Common.h"
 #include "ScriptEngine.h"
 #include "SequencerOperations.h"
+#include "DocumentHelpers.h"
 #include "Config.h"
 
-ScriptEngine::ScriptEngine(SideEffects &sideEffects) :
-    Thread("ScriptingPlayground"),
-    sideEffects(sideEffects) {}
+ScriptEngine::ScriptEngine() :
+    Thread("ScriptingPlayground") {}
 
 bool ScriptEngine::evaluate(const String &code,
-    bool shouldEvaluateInPlayground, Optional<Breakpoint> breakpoint)
+    WeakReference<SideEffects> hostSideEffects,
+    bool shouldEvaluateInPlayground,
+    Optional<Breakpoint> breakpoint)
 {
-    {
-        const ScopedWriteLock lock(this->breakpointLock);
-        this->breakpoint = breakpoint;
-    }
-
+    // parse immediately, it's usually fast and we want code blocks asap
+    // #if DEBUG
+    // const auto parseStartMs = Time::getMillisecondCounter();
+    // #endif
     try
     {
-        #if DEBUG
-        auto parseStartMs = Time::getMillisecondCounter();
-        #endif
-
-        // parse immediately, it's usually fast and we want code blocks asap
-        {
-            const ScopedWriteLock lock(this->parsingResultLock);
-            this->parsingError = {};
-            this->codeBlockRanges.clearQuick();
-            this->parsingResult = script::parse(code, this->codeBlockRanges);
-        }
-
-        DBG("Parsed in " + String(Time::getMillisecondCounter() - parseStartMs) + " ms");
-
-        {
-            const ScopedWriteLock lock(this->hostContextLock);
-            this->hostContext = this->sideEffects.fillHostContext();
-        }
-
-        if (shouldEvaluateInPlayground)
-        {
-            if (this->isThreadRunning())
-            {
-                this->signalThreadShouldExit();
-            }
-
-            this->playgroundMode = true;
-            constexpr auto debounceMs = 69;
-            this->startTimer(debounceMs);
-        }
-        else
-        {
-            this->stopTimer();
-            this->stopThread(1000);
-            this->playgroundMode = false;
-
-            {
-                const ScopedWriteLock lock(this->evaluationResultLock);
-
-                this->rootScope = {};
-                this->evaluationError = {};
-                this->resetEvaluationContext();
-
-                this->evaluationResult =
-                    this->parsingResult.evaluate(this->rootScope, *this);
-            }
-
-            DBG("Evaluated in " + String(Time::getMillisecondCounter() - this->startTime.get()) + " ms");
-        }
+        const ScopedWriteLock lock(this->parsingResultLock);
+        this->parsingError = {};
+        this->codeBlockRanges.clearQuick();
+        this->parsingResult = script::parse(code, this->codeBlockRanges);
+        // DBG("Parsed in " + String(Time::getMillisecondCounter() - parseStartMs) + " ms");
     }
     catch (script::ParsingError error)
     {
         this->parsingError = error;
-        DBG("Parsing failed in " + String(Time::getMillisecondCounter() - this->startTime.get()) + " ms");
-        return false;
-    }
-    catch (script::EvaluationError error)
-    {
-        this->evaluationError = error;
-        DBG("Evaluation failed in " + String(Time::getMillisecondCounter() - this->startTime.get()) + " ms");
+        // DBG("Parsing failed in " + String(Time::getMillisecondCounter() - parseStartMs) + " ms");
         return false;
     }
 
+    {
+        const ScopedWriteLock lock(this->hostLock);
+        this->hostSideEffects = hostSideEffects;
+        jassert(this->hostSideEffects != nullptr);
+        this->hostContext = this->hostSideEffects->fillHostContext();
+    }
+
+    {
+        const ScopedWriteLock lock(this->breakpointLock);
+        this->breakpoint = breakpoint;
+        jassert(shouldEvaluateInPlayground || !breakpoint.hasValue());
+    }
+
+    if (shouldEvaluateInPlayground)
+    {
+        if (this->isThreadRunning())
+        {
+            this->signalThreadShouldExit();
+        }
+
+        this->playgroundMode = true;
+        constexpr auto debounceMs = 69;
+        this->startTimer(debounceMs);
+    }
+    else
+    {
+        this->stopTimer();
+        this->stopThread(1000);
+        this->playgroundMode = false;
+
+        try
+        {
+            {
+                const ScopedWriteLock lock(this->evaluationResultLock);
+                this->rootScope = {};
+                this->evaluationError = {};
+                this->resetEvaluationContext();
+            }
+
+            this->random.randomize();
+            auto result = this->parsingResult.evaluate(this->rootScope, *this);
+
+            {
+                const ScopedWriteLock lock(this->evaluationResultLock);
+                this->evaluationResult = move(result);
+            }
+
+            DBG("Evaluated in " + String(Time::getMillisecondCounter() - this->startTime.get()) + " ms");
+
+            const ScopedWriteLock lock(this->hostLock);
+            if (this->hostSideEffects != nullptr)
+            {
+                this->hostSideEffects->onProgramTerminated(true);
+            }
+        }
+        catch (script::EvaluationError error)
+        {
+            {
+                const ScopedWriteLock lock(this->evaluationResultLock);
+                this->evaluationError = error;
+            }
+
+            DBG("Evaluation failed in " + String(Time::getMillisecondCounter() - this->startTime.get()) + " ms");
+
+            const ScopedWriteLock lock(this->hostLock);
+            if (this->hostSideEffects != nullptr)
+            {
+                this->hostSideEffects->onProgramTerminated(false);
+            }
+
+            return false;
+        }
+    }
+
     return true;
+}
+
+script::Scope &ScriptEngine::getRootScope() noexcept
+{
+    return this->rootScope;
 }
 
 bool ScriptEngine::isPlayground() const noexcept
@@ -141,6 +171,59 @@ const Optional<script::EvaluationError> &ScriptEngine::getEvaluationError() cons
     return this->evaluationError;
 }
 
+int ScriptEngine::getEditorDefaultCaretPosition() const noexcept
+{
+    return this->editorDefaultCaretPosition;
+}
+
+int ScriptEngine::getEditorDefaultStartLine() const noexcept
+{
+    return this->editorDefaultStartLine;
+}
+
+void ScriptEngine::updateEditorDefaults(int caretPosition, int startLine) noexcept
+{
+    this->editorDefaultCaretPosition = caretPosition;
+    this->editorDefaultStartLine = startLine;
+}
+
+//===----------------------------------------------------------------------===//
+// Serializable
+//===----------------------------------------------------------------------===//
+
+SerializedData ScriptEngine::serialize() const noexcept
+{
+    SerializedData data(Serialization::Core::scriptEditor);
+
+    data.setProperty(Serialization::Core::scriptEditorSeed, this->random.originalSeed);
+    data.setProperty(Serialization::Core::scriptEditorCaret, this->editorDefaultCaretPosition);
+    data.setProperty(Serialization::Core::scriptEditorLine, this->editorDefaultStartLine);
+
+    return data;
+}
+
+void ScriptEngine::deserialize(const SerializedData &data) noexcept
+{
+    const auto root = data.hasType(Serialization::Core::scriptEditor) ?
+        data : data.getChildWithName(Serialization::Core::scriptEditor);
+
+    if (!root.isValid())
+    {
+        return;
+    }
+
+    this->editorDefaultCaretPosition =
+        root.getProperty(Serialization::Core::scriptEditorCaret);
+    this->editorDefaultStartLine =
+        root.getProperty(Serialization::Core::scriptEditorLine);
+    const auto lastSeed =
+        root.getProperty(Serialization::Core::scriptEditorSeed,
+            this->random.originalSeed);
+    this->random.randomize(lastSeed);
+}
+
+void ScriptEngine::reset() noexcept {}
+
 //===----------------------------------------------------------------------===//
 // Domain-specific extensions
 //===----------------------------------------------------------------------===//
@@ -167,24 +250,77 @@ static bool isPlaygroundMode(script::EvaluationContext &context)
     return castToSelf(context)->isPlayground();
 }
 
-// todo seed function
+script::Value load(const script::Value::List &unevaluatedArgs,
+    script::Scope &scope, script::EvaluationContext &context)
+{
+    const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
+
+    if (args.isEmpty())
+    {
+        throw script::EvaluationError(script::EvaluationError::Type::TooFewArguments);
+    }
+
+    auto *self = castToSelf(context);
+    const ScopedReadLock lock(self->hostLock);
+
+    // no caching here, everything is hopefully fast enough
+    script::Value result;
+    for (const auto &value : args)
+    {
+        const auto file = DocumentHelpers::findFileInLocationOrDocuments(value.asString());
+        if (!file.existsAsFile())
+        {
+            throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument);
+        }
+
+        Array<Range<int>> codeBlockRanges;
+        const auto program = script::parse(file.loadFileAsString(), codeBlockRanges);
+        result = program.evaluate(self->getRootScope(), *self);
+    }
+
+    return result;
+}
+
+script::Value seed(const script::Value::List &unevaluatedArgs,
+    script::Scope &scope, script::EvaluationContext &context)
+{
+    const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
+
+    if (args.size() > 1)
+    {
+        throw script::EvaluationError(script::EvaluationError::Type::TooManyArguments);
+    }
+
+    auto &random = castToSelf(context)->random;
+
+    if (args.isEmpty())
+    {
+        random.randomize();
+    }
+    else
+    {
+        random.randomize(args.getReference(0).castToInteger());
+    }
+
+    return script::Value(random.originalSeed);
+}
+
 script::Value random(const script::Value::List &unevaluatedArgs,
     script::Scope &scope, script::EvaluationContext &context)
 {
-    static Random random;
-
     const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
+
+    auto &random = castToSelf(context)->random;
 
     if (args.size() == 1 && args.getReference(0).isSymbol())
     {
         const auto &arg = args.getReference(0).asSymbol();
         if (arg.startsWithChar('d'))
         {
-            const auto x = arg.substring(1).getIntValue();
-            if (x > 0)
+            const auto d = arg.substring(1).getIntValue();
+            if (d > 0)
             {
-                const auto result = (random.nextInt() % x) == 0;
-                return script::Value(result);
+                return random.rollDie(d);
             }
         }
     }
@@ -197,7 +333,7 @@ script::Value random(const script::Value::List &unevaluatedArgs,
                 "(random (list ...))", "expected a non-empty list");
         }
 
-        return list.getUnchecked(random.nextInt(list.size()));
+        return random.pickListItem(list);
     }
     else if (args.size() == 2)
     {
@@ -205,12 +341,11 @@ script::Value random(const script::Value::List &unevaluatedArgs,
         const auto &high = args.getReference(1);
         if (low.isInteger() && high.isInteger())
         {
-            return script::Value(random.nextInt(Range<int>(low.castToInteger(), high.castToInteger())));
+            return random.getNextInteger({ low.castToInteger(), high.castToInteger() });
         }
         else if (low.isFloat() || high.isFloat())
         {
-            return script::Value(low.castToFloat() +
-                float(random.nextDouble() * (high.castToFloat() - low.castToFloat())));
+            return random.getNextFloat({ low.castToFloat(), high.castToFloat() });
         }
     }
 
@@ -231,7 +366,9 @@ script::Value reset(const script::Value::List &unevaluatedArgs,
     }
 
     JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
-    castToSelf(context)->sideEffects.resetProject();
+    auto *self = castToSelf(context);
+    const ScopedWriteLock lock(self->hostLock);
+    self->hostSideEffects->resetProject();
     return {};
 }
 
@@ -251,7 +388,9 @@ script::Value reset(const script::Value::List &unevaluatedArgs,
     }
 
     JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
-    castToSelf(context)->sideEffects.resetTimeline();
+    auto *self = castToSelf(context);
+    const ScopedWriteLock lock(self->hostLock);
+    self->hostSideEffects->resetTimeline();
     return {};
 }
 
@@ -262,7 +401,7 @@ script::Value addKeySignature(const script::Value::List &unevaluatedArgs,
     script::checkNumArgs(args, 3);
 
     auto *self = castToSelf(context);
-    const ScopedReadLock lock(self->hostContextLock);
+    const ScopedReadLock lock(self->hostLock);
     const auto keySignature =
         script::interop::makeKeySignature(script::Value(move(args)),
             self->hostContext.allScales, self->hostContext.temperament->getPeriodSize());
@@ -273,7 +412,7 @@ script::Value addKeySignature(const script::Value::List &unevaluatedArgs,
     }
 
     JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
-    self->sideEffects.addKeySignature(keySignature);
+    self->hostSideEffects->addKeySignature(keySignature);
     return {};
 }
 
@@ -320,18 +459,20 @@ script::Value make(const script::Value::List &unevaluatedArgs,
     }
 
     JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
-    const auto trackId = castToSelf(context)->sideEffects.makePianoTrack(args.getReference(0).asString());
+    auto *self = castToSelf(context);
+    const ScopedWriteLock lock(self->hostLock);
+    const auto trackId = self->hostSideEffects->makePianoTrack(args.getReference(0).asString());
 
     if (!notes.isEmpty())
     {
-        auto *track = castToSelf(context)->sideEffects.findPianoTrackById(trackId);
+        auto *track = self->hostSideEffects->findPianoTrackById(trackId);
         if (track == nullptr)
         {
             throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
                 trackId, "track not found");
         }
 
-        castToSelf(context)->sideEffects.addNotes(track, notes, true);
+        self->hostSideEffects->addNotes(track, notes, true);
     }
 
     return script::Value::makeString(trackId);
@@ -371,14 +512,17 @@ script::Value addNotes(const script::Value::List &unevaluatedArgs,
     JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
 
     const auto trackId = args.getReference(0).asString();
-    auto *track = castToSelf(context)->sideEffects.findPianoTrackById(trackId);
+
+    auto *self = castToSelf(context);
+    const ScopedWriteLock lock(self->hostLock);
+    auto *track = self->hostSideEffects->findPianoTrackById(trackId);
     if (track == nullptr)
     {
         throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
             trackId, "track not found");
     }
 
-    castToSelf(context)->sideEffects.addNotes(track, notes, true);
+    self->hostSideEffects->addNotes(track, notes, true);
     return {};
 }
 
@@ -401,7 +545,7 @@ script::Value find(const script::Value::List &unevaluatedArgs,
     }
 
     auto *self = castToSelf(context);
-    const ScopedReadLock lock(self->hostContextLock);
+    const ScopedReadLock lock(self->hostLock);
     const auto &targetName = args.getReference(0).asString();
     for (const auto &scale : self->hostContext.allScales)
     {
@@ -454,7 +598,7 @@ script::Value renderKey(const script::Value::List &unevaluatedArgs,
     }
 
     auto *self = castToSelf(context);
-    const ScopedReadLock lock(self->hostContextLock);
+    const ScopedReadLock lock(self->hostLock);
     const auto scale =
         script::interop::makeScale(args.getReference(0),
             {}, self->hostContext.temperament->getPeriodSize());
@@ -481,6 +625,18 @@ struct TemporaryPianoTrack final : public VirtualMidiTrack
         }
 
         this->sequence->insertGroup(ownedNotes, false);
+    }
+
+    script::Value toValue() const noexcept
+    {
+        script::Value::List result;
+        for (int i = 0; i < this->sequence->size(); ++i)
+        {
+            const Note &note = this->sequence->getNoteUnchecked(i);
+            result.add(script::Value(script::interop::makeNoteValue(note)));
+        }
+
+        return script::Value(move(result));
     }
 
     String getTrackInstrumentId() const noexcept override { return {}; }
@@ -519,15 +675,7 @@ script::Value joinAdjacent(const script::Value::List &unevaluatedArgs,
 
     TemporaryPianoTrack tempTrack(notes);
     SequencerOperations::joinAdjacent(*tempTrack.sequence, false, false);
-
-    script::Value::List result;
-    for (int i = 0; i < tempTrack.sequence->size(); ++i)
-    {
-        const Note &note = tempTrack.sequence->getNoteUnchecked(i);
-        result.add(script::Value(script::interop::makeNoteValue(note)));
-    }
-
-    return script::Value(move(result));
+    return tempTrack.toValue();
 }
 
 script::Value arpeggiate(const script::Value::List &unevaluatedArgs,
@@ -549,12 +697,11 @@ script::Value arpeggiate(const script::Value::List &unevaluatedArgs,
     const auto notes = parseNotesList(args.getReference(1),
         "(refactor:arpeggiate (arpeggiator-notes ...) (notes ...))");
 
-    TemporaryPianoTrack tempTrack(notes);
-
     auto *self = castToSelf(context);
-    const ScopedReadLock lock(self->hostContextLock);
+    const ScopedReadLock lock(self->hostLock);
 
     const Clip noTransform;
+    TemporaryPianoTrack tempTrack(notes);
     SequencerOperations::arpeggiate(*tempTrack.sequence,
         noTransform,
         arpeggiator,
@@ -568,14 +715,26 @@ script::Value arpeggiate(const script::Value::List &unevaluatedArgs,
         false,  // undoable
         false); // shouldCheckpoint
 
-    script::Value::List result;
-    for (int i = 0; i < tempTrack.sequence->size(); ++i)
-    {
-        const Note &note = tempTrack.sequence->getNoteUnchecked(i);
-        result.add(script::Value(script::interop::makeNoteValue(note)));
-    }
+    return tempTrack.toValue();
+}
 
-    return script::Value(move(result));
+script::Value shiftInScaleKeys(script::EvaluationContext &context,
+    const Array<Note> &notes, int deltaKey)
+{
+    auto *self = castToSelf(context);
+    const ScopedReadLock lock(self->hostLock);
+
+    const Clip noTransform;
+    TemporaryPianoTrack tempTrack(notes);
+    SequencerOperations::shiftInScaleKeyRelative(*tempTrack.sequence,
+        noTransform,
+        self->hostContext.keySignatures,
+        self->hostContext.temperament->getHighlighting(),
+        deltaKey,
+        false,
+        false);
+
+    return tempTrack.toValue();
 }
 
 script::Value alignToScale(const script::Value::List &unevaluatedArgs,
@@ -587,28 +746,121 @@ script::Value alignToScale(const script::Value::List &unevaluatedArgs,
     const auto notes = parseNotesList(args.getReference(0),
         "(refactor:align-to-scale ((note1) (note2) ...))");
 
+    return shiftInScaleKeys(context, notes, 0);
+}
+
+script::Value transposeInScale(const script::Value::List &unevaluatedArgs,
+    script::Scope &scope, script::EvaluationContext &context)
+{
+    const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
+    script::checkNumArgs(args, 2);
+
+    const auto deltaKey = args.getReference(0).castToInteger();
+    const auto notes = parseNotesList(args.getReference(1),
+        "(refactor:transpose-in-scale delta-key ((note1) (note2) ...))");
+
+    return shiftInScaleKeys(context, notes, deltaKey);
+}
+
+script::Value legato(const script::Value::List &unevaluatedArgs,
+    script::Scope &scope, script::EvaluationContext &context)
+{
+    const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
+    script::checkNumArgs(args, 1);
+
+    const auto notes = parseNotesList(args.getReference(0),
+        "(refactor:legato ((note1) (note2) ...))");
+
     TemporaryPianoTrack tempTrack(notes);
+    SequencerOperations::makeLegato(*tempTrack.sequence, 0, false, false);
+    return tempTrack.toValue();
+}
 
-    auto *self = castToSelf(context);
-    const ScopedReadLock lock(self->hostContextLock);
+script::Value staccato(const script::Value::List &unevaluatedArgs,
+    script::Scope &scope, script::EvaluationContext &context)
+{
+    const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
+    script::checkNumArgs(args, 1);
 
-    const Clip noTransform;
-    SequencerOperations::shiftInScaleKeyRelative(*tempTrack.sequence,
-        noTransform,
-        self->hostContext.keySignatures,
-        self->hostContext.temperament->getHighlighting(),
-        0,      // just align, don't shift
-        false,  // undoable
-        false); // shouldCheckpoint
+    const auto noteLength = jmax(Globals::minNoteLength, args.getReference(0).castToFloat());
+    const auto notes = parseNotesList(args.getReference(1),
+        "(refactor:staccato note-length ((note1) (note2) ...))");
 
-    script::Value::List result;
-    for (int i = 0; i < tempTrack.sequence->size(); ++i)
-    {
-        const Note &note = tempTrack.sequence->getNoteUnchecked(i);
-        result.add(script::Value(script::interop::makeNoteValue(note)));
-    }
+    TemporaryPianoTrack tempTrack(notes);
+    SequencerOperations::makeStaccato(*tempTrack.sequence, noteLength, false, false);
+    return tempTrack.toValue();
+}
 
-    return script::Value(move(result));
+script::Value retrograde(const script::Value::List &unevaluatedArgs,
+    script::Scope &scope, script::EvaluationContext &context)
+{
+    const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
+    script::checkNumArgs(args, 1);
+
+    const auto notes = parseNotesList(args.getReference(0),
+        "(refactor:retrograde ((note1) (note2) ...))");
+
+    TemporaryPianoTrack tempTrack(notes);
+    SequencerOperations::retrograde(*tempTrack.sequence, false, false);
+    return tempTrack.toValue();
+}
+
+script::Value invertMelody(const script::Value::List &unevaluatedArgs,
+    script::Scope &scope, script::EvaluationContext &context)
+{
+    const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
+    script::checkNumArgs(args, 1);
+
+    const auto notes = parseNotesList(args.getReference(0),
+        "(refactor:invert-melody ((note1) (note2) ...))");
+
+    TemporaryPianoTrack tempTrack(notes);
+    SequencerOperations::melodicInversion(*tempTrack.sequence, false, false);
+    return tempTrack.toValue();
+}
+
+script::Value invertChord(const script::Value::List &unevaluatedArgs,
+    script::Scope &scope, script::EvaluationContext &context)
+{
+    const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
+    script::checkNumArgs(args, 1);
+
+    const auto order = args.getReference(0).castToInteger();
+    const auto notes = parseNotesList(args.getReference(0),
+        "(refactor:invert-chord order ((note1) (note2) ...))");
+
+    TemporaryPianoTrack tempTrack(notes);
+    SequencerOperations::invertChord(*tempTrack.sequence, order, false, false);
+    return tempTrack.toValue();
+}
+
+script::Value quantize(const script::Value::List &unevaluatedArgs,
+    script::Scope &scope, script::EvaluationContext &context)
+{
+    const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
+    script::checkNumArgs(args, 1);
+
+    const auto resolution = args.getReference(0).castToFloat();
+    const auto notes = parseNotesList(args.getReference(0),
+        "(refactor:quantize resolution ((note1) (note2) ...))");
+
+    TemporaryPianoTrack tempTrack(notes);
+    SequencerOperations::quantize(*tempTrack.sequence, resolution, false, false);
+    return tempTrack.toValue();
+}
+
+script::Value cleanupOverlaps(const script::Value::List &unevaluatedArgs,
+    script::Scope &scope, script::EvaluationContext &context)
+{
+    const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
+    script::checkNumArgs(args, 1);
+
+    const auto notes = parseNotesList(args.getReference(0),
+        "(refactor:cleanup-overlaps ((note1) (note2) ...))");
+
+    TemporaryPianoTrack tempTrack(notes);
+    SequencerOperations::cleanupOverlaps(*tempTrack.sequence, false, false);
+    return tempTrack.toValue();
 }
 
 } // namespace refactor
@@ -619,6 +871,9 @@ Optional<script::Value> ScriptEngine::makeLanguageExtension(const String &name) 
 {
     using Value = script::Value;
 
+    if (name == "load") return Value::makeBuiltInFunction(name, extensions::load);
+
+    if (name == "randomize") return Value::makeBuiltInFunction(name, extensions::seed);
     if (name == "random") return Value::makeBuiltInFunction(name, extensions::random);
     if (name.startsWithChar('d') && name.substring(1).getIntValue() > 0)
     {
@@ -656,14 +911,21 @@ Optional<script::Value> ScriptEngine::makeLanguageExtension(const String &name) 
     if (name == "project:reset") return Value::makeBuiltInFunction(name, extensions::project::reset);
     if (name == "project:period-size")
     {
-        const ScopedReadLock lock(this->hostContextLock);
+        const ScopedReadLock lock(this->hostLock);
         return Value(this->hostContext.temperament->getPeriodSize());
     }
 
-    // todo more refactorings here
     if (name == "refactor:join-adjacent") return Value::makeBuiltInFunction(name, extensions::refactor::joinAdjacent);
     if (name == "refactor:arpeggiate") return Value::makeBuiltInFunction(name, extensions::refactor::arpeggiate);
     if (name == "refactor:align-to-scale") return Value::makeBuiltInFunction(name, extensions::refactor::alignToScale);
+    if (name == "refactor:legato") return Value::makeBuiltInFunction(name, extensions::refactor::legato);
+    if (name == "refactor:staccato") return Value::makeBuiltInFunction(name, extensions::refactor::staccato);
+    if (name == "refactor:retrograde") return Value::makeBuiltInFunction(name, extensions::refactor::retrograde);
+    if (name == "refactor:invert-melody") return Value::makeBuiltInFunction(name, extensions::refactor::invertMelody);
+    if (name == "refactor:invert-chord") return Value::makeBuiltInFunction(name, extensions::refactor::invertChord);
+    if (name == "refactor:quantize") return Value::makeBuiltInFunction(name, extensions::refactor::quantize);
+    if (name == "refactor:transpose-in-scale") return Value::makeBuiltInFunction(name, extensions::refactor::transposeInScale);
+    if (name == "refactor:cleanup-overlaps") return Value::makeBuiltInFunction(name, extensions::refactor::cleanupOverlaps);
 
     return {};
 }

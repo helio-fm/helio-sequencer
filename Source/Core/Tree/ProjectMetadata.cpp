@@ -31,11 +31,13 @@ ProjectMetadata::ProjectMetadata(ProjectNode &parent) : project(parent)
     this->author = SystemStats::getFullUserName();
     this->description = "";
     this->temperament = Temperament::makeTwelveToneEqualTemperament();
+    this->script.setNewLineCharacters("\n");
 
     this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectLicense));
     this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectTitle));
     this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectAuthor));
     this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectTemperament));
+    this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectScript));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription("initialized"), ProjectInfoDeltas::projectDescription));
 }
 
@@ -125,6 +127,11 @@ double ProjectMetadata::getPeriodRange() const noexcept
     return this->temperament->getPeriodRange();
 }
 
+CodeDocument &ProjectMetadata::getScriptCodeDocument() noexcept
+{
+    return this->script;
+}
+
 //===----------------------------------------------------------------------===//
 // VCS::TrackedItem
 //===----------------------------------------------------------------------===//
@@ -168,6 +175,10 @@ SerializedData ProjectMetadata::getDeltaData(int deltaIndex) const
     {
         return this->serializeTemperamentDelta();
     }
+    else if (this->deltas[deltaIndex]->hasType(ProjectInfoDeltas::projectScript))
+    {
+        return this->serializeScriptDelta();
+    }
 
     jassertfalse;
     return {};
@@ -180,6 +191,10 @@ bool ProjectMetadata::deltaHasDefaultData(int deltaIndex) const
     {
         jassert(this->temperament != nullptr);
         return this->temperament->isDefault();
+    }
+    else if (this->deltas[deltaIndex]->hasType(ProjectInfoDeltas::projectScript))
+    {
+        return this->script.getNumCharacters() == 0;
     }
 
     return false;
@@ -222,6 +237,10 @@ void ProjectMetadata::resetStateTo(const TrackedItem &newState)
         {
             this->resetTemperamentDelta(newDeltaData);
         }
+        else if (newDelta->hasType(ProjectInfoDeltas::projectScript))
+        {
+            this->resetScriptDelta(newDeltaData);
+        }
     }
 }
 
@@ -241,6 +260,7 @@ SerializedData ProjectMetadata::serialize() const noexcept
     tree.setProperty(ProjectInfoDeltas::projectLicense, this->getLicense());
     tree.setProperty(ProjectInfoDeltas::projectAuthor, this->getAuthor());
     tree.setProperty(ProjectInfoDeltas::projectDescription, this->getDescription());
+    tree.setProperty(ProjectInfoDeltas::projectScript, this->script.getAllContent());
 
     // for convenience this will be used as a reference
     // to existing temperament model or as a fallback
@@ -270,6 +290,10 @@ void ProjectMetadata::deserialize(const SerializedData &data) noexcept
     this->author = root.getProperty(ProjectInfoDeltas::projectAuthor);
     this->description = root.getProperty(ProjectInfoDeltas::projectDescription);
 
+    this->script.replaceAllContent(root.getProperty(ProjectInfoDeltas::projectScript));
+    this->script.setSavePoint();
+    this->script.clearUndoHistory();
+
     if (root.getNumChildren() > 0)
     {
         jassert(this->temperament != nullptr);
@@ -288,6 +312,7 @@ void ProjectMetadata::reset() noexcept
     this->description.clear();
     this->license.clear();
     this->initTimestamp = 0;
+    this->script.replaceAllContent({});
 }
 
 //===----------------------------------------------------------------------===//
@@ -326,6 +351,13 @@ SerializedData ProjectMetadata::serializeTemperamentDelta() const
 {
     SerializedData tree(Serialization::VCS::ProjectInfoDeltas::projectTemperament);
     tree.appendChild(this->temperament->serialize());
+    return tree;
+}
+
+SerializedData ProjectMetadata::serializeScriptDelta() const
+{
+    SerializedData tree(Serialization::VCS::ProjectInfoDeltas::projectScript);
+    tree.setProperty(Serialization::VCS::delta, this->script.getAllContent());
     return tree;
 }
 
@@ -381,6 +413,12 @@ void ProjectMetadata::resetTemperamentDelta(const SerializedData &state)
     {
         this->temperament = Temperament::makeTwelveToneEqualTemperament();
     }
+}
+
+void ProjectMetadata::resetScriptDelta(const SerializedData &state)
+{
+    jassert(state.hasType(Serialization::VCS::ProjectInfoDeltas::projectScript));
+    this->script.replaceAllContent(state.getProperty(Serialization::VCS::delta));
 }
 
 void ProjectMetadata::deserializeTemperament(const SerializedData &state)

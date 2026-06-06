@@ -70,7 +70,8 @@ public:
     RollBase *getLastFocusedRoll() const;
     GeneratedSequenceBuilder *getGeneratedSequences() const;
 
-    CodeDocument &getScriptCodeDocument();
+    ScriptEngine &getScriptEngine() noexcept;
+    CodeDocument &getScriptCodeDocument() noexcept;
 
     void importMidi(InputStream &stream);
     bool exportMidi(OutputStream &stream) const;
@@ -243,6 +244,8 @@ private:
 
     UniquePointer<GeneratedSequenceBuilder> generatedSequenceBuilder;
 
+    UniquePointer<ScriptEngine> scriptEngine;
+
 private:
 
     void initialize();
@@ -259,8 +262,6 @@ private:
     UniquePointer<UndoStack> undoStack;
 
     MidiTrack::Grouping trackGroupingMode = MidiTrack::Grouping::GroupByName;
-
-    CodeDocument scripts;
 
     mutable Range<float> beatRange = { 0.f, Globals::Defaults::projectLength };
     Range<float> calculateProjectBeatRange() const;

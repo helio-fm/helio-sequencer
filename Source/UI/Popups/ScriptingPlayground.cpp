@@ -33,7 +33,6 @@
 #include "SequencerOperations.h"
 #include "ScriptEngine.h"
 #include "ScriptTokeniser.h"
-#include "PianoRoll.h"
 #include "IconButton.h"
 #include "HotkeyScheme.h"
 #include "HelioTheme.h"
@@ -157,14 +156,14 @@ private:
 };
 
 ScriptingPlaygroundEditor::ScriptingPlaygroundEditor(CodeDocument &document,
-    CodeTokeniser *codeTokeniser) noexcept :
-    CodeEditorComponent(document, codeTokeniser)
+    UniquePointer<ScriptTokeniser> codeTokeniser) noexcept :
+    CodeEditorComponent(document, codeTokeniser.get()),
+    tokeniser(move(codeTokeniser))
 {
     this->setScrollbarThickness(2);
     this->horizontalScrollBar.setVisible(false);
     this->verticalScrollBar.setColour(ScrollBar::thumbColourId,
         findDefaultColour(CodeEditorComponent::highlightColourId));
-    this->setTabSize(2, false); // todo configurable
 
     this->popup = make<ScriptingPlaygroundPopup>();
     this->addChildComponent(this->popup.get());
@@ -172,12 +171,20 @@ ScriptingPlaygroundEditor::ScriptingPlaygroundEditor(CodeDocument &document,
     this->errorMark = make<ScriptingPlaygroundErrorMark>();
     this->addChildComponent(this->errorMark.get());
 
-    this->document.addListener(this);
+    this->getDocument().addListener(this);
+}
+
+void ScriptingPlaygroundEditor::configure(int defaultCaretPosition,
+    int defaultStartLine, int tabSize) noexcept
+{
+    this->setTabSize(tabSize, false);
+    this->scrollToLine(defaultStartLine);
+    this->moveCaretTo(CodeDocument::Position(this->getDocument(), defaultCaretPosition), false);
 }
 
 ScriptingPlaygroundEditor::~ScriptingPlaygroundEditor()
 {
-    this->document.removeListener(this);
+    this->getDocument().removeListener(this);
 }
 
 const String &ScriptingPlaygroundEditor::getHighlightedToken() const noexcept
@@ -185,9 +192,33 @@ const String &ScriptingPlaygroundEditor::getHighlightedToken() const noexcept
     return this->highlightedToken;
 }
 
-const Optional<ScriptEngine::Breakpoint> &ScriptingPlaygroundEditor::getBreakpoint() const
+Optional<ScriptEngine::Breakpoint> ScriptingPlaygroundEditor::getBreakpoint() const
 {
-    return this->breakpoint;
+    if (!this->breakpoint.hasValue())
+    {
+        return this->breakpoint;
+    }
+
+    ScriptEngine::Breakpoint result = *this->breakpoint;
+    result.parentListRange = {};
+    int minRange = INT_MAX;
+    // finds parent list range instead of symbol's range:
+    for (const auto &range : this->bracketRanges)
+    {
+        if (range.contains(this->breakpoint->parentListRange.getStart()) &&
+            range.contains(this->breakpoint->parentListRange.getEnd()))
+        {
+            if (range.getLength() >= minRange)
+            {
+                break;
+            }
+
+            minRange = range.getLength();
+            result.parentListRange = range;
+        }
+    }
+
+    return result;
 }
 
 void ScriptingPlaygroundEditor::setBreakpointInfo(const String &info)
@@ -202,6 +233,9 @@ void ScriptingPlaygroundEditor::setError(const Range<int> &range, const String &
 {
     this->errorRange = range;
 
+    this->tokeniser->setErrorRange(range);
+    this->retokenise();
+
     if (range.isEmpty())
     {
         this->errorMark->setVisible(false);
@@ -213,6 +247,26 @@ void ScriptingPlaygroundEditor::setError(const Range<int> &range, const String &
     }
 }
 
+void ScriptingPlaygroundEditor::updateParsingData(const Array<Range<int>> &ranges)
+{
+    this->bracketRanges = ranges;
+    this->tokeniser->updateParsingData(ranges);
+    this->retokenise();
+}
+
+void ScriptingPlaygroundEditor::updateEvaluationData(const StringArray &functionNames)
+{
+    this->tokeniser->updateEvaluationData(functionNames);
+    this->retokenise();
+}
+
+void ScriptingPlaygroundEditor::retokenise()
+{
+    this->tokeniser->setCaretPosition(this->getCaretPosition());
+    this->tokeniser->setHighlightedToken(this->getHighlightedToken());
+    CodeEditorComponent::retokenise(0, 0);
+}
+
 void ScriptingPlaygroundEditor::updateErrorRangeBounds()
 {
     if (this->errorRange.isEmpty())
@@ -220,8 +274,8 @@ void ScriptingPlaygroundEditor::updateErrorRangeBounds()
         return;
     }
 
-    const CodeDocument::Position start(this->document, this->errorRange.getStart());
-    const CodeDocument::Position end(this->document, this->errorRange.getEnd());
+    const CodeDocument::Position start(this->getDocument(), this->errorRange.getStart());
+    const CodeDocument::Position end(this->getDocument(), this->errorRange.getEnd());
     const auto bounds = this->getCharacterBounds(start).
         getUnion(this->getCharacterBounds(end)).
         withWidth(3).withX(0);
@@ -236,11 +290,11 @@ void ScriptingPlaygroundEditor::dragSelection(CodeDocument::Position position, b
 
     if (fullLines)
     {
-        document.findLineContaining(position, tokenStart, tokenEnd);
+        this->getDocument().findLineContaining(position, tokenStart, tokenEnd);
     }
     else
     {
-        document.findTokenContaining(position, tokenStart, tokenEnd);
+        this->getDocument().findTokenContaining(position, tokenStart, tokenEnd);
     }
 
     if (this->selectionAnchorStart.getPosition() < tokenStart.getPosition())
@@ -280,12 +334,12 @@ void ScriptingPlaygroundEditor::mouseDown(const MouseEvent &e)
 
         if (this->numFastClicks == 2) // selects words
         {
-            document.findTokenContaining(currentPosition,
+            this->getDocument().findTokenContaining(currentPosition,
                 this->selectionAnchorStart, this->selectionAnchorEnd);
         }
         else // selects lines
         {
-            document.findLineContaining(currentPosition,
+            this->getDocument().findLineContaining(currentPosition,
                 this->selectionAnchorStart, this->selectionAnchorEnd);
         }
     }
@@ -349,21 +403,13 @@ void ScriptingPlaygroundEditor::mouseUp(const MouseEvent &e)
         (selectionEnd.getPosition() - selectionStart.getPosition() < ScriptTokeniser::maxTokenLength) &&
         selectionStart.getLineNumber() == selectionEnd.getLineNumber())
     {
-        this->highlightedToken =
-            this->document.getTextBetween(selectionStart, selectionEnd);
-
-        if (auto *parent = this->getParentComponent())
-        {
-            parent->postCommandMessage(CommandIDs::ScriptingPlaygroundRetokenise);
-        }
+        this->highlightedToken = this->getDocument().getTextBetween(selectionStart, selectionEnd);
+        this->retokenise();
     }
     else if (this->highlightedToken.isNotEmpty())
     {
         this->highlightedToken.clear();
-        if (auto *parent = this->getParentComponent())
-        {
-            parent->postCommandMessage(CommandIDs::ScriptingPlaygroundRetokenise);
-        }
+        this->retokenise();
     }
 }
 
@@ -444,12 +490,12 @@ void ScriptingPlaygroundEditor::timerCallback()
         this->breakpointTokenBounds = tokenBounds;
 
         this->breakpoint = {
-            this->document.getTextBetween(tokenStart, tokenEnd),
+            this->getDocument().getTextBetween(tokenStart, tokenEnd),
             Range<int>(tokenStart.getPosition(), tokenEnd.getPosition()) };
 
         if (auto *parent = this->getParentComponent())
         {
-            parent->postCommandMessage(CommandIDs::ScriptingPlaygroundReevaluate);
+            parent->postCommandMessage(CommandIDs::ScriptEditorReevaluate);
         }
     }
 }
@@ -475,12 +521,12 @@ static int findFirstNonWhitespaceChar(StringRef line) noexcept
 void ScriptingPlaygroundEditor::handleReturnKey()
 {
     const int myIndentLevel =
-        findFirstNonWhitespaceChar(this->caretPos.getLineText());
+        findFirstNonWhitespaceChar(this->getCaretPos().getLineText());
 
     this->newTransaction();
-    this->insertTextAtCaret(document.getNewLineCharacters());
+    this->insertTextAtCaret(this->getDocument().getNewLineCharacters());
 
-    if (!CharacterFunctions::isWhitespace(this->caretPos.getCharacter()))
+    if (!CharacterFunctions::isWhitespace(this->getCaretPos().getCharacter()))
     {
         const auto numTabs = myIndentLevel / this->getTabSize();
         for (int i = 0; i < numTabs; ++i)
@@ -531,8 +577,8 @@ bool ScriptingPlaygroundEditor::keyPressed(const KeyPress &key)
     {
         this->newTransaction();
         this->moveCaretToStartOfLine(false);
-        this->moveCaretTo(CodeDocument::Position(this->document,
-            this->caretPos.getLineNumber(), 0), false);
+        this->moveCaretTo(CodeDocument::Position(this->getDocument(),
+            this->getCaretPos().getLineNumber(), 0), false);
         this->moveCaretToEndOfLine(true);
         this->moveCaretRight(false, true);
         this->cutToClipboard();
@@ -550,15 +596,15 @@ void ScriptingPlaygroundEditor::selectNext()
     }
 
     const auto selectedText = this->getTextInRange(this->getHighlightedRegion());
-    const auto searchIn = this->document.getTextBetween(
-        { this->document, this->getHighlightedRegion().getEnd() },
-        { this->document, std::numeric_limits<int>::max(), std::numeric_limits<int>::max() });
+    const auto searchIn = this->getDocument().getTextBetween(
+        { this->getDocument(), this->getHighlightedRegion().getEnd() },
+        { this->getDocument(), std::numeric_limits<int>::max(), std::numeric_limits<int>::max() });
     const auto nextDelta = searchIn.indexOf(selectedText);
     if (nextDelta >= 0)
     {
         const auto newStart = this->getHighlightedRegion().getEnd() + nextDelta;
-        this->selectRegion({ this->document, newStart },
-            { this->document, newStart + selectedText.length() });
+        this->selectRegion({ this->getDocument(), newStart },
+            { this->getDocument(), newStart + selectedText.length() });
         this->highlightedToken = selectedText;
     }
 }
@@ -571,13 +617,13 @@ void ScriptingPlaygroundEditor::selectPrevious()
     }
 
     const auto selectedText = this->getTextInRange(this->getHighlightedRegion());
-    const auto searchIn = this->document.getTextBetween({},
-        { this->document, this->getHighlightedRegion().getStart() });
+    const auto searchIn = this->getDocument().getTextBetween({},
+        { this->getDocument(), this->getHighlightedRegion().getStart() });
     const auto previous = searchIn.lastIndexOf(selectedText);
     if (previous >= 0)
     {
-        this->selectRegion({ this->document, previous },
-            { this->document, previous + selectedText.length() });
+        this->selectRegion({ this->getDocument(), previous },
+            { this->getDocument(), previous + selectedText.length() });
         this->highlightedToken = selectedText;
     }
 }
@@ -587,7 +633,7 @@ void ScriptingPlaygroundEditor::toggleCommentSelection()
     this->newTransaction();
 
     CodeDocument::Position oldSelectionStart(this->selectionStart),
-        oldSelectionEnd(this->selectionEnd), oldCaret(this->caretPos);
+        oldSelectionEnd(this->selectionEnd), oldCaret(this->getCaretPos());
     oldSelectionStart.setPositionMaintained(true);
     oldSelectionEnd.setPositionMaintained(true);
     oldCaret.setPositionMaintained(true);
@@ -598,45 +644,45 @@ void ScriptingPlaygroundEditor::toggleCommentSelection()
     const int lineTo = this->selectionEnd.getLineNumber();
     for (int i = lineFrom; i <= lineTo; ++i)
     {
-        this->moveCaretTo(CodeDocument::Position(this->document, i, 0), false);
+        this->moveCaretTo(CodeDocument::Position(this->getDocument(), i, 0), false);
         this->moveCaretToStartOfLine(false);
 
-        const auto lineText = this->caretPos.getLineText();
+        const auto lineText = this->getCaretPos().getLineText();
         if (lineText.isEmpty() || lineText.startsWith(newLine))
         {
             continue;
         }
 
-        hasUncommentedLines = hasUncommentedLines || (this->caretPos.getCharacter() != ';');
+        hasUncommentedLines = hasUncommentedLines || (this->getCaretPos().getCharacter() != ';');
 
-        if (this->caretPos.getIndexInLine() < minLineStartIndex)
+        if (this->getCaretPos().getIndexInLine() < minLineStartIndex)
         {
-            minLineStartIndex = this->caretPos.getIndexInLine();
+            minLineStartIndex = this->getCaretPos().getIndexInLine();
         }
     }
 
     for (int i = lineFrom; i <= lineTo; ++i)
     {
-        this->moveCaretTo(CodeDocument::Position(this->document, i, minLineStartIndex), false);
+        this->moveCaretTo(CodeDocument::Position(this->getDocument(), i, minLineStartIndex), false);
         if (hasUncommentedLines)
         {
-            const auto lineText = this->caretPos.getLineText();
+            const auto lineText = this->getCaretPos().getLineText();
             if (!lineText.isEmpty() && !lineText.startsWith(newLine))
             {
                 this->insertTextAtCaret("; ");
             }
         }
-        else if (this->caretPos.getCharacter() == ';')
+        else if (this->getCaretPos().getCharacter() == ';')
         {
             this->deleteForwards(false);
-            if (this->caretPos.getCharacter() == ' ')
+            if (this->getCaretPos().getCharacter() == ' ')
             {
                 this->deleteForwards(false);
             }
         }
     }
 
-    if (this->caretPos != oldCaret)
+    if (this->getCaretPos() != oldCaret)
     {
         this->moveCaretTo(oldCaret, false);
     }
@@ -653,11 +699,20 @@ void ScriptingPlaygroundEditor::caretPositionMoved()
 {
     this->resetBreakpointPopup();
     this->highlightedToken.clear();
+    this->retokenise();
+}
 
-    if (auto *parent = this->getParentComponent())
+bool ScriptingPlaygroundEditor::pasteFromClipboard()
+{
+    this->newTransaction();
+    const auto clip = SystemClipboard::getTextFromClipboard().removeCharacters("\r");
+    if (clip.isNotEmpty())
     {
-        parent->postCommandMessage(CommandIDs::ScriptingPlaygroundRetokenise);
+        this->insertText(clip);
     }
+
+    this->newTransaction();
+    return true;
 }
 
 void ScriptingPlaygroundEditor::codeDocumentTextInserted(const String &s, int startIndex)
@@ -665,13 +720,11 @@ void ScriptingPlaygroundEditor::codeDocumentTextInserted(const String &s, int st
     this->resetBreakpointPopup();
     this->highlightedToken.clear();
 
-    jassert(dynamic_cast<ScriptTokeniser *>(this->codeTokeniser));
-    auto *tokeniser = static_cast<ScriptTokeniser *>(this->codeTokeniser);
-    tokeniser->onTextInserted(startIndex, s.length());
+    this->tokeniser->onTextInserted(startIndex, s.length());
 
     if (auto *parent = this->getParentComponent())
     {
-        parent->postCommandMessage(CommandIDs::ScriptingPlaygroundReevaluate);
+        parent->postCommandMessage(CommandIDs::ScriptEditorReevaluate);
     }
 }
 
@@ -680,13 +733,11 @@ void ScriptingPlaygroundEditor::codeDocumentTextDeleted(int startIndex, int endI
     this->resetBreakpointPopup();
     this->highlightedToken.clear();
 
-    jassert(dynamic_cast<ScriptTokeniser *>(this->codeTokeniser));
-    auto *tokeniser = static_cast<ScriptTokeniser *>(this->codeTokeniser);
-    tokeniser->onTextDeleted(startIndex, endIndex);
+    this->tokeniser->onTextDeleted(startIndex, endIndex);
 
     if (auto *parent = this->getParentComponent())
     {
-        parent->postCommandMessage(CommandIDs::ScriptingPlaygroundReevaluate);
+        parent->postCommandMessage(CommandIDs::ScriptEditorReevaluate);
     }
 }
 
@@ -769,14 +820,10 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlaygroundCornerResizer)
 };
 
-ScriptingPlayground::ScriptingPlayground(ProjectNode &project, RollBase *roll) noexcept :
-    project(project),
-    roll(roll)
+ScriptingPlayground::ScriptingPlayground(ProjectNode &project) noexcept :
+    project(project)
 {
-    this->setComponentID(ComponentIDs::scriptingPlayground);
-
-    this->scriptEngine = make<ScriptEngine>(*this);
-    this->tokeniser = make<ScriptTokeniser>();
+    this->setComponentID(ComponentIDs::scriptEditor);
 
     this->shadowUp = make<ShadowUpwards>(ShadowType::Light);
     this->addAndMakeVisible(this->shadowUp.get());
@@ -785,13 +832,15 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project, RollBase *roll) n
     this->shadowRight = make<ShadowRightwards>(ShadowType::Light);
     this->addAndMakeVisible(this->shadowRight.get());
 
-    this->codeEditor =
-        make<ScriptingPlaygroundEditor>(project.getScriptCodeDocument(),
-            this->tokeniser.get());
+    this->codeEditor = make<ScriptingPlaygroundEditor>(project.getScriptCodeDocument(),
+        make<ScriptTokeniser>());
+
     Font f(Globals::UI::Fonts::S - 1.f); // fixme configurable fonts
     f.setTypefaceName(Font::getDefaultMonospacedFontName());
     this->codeEditor->setFont(f);
     this->addAndMakeVisible(this->codeEditor.get());
+    this->codeEditor->configure(project.getScriptEngine().getEditorDefaultCaretPosition(),
+        project.getScriptEngine().getEditorDefaultStartLine());
 
     this->cornerResizer = make<ScriptingPlaygroundCornerResizer>();
     this->addAndMakeVisible(this->cornerResizer.get());
@@ -806,15 +855,17 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project, RollBase *roll) n
     const auto outputBg = codeBg.brighter(0.025f);
     this->outputText->setColour(TextEditor::backgroundColourId, outputBg);
     this->outputText->setColour(TextEditor::outlineColourId, outputBg);
-    this->outputText->setIndents(10, 0);
+    this->outputText->setIndents(ScriptingPlayground::iconSize * 2, 0);
     this->outputText->setJustification(Justification::centredLeft);
     Font f2(ScriptingPlaygroundPopup::font);
     f2.setTypefaceName(Font::getDefaultMonospacedFontName());
     this->outputText->setFont(f2);
 
-    constexpr auto iconSize = 20;
+    this->copyOutputButton = make<IconButton>(Icons::copy,
+        CommandIDs::ScriptEditorCopyOutput, this, ScriptingPlayground::iconSize);
+    this->addChildComponent(this->copyOutputButton.get());
     this->runButton = make<IconButton>(Icons::play,
-        CommandIDs::ScriptingPlaygroundRunScript, this, iconSize);
+        CommandIDs::ScriptEditorRunScript, this, ScriptingPlayground::iconSize);
     this->addChildComponent(this->runButton.get());
 
     this->shadowBottom = make<ShadowUpwards>(ShadowType::Light);
@@ -823,10 +874,18 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project, RollBase *roll) n
     const auto size = App::Config().getUiFlags()->getScriptEditorSize();
     this->setSize(size.getX(), size.getY());
 
-    this->postCommandMessage(CommandIDs::ScriptingPlaygroundReevaluate);
+    this->updateOnParse();
+    this->updateOnEvaluate();
+
+    this->postCommandMessage(CommandIDs::ScriptEditorReevaluate);
 }
 
-ScriptingPlayground::~ScriptingPlayground() = default;
+ScriptingPlayground::~ScriptingPlayground()
+{
+    this->project.getScriptEngine().
+        updateEditorDefaults(this->codeEditor->getCaretPos().getPosition(),
+            this->codeEditor->getFirstLineOnScreen());
+}
 
 void ScriptingPlayground::paint(Graphics &g)
 {
@@ -859,13 +918,18 @@ void ScriptingPlayground::resized()
     this->cornerResizer->setBounds(this->codeEditor->getBounds().
         removeFromRight(resizerSize).removeFromTop(resizerSize));
 
-    this->outputText->setBounds(marginH - 1,
+    Rectangle<int> outputTextBounds(marginH - 1,
         this->codeEditor->getBottom(),
         this->getWidth() - marginH * 2 + 2,
         statusPanelSize);
 
+    this->outputText->setBounds(outputTextBounds);
+
+    this->copyOutputButton->setBounds(
+        outputTextBounds.removeFromLeft(ScriptingPlayground::iconSize * 2));
+
     this->runButton->setBounds(
-        this->outputText->getBounds().removeFromRight(statusPanelSize));
+        outputTextBounds.removeFromRight(ScriptingPlayground::iconSize * 2));
 
     this->shadowBottom->setBounds(marginH,
         this->codeEditor->getBottom() - 8,
@@ -886,63 +950,32 @@ void ScriptingPlayground::parentHierarchyChanged()
     this->updatePosition();
 }
 
-Optional<ScriptEngine::Breakpoint> findBreakpointMinScope(
-    const Optional<ScriptEngine::Breakpoint> &from, const Array<Range<int>> &ranges)
-{
-    if (!from.hasValue())
-    {
-        return from;
-    }
-
-    ScriptEngine::Breakpoint result = *from;
-    result.parentListRange = {};
-    int minRange = INT_MAX;
-
-    for (const auto &range : ranges)
-    {
-        if (range.contains(from->parentListRange.getStart()) &&
-            range.contains(from->parentListRange.getEnd()))
-        {
-            if (range.getLength() >= minRange)
-            {
-                break;
-            }
-
-            minRange = range.getLength();
-            result.parentListRange = range;
-        }
-    }
-
-    return result;
-}
-
 void ScriptingPlayground::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
-    case CommandIDs::ScriptingPlaygroundDismiss:
+    case CommandIDs::ScriptEditorDismiss:
         this->dismiss();
         break;
-    case CommandIDs::ScriptingPlaygroundRunScript:
+    case CommandIDs::ScriptEditorRunScript:
         this->project.checkpoint();
         // exit modal state before modifying the project,
         // so that any downstream code dismissing modal components
         // doesn't delete this playground while it's evaluating:
         this->exitModalState(0);
-        this->scriptEngine->evaluate(this->codeEditor->getDocument().getAllContent(), false);
-        //this->enterModalState(true);
-        this->dismiss();
+        this->project.getScriptEngine().evaluate(this->codeEditor->getDocument().getAllContent(), this, false);
+        this->enterModalState(true);
+        // this->dismiss();
         break;
-    case CommandIDs::ScriptingPlaygroundReevaluate:
-        this->scriptEngine->evaluate(this->codeEditor->getDocument().getAllContent(), true,
-            findBreakpointMinScope(this->codeEditor->getBreakpoint(),
-                this->scriptEngine->getBlockRanges()));
+    case CommandIDs::ScriptEditorReevaluate:
+        this->project.getScriptEngine().evaluate(
+            this->codeEditor->getDocument().getAllContent(), this, true,
+            this->codeEditor->getBreakpoint());
+        this->project.sendChangeMessage();
         this->updateOnParse();
         break;
-    case CommandIDs::ScriptingPlaygroundRetokenise:
-        this->tokeniser->setCaretPosition(this->codeEditor->getCaretPosition());
-        this->tokeniser->setHighlightedToken(this->codeEditor->getHighlightedToken());
-        this->codeEditor->retokenise(0, 0);
+    case CommandIDs::ScriptEditorCopyOutput:
+        SystemClipboard::copyTextToClipboard(this->outputText->getText());
         break;
     case CommandIDs::ScriptEditorToggleComment:
         this->codeEditor->toggleCommentSelection();
@@ -990,7 +1023,7 @@ Array<KeyPress> ScriptingPlayground::getAllScriptingPlaygroundHotkeys()
 {
     static Array<KeyPress> scriptingPlaygroundKeyPresses =
         App::Config().getHotkeySchemes()->getCurrent()->
-            findKeyPressesForReceiver(ComponentIDs::scriptingPlayground);
+            findKeyPressesForReceiver(ComponentIDs::scriptEditor);
 
     return scriptingPlaygroundKeyPresses;
 }
@@ -1032,73 +1065,87 @@ void ScriptingPlayground::updatePosition()
 
 void ScriptingPlayground::updateOnParse()
 {
-    if (this->scriptEngine->getParsingError().hasValue())
-    {
-        const auto errorRange = this->scriptEngine->getParsingError()->sourceCodeRange;
+    const auto &scriptEngine = this->project.getScriptEngine();
+    this->codeEditor->updateParsingData(scriptEngine.getBlockRanges());
 
-        this->fader.fadeOut(this->runButton.get());
-        this->outputText->setText(this->scriptEngine->getParsingError()->getDescription());
-        this->tokeniser->setErrorRange(errorRange);
+    if (scriptEngine.getParsingError().hasValue())
+    {
+        const auto errorRange = scriptEngine.getParsingError()->sourceCodeRange;
+
+        this->runButton->setVisible(false);
+        this->copyOutputButton->setVisible(true);
+        this->outputText->setText(scriptEngine.getParsingError()->getDescription());
         this->codeEditor->setError(errorRange, {});
+        this->hadErrors = true;
     }
-    else if (!this->scriptEngine->getEvaluationError().hasValue())
+    else if (!scriptEngine.getEvaluationError().hasValue())
     {
-        this->tokeniser->setErrorRange({});
         this->codeEditor->setError({}, {});
+        this->hadErrors = false;
     }
-
-    this->tokeniser->updateParsingData(this->scriptEngine->getBlockRanges(),
-        this->codeEditor->getCaretPosition());
-
-    this->codeEditor->retokenise(0, 0);
 }
 
 void ScriptingPlayground::updateOnEvaluate()
 {
-    if (this->scriptEngine->getParsingError().hasValue())
-    {
-        const auto errorText = this->scriptEngine->getParsingError()->getDescription();
-        const auto errorRange = this->scriptEngine->getParsingError()->sourceCodeRange;
+    const auto &scriptEngine = this->project.getScriptEngine();
+    this->codeEditor->updateEvaluationData(scriptEngine.getTopLevelFunctionNames());
 
-        this->fader.fadeOut(this->runButton.get());
-        this->outputText->setText(errorText);
-        this->tokeniser->setErrorRange(errorRange);
-        this->codeEditor->setError(errorRange, errorText);
-    }
-    else if (this->scriptEngine->getEvaluationError().hasValue())
+    if (scriptEngine.getParsingError().hasValue())
     {
-        const auto errorType = this->scriptEngine->getEvaluationError()->type;
+        const auto errorText = scriptEngine.getParsingError()->getDescription();
+        const auto errorRange = scriptEngine.getParsingError()->sourceCodeRange;
+
+        this->runButton->setVisible(false);
+        this->copyOutputButton->setVisible(true);
+        this->outputText->setText(errorText);
+        this->codeEditor->setError(errorRange, errorText);
+        this->hadErrors = true;
+    }
+    else if (scriptEngine.getEvaluationError().hasValue()) // fixme breakpoints fuck the saved state
+    {
+        const auto errorType = scriptEngine.getEvaluationError()->type;
         if (errorType == script::EvaluationError::Type::Aborted)
         {
             return;
         }
 
-        const auto errorText = this->scriptEngine->getEvaluationError()->getDescription();
-        const auto errorRange = this->scriptEngine->getEvaluationError()->sourceCodeRange;
+        const auto errorText = scriptEngine.getEvaluationError()->getDescription();
+        const auto errorRange = scriptEngine.getEvaluationError()->sourceCodeRange;
 
         if (errorType == script::EvaluationError::Type::BreakpointHit)
         {
+            //this->runButton->setVisible(true); // FIXME
             this->codeEditor->setBreakpointInfo(errorText);
         }
         else
         {
-            this->fader.fadeOut(this->runButton.get());
+            this->runButton->setVisible(false);
+            this->copyOutputButton->setVisible(true);
             this->outputText->setText(errorText);
-            this->tokeniser->setErrorRange(errorRange);
             this->codeEditor->setError(errorRange, errorText);
+            this->hadErrors = true;
         }
     }
     else
     {
-        this->fader.fadeIn(this->runButton.get());
-        const auto &result = this->scriptEngine->getEvaluationResult();
-        this->outputText->setText(result.isNil() ? "" : result.toString());
-        this->tokeniser->updateEvaluationData(this->scriptEngine->getTopLevelFunctionNames());
-        this->tokeniser->setErrorRange({});
-        this->codeEditor->setError({}, {});
-    }
+        this->runButton->setVisible(true);
 
-    this->codeEditor->retokenise(0, 0);
+        if (!scriptEngine.isPlayground())
+        {
+            this->copyOutputButton->setVisible(true);
+            // const auto &result = scriptEngine.getEvaluationResult();
+            // this->outputText->setText(result.isNil() ? "" : result.toString());
+            this->outputText->setText("Seed: " + String(scriptEngine.random.originalSeed));
+        }
+        else if (this->hadErrors)
+        {
+            this->copyOutputButton->setVisible(false);
+            this->outputText->setText("");
+        }
+
+        this->codeEditor->setError({}, {});
+        this->hadErrors = false;
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -1249,7 +1296,7 @@ void ScriptingPlayground::onProgramTerminated(bool success)
     this->updateOnEvaluate();
 }
 
-ScriptEngine::SideEffects::HostContext ScriptingPlayground::fillHostContext() const
+ScriptEngine::SideEffects::ReadOnlyContext ScriptingPlayground::fillHostContext() const
 {
     return {
         this->project.getProjectInfo()->getTemperament(),

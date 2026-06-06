@@ -315,7 +315,7 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
     {
         SerializedData mergedChannelDeltaData;
         SerializedData emptyChannelDeltaData(MidiTrackDeltas::trackChannel);
-        emptyChannelDeltaData.setProperty(delta, 1);
+        emptyChannelDeltaData.setProperty(Serialization::VCS::delta, 1);
         auto channelDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
             MidiTrackDeltas::trackChannel);
