@@ -38,7 +38,9 @@ Playhead::Playhead(RollBase &parentRoll,
     this->beatAnchor = this->lastCorrectBeat;
     this->timeAnchor = Time::getMillisecondCounter();
 
-    this->setSize(3, 1);
+    // the playhead only needs width of 3 to paint itself, but
+    // adding more width somehow reduces flickering while playback
+    this->setSize(8, 1);
 
     this->transport.addTransportListener(this);
 }

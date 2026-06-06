@@ -65,8 +65,7 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
     }
 
     const auto periodSize = temperament->getPeriodSize();
-    const auto numRowsToRender =
-        periodSize * (HighlightingScheme::periodsInTile + 1);
+    const auto numRowsToRender = periodSize;
 
     Image patternImage(Image::RGB, 4, height * numRowsToRender, false);
     Graphics g(patternImage);

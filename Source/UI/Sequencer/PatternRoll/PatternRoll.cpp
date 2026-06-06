@@ -1264,15 +1264,8 @@ void PatternRoll::paint(Graphics &g) noexcept
     g.setImageResamplingQuality(Graphics::lowResamplingQuality);
 
     const auto viewArea = this->viewport.getViewArea();
-
-    // just because we cannot rely on OpenGL tiling:
-    for (int i = Globals::UI::rollHeaderHeight;
-        i < viewArea.getBottom();
-        i += (PatternRoll::rowPatternHeight - PatternRoll::rowHeight))
-    {
-        g.setFillType({ this->rowPattern, AffineTransform::translation(0.f, float(i)) });
-        g.fillRect(viewArea.getX(), i, viewArea.getWidth(), PatternRoll::rowPatternHeight);
-    }
+    g.setFillType({ this->rowPattern, AffineTransform::translation(0.f, float(Globals::UI::rollHeaderHeight)) });
+    g.fillRect(viewArea.getX(), Globals::UI::rollHeaderHeight, viewArea.getWidth(), viewArea.getHeight());
 
     g.setFont(Globals::UI::Fonts::XS); // so that clips don't have to do it
     RollBase::paint(g);
@@ -1628,7 +1621,7 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme)
 {
     const int shadowHeight = PatternRoll::trackHeaderHeight * 2;
     constexpr int width = 64;
-    Image patternImage(Image::RGB, width, PatternRoll::rowPatternHeight, false);
+    Image patternImage(Image::RGB, width, PatternRoll::rowHeight, false);
     Graphics g(patternImage);
 
     g.setColour(theme.findColour(ColourIDs::Roll::patternRowFill));
@@ -1637,50 +1630,44 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme)
     const auto shadowColour = theme.findColour(ColourIDs::Roll::trackHeaderShadow);
     const auto shadowColourLight = shadowColour.withMultipliedAlpha(0.25f);
 
-    int yBase = 0;
-    while (yBase < PatternRoll::rowPatternHeight)
+    g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderFill));
+    g.fillRect(0, 0, width, PatternRoll::trackHeaderHeight);
+
+    g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderBorderLight));
+    // g.fillRect(0, 0, width, PatternRoll::trackHeaderHeight);
+    g.drawHorizontalLine(0, 0.f, float(width));
+    g.drawHorizontalLine(PatternRoll::trackHeaderHeight - 1, 0.f, float(width));
+
+    g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderBorderDark));
+    g.drawHorizontalLine(PatternRoll::rowHeight - 1, 0.f, float(width));
+    g.drawHorizontalLine(PatternRoll::trackHeaderHeight, 0.f, float(width));
+
     {
-        g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderFill));
-        g.fillRect(0, yBase, width, PatternRoll::trackHeaderHeight);
+        float x = 0, y = float(PatternRoll::trackHeaderHeight);
+        g.setGradientFill(ColourGradient(shadowColour, x, y,
+            Colours::transparentBlack, x, float(y + shadowHeight), false));
+        g.fillRect(int(x), int(y), width, shadowHeight);
+    }
 
-        g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderBorderLight));
-        // g.fillRect(0, yBase, width, PatternRoll::trackHeaderHeight);
-        g.drawHorizontalLine(yBase, 0.f, float(width));
-        g.drawHorizontalLine(yBase + PatternRoll::trackHeaderHeight - 1, 0.f, float(width));
+    {
+        float x = 0, y = float(PatternRoll::trackHeaderHeight);
+        g.setGradientFill(ColourGradient(shadowColour, x, y,
+            Colours::transparentBlack, x, float(y + (shadowHeight / 2)), false));
+        g.fillRect(int(x), int(y), width, shadowHeight);
+    }
 
-        g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderBorderDark));
-        g.drawHorizontalLine(yBase + PatternRoll::rowHeight - 1, 0.f, float(width));
-        g.drawHorizontalLine(yBase + PatternRoll::trackHeaderHeight, 0.f, float(width));
+    {
+        float x = 0, y = float(PatternRoll::rowHeight - shadowHeight);
+        g.setGradientFill(ColourGradient(Colours::transparentBlack, x, y,
+            shadowColourLight, x, float(y + shadowHeight), false));
+        g.fillRect(int(x), int(y), width, shadowHeight);
+    }
 
-        {
-            float x = 0, y = float(yBase + PatternRoll::trackHeaderHeight);
-            g.setGradientFill(ColourGradient(shadowColour, x, y,
-                Colours::transparentBlack, x, float(y + shadowHeight), false));
-            g.fillRect(int(x), int(y), width, shadowHeight);
-        }
-
-        {
-            float x = 0, y = float(yBase + PatternRoll::trackHeaderHeight);
-            g.setGradientFill(ColourGradient(shadowColour, x, y,
-                Colours::transparentBlack, x, float(y + (shadowHeight / 2)), false));
-            g.fillRect(int(x), int(y), width, shadowHeight);
-        }
-
-        {
-            float x = 0, y = float(yBase + PatternRoll::rowHeight - shadowHeight);
-            g.setGradientFill(ColourGradient(Colours::transparentBlack, x, y,
-                shadowColourLight, x, float(y + shadowHeight), false));
-            g.fillRect(int(x), int(y), width, shadowHeight);
-        }
-
-        {
-            float x = 0, y = float(yBase + PatternRoll::rowHeight - shadowHeight / 2);
-            g.setGradientFill(ColourGradient(Colours::transparentBlack, x, y,
-                shadowColourLight, x, float(y + (shadowHeight / 2)), false));
-            g.fillRect(int(x), int(y), width, shadowHeight);
-        }
-
-        yBase += PatternRoll::rowHeight;
+    {
+        float x = 0, y = float(PatternRoll::rowHeight - shadowHeight / 2);
+        g.setGradientFill(ColourGradient(Colours::transparentBlack, x, y,
+            shadowColourLight, x, float(y + (shadowHeight / 2)), false));
+        g.fillRect(int(x), int(y), width, shadowHeight);
     }
 
     return patternImage;

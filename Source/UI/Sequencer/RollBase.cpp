@@ -2021,8 +2021,12 @@ void RollBase::timerCallback()
     const auto playheadViewportX = this->viewport.getViewWidth() * this->playheadFollowPosition;
     const auto viewportCentreX = this->viewport.getViewPositionX() + playheadViewportX;
     const auto playheadOffset = this->playhead->getX() - viewportCentreX;
+    // for the manual one-off catch, animate it slower, it just looks nicer:
+    const auto isManualCatch = this->playheadFollowMode == PlayheadFollowMode::Disabled;
+    const auto speed = isManualCatch ? 0.85 : 0.5;
+    const uint32 maxDuration = isManualCatch ? Globals::UI::fadeOutLong * 10 : Globals::UI::fadeOutLong;
     const auto newX = this->playhead->getX() -
-        roundToIntAccurate(playheadOffset * 0.5) -
+        roundToIntAccurate(playheadOffset * speed) -
         roundToIntAccurate(playheadViewportX);
 
     const bool doneFollowingPlayhead =
@@ -2030,7 +2034,7 @@ void RollBase::timerCallback()
     const bool stuckFollowingPlayhead =
         (newX == this->viewport.getViewPositionX()) ||
         (newX < 0 || newX > (this->getWidth() - this->viewport.getViewWidth())) ||
-        (Time::getMillisecondCounter() - this->catchPlayheadTimerStartedAt > Globals::UI::fadeOutLong);
+        (Time::getMillisecondCounter() - this->catchPlayheadTimerStartedAt > maxDuration);
 
     this->viewport.setViewPosition(newX, this->viewport.getViewPositionY());
     this->updateChildrenPositions();

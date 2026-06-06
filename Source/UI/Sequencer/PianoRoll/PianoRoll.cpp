@@ -1932,27 +1932,11 @@ void PianoRoll::paint(Graphics &g) noexcept
         const int beatX = int((key->getBeat() - this->firstBeat) * this->beatWidth);
         if (beatX >= paintStartX)
         {
-            /*
-                You might be thinking: why the do we need this ugly loop here?
-                Given a tiled texture, we can just fill it all at once with a single fillRect()?
-
-                Well yes, but actually no, OpenGL can't seem to do texture tiling correctly
-                unless the stars are well aligned (they are not), so there is always some weird offset,
-                and it's getting weirder at each next tile.
-
-                For horizontal tiling, we don't care, but for vertical tiling, this means that
-                sequencer rows are messed up, so we have to say explicitly where to fill each period.
-            */
-
             const auto *prevSchemeOrDefault = (prevScheme == nullptr) ?
                 this->backgroundsCache.getUnchecked(index) : prevScheme;
             const auto fillImage = prevSchemeOrDefault->getUnchecked(this->rowHeight);
-            const auto tileHeight = periodHeight * HighlightingScheme::periodsInTile;
-            for (int i = paintStartY; i < y + h; i += tileHeight)
-            {
-                g.setFillType({ fillImage, AffineTransform::translation(0.f, float(i)) });
-                g.fillRect(prevBeatX, i, beatX - prevBeatX, tileHeight);
-            }
+            g.setFillType({ fillImage, AffineTransform::translation(0.f, float(paintStartY)) });
+            g.fillRect(prevBeatX, paintStartY, beatX - prevBeatX, y + h);
         }
 
         if (beatX >= paintEndX)
@@ -1970,13 +1954,8 @@ void PianoRoll::paint(Graphics &g) noexcept
         const auto *prevSchemeOrDefault = (prevScheme == nullptr) ?
             this->defaultHighlighting.get() : prevScheme;
         const auto fillImage = prevSchemeOrDefault->getUnchecked(this->rowHeight);
-        const auto tileHeight = periodHeight * HighlightingScheme::periodsInTile;
-        for (int i = paintStartY; i < y + h; i += tileHeight)
-        {
-            g.setFillType({ fillImage, AffineTransform::translation(0.f, float(i)) });
-            g.fillRect(prevBeatX, i, paintEndX - prevBeatX, tileHeight);
-        }
-
+        g.setFillType({ fillImage, AffineTransform::translation(0.f, float(paintStartY)) });
+        g.fillRect(prevBeatX, paintStartY, paintEndX - prevBeatX, y + h);
         RollBase::paint(g);
     }
 }

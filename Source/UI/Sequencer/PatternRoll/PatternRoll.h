@@ -163,7 +163,6 @@ private:
 private:
 
     Image rowPattern;
-    static constexpr auto rowPatternHeight = rowHeight * 8;
     static Image renderRowsPattern(const HelioTheme &theme);
     void repaintBackgroundsCache();
 
