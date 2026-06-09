@@ -45,7 +45,9 @@ void DocumentHelpers::showFileChooser(UniquePointer<FileChooser> &chooser,
             if (!wasGranted)
             {
                 App::Layout().setEnabled(true);
-                App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
+                #if JUCE_ANDROID
+                App::Layout().showTooltip("Please grant permissions to access files and media");
+                #endif
                 return;
             }
 

@@ -359,11 +359,6 @@ void Workspace::failedDeserializationFallback()
 
 void Workspace::importProject(const String &filePattern)
 {
-    if (!FileChooser::isPlatformDialogAvailable())
-    {
-        return;
-    }
-
 #if JUCE_ANDROID
     const auto filter = "*/*";
 #else

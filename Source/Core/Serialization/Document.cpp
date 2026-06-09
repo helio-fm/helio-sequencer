@@ -127,11 +127,6 @@ void Document::save()
 void Document::exportAs(const String &exportExtension,
     const String &defaultFilenameWithExtension)
 {
-    if (!FileChooser::isPlatformDialogAvailable())
-    {
-        return;
-    }
-
     this->exportFileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentExport),
         DocumentHelpers::getDocumentSlot(File::createLegalFileName(defaultFilenameWithExtension)),
         exportExtension, true);
@@ -196,11 +191,6 @@ bool Document::load(const File &file)
 
 void Document::import(const String &filePattern)
 {
-    if (!FileChooser::isPlatformDialogAvailable())
-    {
-        return;
-    }
-
 #if JUCE_ANDROID
     const auto filter = "*/*";
 #else

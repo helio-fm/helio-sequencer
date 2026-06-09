@@ -47,7 +47,8 @@ public:
         this->filePathEditor = HelioTheme::makeSingleLineTextEditor(false);
         this->addAndMakeVisible(this->filePathEditor.get());
 
-        this->browseButton = make<IconButton>(Icons::browse, CommandIDs::Browse);
+        constexpr int iconSize = 20;
+        this->browseButton = make<IconButton>(Icons::browse, CommandIDs::Browse, this, iconSize);
         this->browseButton->setMouseCursor(MouseCursor::PointingHandCursor);
         this->addAndMakeVisible(this->browseButton.get());
 
@@ -118,12 +119,12 @@ public:
         };
 
         constexpr auto rowHeight = 32;
-        constexpr auto iconWidth = 30;
-        constexpr auto iconMarginX = 8;
+        constexpr auto buttonWidth = 30;
+        constexpr auto buttonMarginX = 8;
         constexpr auto paddingX = 6;
 
         auto browseFileArea = getRowArea(0.15f, rowHeight);
-        this->browseButton->setBounds(browseFileArea.removeFromRight(iconWidth).reduced(paddingX, 2).translated(iconMarginX, 0));
+        this->browseButton->setBounds(browseFileArea.removeFromRight(buttonWidth).translated(buttonMarginX, 0));
         this->filePathEditor->setBounds(browseFileArea.reduced(paddingX, 0));
 
         auto selectProgramArea = getRowArea(0.7f, rowHeight);

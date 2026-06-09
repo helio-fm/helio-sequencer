@@ -883,6 +883,28 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
         s->getScriptTextColour().withMultipliedAlpha(0.25f));
     this->setColour(CaretComponent::caretColourId, s->getScriptTextColour());
 
+    #if JUCE_LINUX
+    // this is for non-native file choosers only (all other platforms always have native dialogs):
+    this->setColour(AlertWindow::backgroundColourId, s->getPageFillColour());
+    this->setColour(AlertWindow::textColourId, textColour);
+    this->setColour(DirectoryContentsDisplayComponent::highlightColourId, s->getPageFillColour().brighter(0.1f));
+    this->setColour(DirectoryContentsDisplayComponent::textColourId, textColour.withMultipliedAlpha(0.69f));
+    this->setColour(DirectoryContentsDisplayComponent::highlightedTextColourId, textColour);
+    this->setColour(FileBrowserComponent::currentPathBoxBackgroundColourId, s->getPageFillColour());
+    this->setColour(FileBrowserComponent::currentPathBoxTextColourId, textColour);
+    this->setColour(FileBrowserComponent::currentPathBoxArrowColourId, textColour);
+    this->setColour(FileBrowserComponent::filenameBoxBackgroundColourId, s->getPageFillColour().darker(0.1f));
+    this->setColour(FileBrowserComponent::currentPathBoxBackgroundColourId, s->getPageFillColour().darker(0.1f));
+    this->setColour(FileSearchPathListComponent::backgroundColourId, s->getPageFillColour());
+    this->setColour(FileChooserDialogBox::titleTextColourId, textColour);
+    this->setColour(TreeView::backgroundColourId, s->getPageFillColour());
+    this->setColour(TreeView::linesColourId, textColour);
+    this->setColour(TreeView::dragAndDropIndicatorColourId, textColour);
+    this->setColour(TreeView::selectedItemBackgroundColourId, s->getPageFillColour().brighter(0.1f));
+    this->setColour(TreeView::oddItemsColourId, s->getPageFillColour());
+    this->setColour(TreeView::evenItemsColourId, s->getPageFillColour());
+    #endif
+
     this->setColour(PopupMenu::backgroundColourId, s->getPageFillColour());
     this->setColour(PopupMenu::textColourId, textColour);
     this->setColour(PopupMenu::headerTextColourId, textColour);
