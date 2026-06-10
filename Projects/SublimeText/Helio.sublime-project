@@ -33,7 +33,7 @@
                     "windows":
                     {
                         "working_dir": "${project_path}/../VisualStudio2019",
-                        "shell_cmd": "for /f \"usebackq delims=\" %i in (`\"%ProgramFiles(x86)%\\Microsoft Visual Studio\\Installer\\vswhere.exe\" -property installationpath`) do call \"%i\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64 > NUL && \"%i\\MSBuild\\Current\\Bin\\MSBuild.exe\" Helio.sln /t:Build /p:Configuration=Debug64;Platform=x64 /verbosity:minimal && x64\\Debug64\\App\\Helio.exe && goto :eof",
+                        "shell_cmd": "for /f \"usebackq delims=\" %i in (`\"%ProgramFiles(x86)%\\Microsoft Visual Studio\\Installer\\vswhere.exe\" -property installationpath`) do call \"%i\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64 > NUL && \"%i\\MSBuild\\Current\\Bin\\MSBuild.exe\" Helio.sln /t:Build /p:Configuration=Debug;Platform=x64 /verbosity:minimal && x64\\Debug\\App\\Helio.exe && goto :eof",
                         "file_regex": "^\\s*(.+?)\\(([0-9]+),?([0-9]+)?\\):\\s*(.*) \\[",
                         "encoding": "cp866"
                     },
@@ -48,7 +48,7 @@
                     "windows":
                     {
                         "working_dir": "${project_path}/../VisualStudio2019",
-                        "shell_cmd": "for /f \"usebackq delims=\" %i in (`\"%ProgramFiles(x86)%\\Microsoft Visual Studio\\Installer\\vswhere.exe\" -property installationpath`) do call \"%i\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64 > NUL && \"%i\\MSBuild\\Current\\Bin\\MSBuild.exe\" Helio.sln /t:Build /p:Configuration=Debug64;Platform=x64 /verbosity:minimal && \"%ProgramFiles(x86)%\\Windows Kits\\10\\Debuggers\\x64\\cdb.exe\" -g -G x64\\Debug64\\App\\Helio.exe && goto :eof",
+                        "shell_cmd": "for /f \"usebackq delims=\" %i in (`\"%ProgramFiles(x86)%\\Microsoft Visual Studio\\Installer\\vswhere.exe\" -property installationpath`) do call \"%i\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64 > NUL && \"%i\\MSBuild\\Current\\Bin\\MSBuild.exe\" Helio.sln /t:Build /p:Configuration=Debug;Platform=x64 /verbosity:minimal && \"%ProgramFiles(x86)%\\Windows Kits\\10\\Debuggers\\x64\\cdb.exe\" -g -G x64\\Debug\\App\\Helio.exe && goto :eof",
                         "file_regex": "^\\s*(.+?)\\(([0-9]+),?([0-9]+)?\\):\\s*(.*) \\[",
                         "encoding": "cp866"
                     }
