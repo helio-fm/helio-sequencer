@@ -74,7 +74,6 @@ private:
     // detected on the fly as the user drags the tool around:
     int targetKey = 0;
     float targetBeat = 0;
-    float barLengthInBeats = Globals::beatsPerBar;
 
     const StringArray degreeNames = Chord::getLocalizedDegreeNames();
 

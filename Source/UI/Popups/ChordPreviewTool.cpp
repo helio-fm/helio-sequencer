@@ -536,7 +536,7 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord, bool shouldPreviewMidi
         const Note note(this->sequence.get(),
             key - this->clip.getKey(),
             this->targetBeat,
-            this->barLengthInBeats,
+            this->roll.getDefaultNoteLength(),
             this->roll.getDefaultNoteVolume());
 
         this->sequence->insert(note, true);
@@ -571,7 +571,7 @@ void ChordPreviewTool::buildNewNote(bool shouldPreviewMidiMessage)
 
     const int key = jlimit(0, this->roll.getNumKeys(), this->targetKey);
     const Note note(this->sequence.get(), key, this->targetBeat,
-        this->barLengthInBeats,
+        this->roll.getDefaultNoteLength(),
         this->roll.getDefaultNoteVolume());
 
     this->sequence->insert(note, true);
@@ -642,15 +642,6 @@ void ChordPreviewTool::detectKeyBeatAndContext(bool &outKeyChanged, bool &outBea
         {
             break;
         }
-    }
-
-    if (timeSignature != nullptr)
-    {
-        this->barLengthInBeats = timeSignature->getBarLengthInBeats();
-    }
-    else
-    {
-        this->barLengthInBeats = Globals::beatsPerBar;
     }
 }
 
