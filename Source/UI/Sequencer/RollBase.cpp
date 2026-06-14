@@ -1557,18 +1557,7 @@ void RollBase::handleCommandMessage(int commandId)
                 }
                 else
                 {
-                    const bool hasQuickDoublePress =
-                        (Time::getMillisecondCounter() - this->timeStartedPlayback) < 300;
-
-                    // tech debt warning: see duplicate code in TransportPlaybackStart case
-                    if (hasQuickDoublePress)
-                    {
-                        this->getTransport().speedUpPlayback();
-                    }
-                    else
-                    {
-                        this->getTransport().stopPlayback();
-                    }
+                    this->getTransport().stopPlayback();
                 }
             }
         }
@@ -1601,13 +1590,6 @@ void RollBase::handleCommandMessage(int commandId)
 #if PLATFORM_DESKTOP
             this->startFollowingPlayhead(true);
 #endif
-            const bool hasQuickDoublePress =
-                (Time::getMillisecondCounter() - this->timeStartedPlayback) < 400;
-
-            if (hasQuickDoublePress)
-            {
-                this->getTransport().speedUpPlayback();
-            }
         }
         break;
     case CommandIDs::TransportStop:

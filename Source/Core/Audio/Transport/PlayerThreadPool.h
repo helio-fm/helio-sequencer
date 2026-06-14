@@ -43,7 +43,8 @@ public:
         }
     }
 
-    void startPlayback(float startBeat, float rewindBeat, float endBeat, bool loopMode)
+    void startPlayback(float startBeat,
+        float rewindBeat, float endBeat, bool loopMode, float speedFactor = 1.f)
     {
         if (this->currentPlayer->isThreadRunning())
         {
@@ -59,7 +60,7 @@ public:
 
         // let listeners know about the tempo before the playback starts
         this->transport.broadcastCurrentTempoChanged(playbackContext->startBeatTempo);
-        this->currentPlayer->startPlayback(playbackContext);
+        this->currentPlayer->startPlayback(playbackContext, speedFactor);
     }
 
     void stopPlayback()
@@ -69,15 +70,6 @@ public:
             // Just signal player to stop:
             // it might be waiting for the next midi event, so it won't stop immediately
             this->currentPlayer->signalThreadShouldExit();
-        }
-    }
-
-    void setPlaybackSpeedMultiplier(float multiplier)
-    {
-        jassert(this->isPlaying());
-        if (this->currentPlayer->isThreadRunning())
-        {
-            this->currentPlayer->setSpeedMultiplier(multiplier);
         }
     }
 

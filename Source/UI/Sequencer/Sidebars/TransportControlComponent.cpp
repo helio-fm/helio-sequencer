@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "TransportControlComponent.h"
-#include "LongTapController.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "MainLayout.h"
@@ -332,15 +331,9 @@ TransportControlComponent::TransportControlComponent(WeakReference<Component> ev
     this->stopIcon->setInterceptsMouseClicks(false, false);
 
     this->recordButtonBlinkAnimator = make<RecordButtonBlinkAnimator>(this->recordBg.get());
-
-    this->longTapController = make<LongTapController>(*this);
-    this->addMouseListener(this->longTapController.get(), true);
 }
 
-TransportControlComponent::~TransportControlComponent()
-{
-    this->removeMouseListener(this->longTapController.get());
-}
+TransportControlComponent::~TransportControlComponent() = default;
 
 void TransportControlComponent::resized()
 {
@@ -445,18 +438,6 @@ void TransportControlComponent::showRecordingMenu(const Array<MidiDeviceInfo> &d
     ModalCallout::emit(panel.release(), this->recordBg.get());
 }
 
-void TransportControlComponent::onLongTap(const Point<float> &position,
-    const WeakReference<Component> &target)
-{
-    if (auto *c = dynamic_cast<TransportControlPlayBg *>(target.get()))
-    {
-        if (this->isPlaying.get())
-        {
-            // will speed up playback:
-            this->broadcastCommandMessage(CommandIDs::TransportPlaybackStart);
-        }
-    }
-}
 // button callbacks:
 
 void TransportControlComponent::playButtonPressed()

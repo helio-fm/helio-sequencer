@@ -26,9 +26,7 @@ public:
     explicit PlayerThread(Transport &transport);
     ~PlayerThread() override;
 
-    void startPlayback(Transport::PlaybackContext::Ptr context);
-
-    void setSpeedMultiplier(float multiplier);
+    void startPlayback(Transport::PlaybackContext::Ptr context, float speedFactor);
 
 private:
 
@@ -39,9 +37,7 @@ private:
 
     Transport::PlaybackContext::Ptr context;
 
-    Atomic<float> speedMultiplier = 1.f;
-    Atomic<bool> speedMultiplierChanged = false;
-
+    Atomic<double> speedFactor = 1.f;
     Atomic<double> currentTempo = 0.f;
 
     // check if the thread needs to stop at least every x ms:

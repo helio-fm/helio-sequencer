@@ -508,7 +508,7 @@ void RollHeader::mouseDown(const MouseEvent &e)
             this->keysSelectionComponent->beginLasso({ e.position.x, 0.f }, this);
         }
     }
-    else if (e.mods.isAnyModifierKeyDown()) // fixme which conditions?
+    else if (e.mods.isAnyModifierKeyDown() && !e.mods.isMiddleButtonDown())
     {
         const auto parentEvent = e.getEventRelativeTo(&this->roll);
         this->roll.getSelectionComponent()->beginLasso({ parentEvent.position.x, 0.f }, &this->roll);
@@ -644,12 +644,8 @@ void RollHeader::mouseUp(const MouseEvent &e)
         }
         else if (e.mods.isMiddleButtonDown())
         {
-            this->transport.startPlayback();
-
-            if (e.mods.isAnyModifierKeyDown())
-            {
-                this->transport.speedUpPlayback();
-            }
+            const auto speed = e.mods.isAnyModifierKeyDown() ? 1.5f : 1.f;
+            this->transport.startPlayback(speed);
         }
     }
 }
@@ -693,12 +689,8 @@ void RollHeader::mouseDoubleClick(const MouseEvent &e)
     const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
     this->transport.stopPlaybackAndRecording();
     this->transport.seekToBeat(roundBeat);
-    this->transport.startPlayback();
-
-    if (e.mods.isAnyModifierKeyDown())
-    {
-        this->transport.speedUpPlayback();
-    }
+    const auto speed = e.mods.isAnyModifierKeyDown() ? 1.5f : 1.f;
+    this->transport.startPlayback(speed);
 #endif
 }
 

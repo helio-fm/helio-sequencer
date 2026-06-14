@@ -171,12 +171,12 @@ void Transport::probeSoundAtBeat(float targetBeat, const MidiSequence *limitToSe
 // Playback control
 //===----------------------------------------------------------------------===//
 
-void Transport::startPlayback()
+void Transport::startPlayback(float speedFactor)
 {
-    this->startPlayback(this->getSeekBeat());
+    this->startPlayback(this->getSeekBeat(), speedFactor);
 }
 
-void Transport::startPlayback(float start)
+void Transport::startPlayback(float start, float speedFactor)
 {
     this->rebuildPlaybackCacheIfNeeded();
 
@@ -188,14 +188,13 @@ void Transport::startPlayback(float start)
     {
         const auto loopStart = this->loopStartBeat.get();
         const auto end = this->loopEndBeat.get();
-
         this->player->startPlayback((start >= end) ? loopStart : start,
-            loopStart, end, true);
+            loopStart, end, true, speedFactor);
     }
     else
     {
         this->player->startPlayback(start,
-            this->getSeekBeat(), this->getProjectLastBeat(), false);
+            this->getSeekBeat(), this->getProjectLastBeat(), false, speedFactor);
     }
 }
 
@@ -207,13 +206,6 @@ void Transport::startPlaybackFragment(float startBeat, float endBeat, bool loope
 
     this->broadcastPlay();
     this->player->startPlayback(startBeat, startBeat, endBeat, looped);
-}
-
-void Transport::speedUpPlayback(float multiplier)
-{
-    jassert(this->isPlaying());
-    jassert(multiplier > 0.5f && multiplier < 5.f);
-    this->player->setPlaybackSpeedMultiplier(multiplier);
 }
 
 void Transport::stopPlayback()

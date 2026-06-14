@@ -63,10 +63,9 @@ public:
     void probeSoundAtBeat(float beatPosition,
         const MidiSequence *limitedTo = nullptr);
 
-    void startPlayback();
-    void startPlayback(float startBeatOverride);
+    void startPlayback(float speedFactor = 1.f);
+    void startPlayback(float startBeatOverride, float speedFactor);
     void startPlaybackFragment(float startBeat, float endBeat, bool looped);
-    void speedUpPlayback(float multiplier = 1.5f);
 
     bool isPlaying() const;
     void stopPlayback();

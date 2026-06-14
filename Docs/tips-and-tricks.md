@@ -4,9 +4,7 @@ This page lists features, hacks, and nuances that may be handy, non-obvious, or 
 
 ### Faster playback
 
-Hitting `Space` or `Enter` twice will start playback at 1.5x speed, which can be useful for quickly previewing a sequence, e.g. when prototyping a chord progression.
-
-Alternatively, double-click or middle-click in the roll header while holding any modifier key, or long-tap the play button in the corner.
+You can start playback at 1.5x speed for quickly previewing a sequence (e.g. when prototyping a chord progression): double-click or middle-click in the roll header with any modifier key pressed.
 
 ### Warnings
 

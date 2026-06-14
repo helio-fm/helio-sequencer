@@ -32,40 +32,18 @@ PlayerThread::~PlayerThread()
 // Thread
 //===----------------------------------------------------------------------===//
 
-void PlayerThread::startPlayback(Transport::PlaybackContext::Ptr context)
+void PlayerThread::startPlayback(Transport::PlaybackContext::Ptr context, float speed)
 {
     this->context = context;
     this->sequences = this->transport.getPlaybackCache();
-    this->speedMultiplier = 1.f;
-    this->speedMultiplierChanged = false;
+    this->speedFactor = speed;
     this->startThread(10);
-}
-
-void PlayerThread::setSpeedMultiplier(float multiplier)
-{
-    if (this->speedMultiplier.get() != multiplier)
-    {
-        this->speedMultiplier = multiplier;
-        this->speedMultiplierChanged = true;
-    }
 }
 
 void PlayerThread::run()
 {
     Array<Instrument *> uniqueInstruments;
     uniqueInstruments.addArray(this->sequences.getUniqueInstruments());
-
-    auto broadcastSeekAndTempo = [this](float beat)
-    {
-        this->transport.broadcastSeek(beat);
-
-        if (this->speedMultiplierChanged.get())
-        {
-            this->speedMultiplierChanged = false;
-            this->transport.broadcastCurrentTempoChanged(
-                this->currentTempo.get() / this->speedMultiplier.get());
-        }
-    };
 
     this->currentTempo = this->context->startBeatTempo;
 
@@ -74,7 +52,8 @@ void PlayerThread::run()
     this->sequences.seekToTime(this->context->startBeat);
 
     Atomic<float> previousEventBeat = this->context->startBeat;
-    broadcastSeekAndTempo(previousEventBeat.get());
+    this->transport.broadcastSeek(previousEventBeat.get());
+    this->transport.broadcastCurrentTempoChanged(this->currentTempo.get() / this->speedFactor.get());
 
     // This hack is here to keep track of still playing events
     // to be able to send noteOff's when playback interrupts.
@@ -171,7 +150,7 @@ void PlayerThread::run()
             const auto beatDelta = this->context->endBeat - previousEventBeat.get();
 
             nextEventTimeDelta = beatDelta *
-                (this->currentTempo.get() / this->speedMultiplier.get());
+                (this->currentTempo.get() / this->speedFactor.get());
 
             deltaTimePassed = 0.0;
             while (deltaTimePassed < (nextEventTimeDelta - PlayerThread::minStopCheckTimeMs))
@@ -187,14 +166,6 @@ void PlayerThread::run()
                     sendHoldingNotesOffAndMidiStop();
                     return; // the transport has already stopped
                 }
-
-                if (this->speedMultiplierChanged.get())
-                {
-                    const auto beatsPassed = beatDelta * float(deltaTimePassed / nextEventTimeDelta);
-                    broadcastSeekAndTempo(previousEventBeat.get() + beatsPassed);
-                    nextEventTimeDelta = deltaTimePassed + ((beatDelta - beatsPassed) *
-                        (this->currentTempo.get() / this->speedMultiplier.get()));
-                }
             }
 
             Time::waitForMillisecondCounter(previousEventTime + uint32(nextEventTimeDelta));
@@ -203,7 +174,7 @@ void PlayerThread::run()
             {
                 this->sequences.seekToTime(this->context->rewindBeat);
                 previousEventBeat = this->context->rewindBeat;
-                broadcastSeekAndTempo(previousEventBeat.get());
+                this->transport.broadcastSeek(previousEventBeat.get());
                 continue;
             }
             else
@@ -238,7 +209,7 @@ void PlayerThread::run()
         const auto beatDelta = nextEventBeat - previousEventBeat.get();
 
         nextEventTimeDelta = beatDelta *
-            (this->currentTempo.get() / this->speedMultiplier.get());
+            (this->currentTempo.get() / this->speedFactor.get());
 
         // Zero-delay check (we're playing a chord or so)
         if (uint32(nextEventTimeDelta) != 0)
@@ -259,14 +230,6 @@ void PlayerThread::run()
                     sendHoldingNotesOffAndMidiStop();
                     return;
                 }
-
-                if (this->speedMultiplierChanged.get())
-                {
-                    const auto beatsPassed = beatDelta * float(deltaTimePassed / nextEventTimeDelta);
-                    broadcastSeekAndTempo(previousEventBeat.get() + beatsPassed);
-                    nextEventTimeDelta = deltaTimePassed + (double(beatDelta - beatsPassed) *
-                        (this->currentTempo.get() / this->speedMultiplier.get()));
-                }
             }
 
             Time::waitForMillisecondCounter(previousEventTime + uint32(nextEventTimeDelta));
@@ -277,14 +240,14 @@ void PlayerThread::run()
                 return;
             }
 
-            broadcastSeekAndTempo(nextEventBeat);
+            this->transport.broadcastSeek(nextEventBeat);
         }
 
         if (shouldRewind)
         {
             this->sequences.seekToTime(this->context->rewindBeat);
             previousEventBeat = this->context->rewindBeat;
-            broadcastSeekAndTempo(previousEventBeat.get());
+            this->transport.broadcastSeek(previousEventBeat.get());
         }
         else
         {
@@ -298,7 +261,7 @@ void PlayerThread::run()
             if (wrapper.message.isTempoMetaEvent())
             {
                 this->currentTempo = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
-                this->transport.broadcastCurrentTempoChanged(this->currentTempo.get() / this->speedMultiplier.get());
+                this->transport.broadcastCurrentTempoChanged(this->currentTempo.get() / this->speedFactor.get());
 
                 // Sends this to everybody (need to do that for drum-machines) - TODO test
                 sendTempoChangeToEverybody(wrapper.message);
