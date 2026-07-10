@@ -4808,6 +4808,7 @@ static const unsigned char temp_binary_data_117[] =
 "  { \"command\": \"TransportStop\", \"key\": \"Escape\" },\n"
 "  { \"command\": \"TransportPlaybackStart\", \"key\": \"Play\" },\n"
 "  { \"command\": \"TransportPlaybackStart\", \"key\": \"Return\" },\n"
+"  { \"command\": \"TransportFastPlaybackStart\", \"key\": \"Alt + Return\" },\n"
 "  { \"command\": \"TransportRecordingAwait\", \"key\": \"F12\" },\n"
 "  { \"command\": \"TransportRecordingAwait\", \"key\": \"Control + Return\" },\n"
 "  { \"command\": \"TransportRecordingAwait\", \"key\": \"Command + Return\" },\n"
@@ -5030,6 +5031,7 @@ static const unsigned char temp_binary_data_117[] =
 "  { \"command\": \"TransportStop\", \"key\": \"Escape\" },\n"
 "  { \"command\": \"TransportPlaybackStart\", \"key\": \"Play\" },\n"
 "  { \"command\": \"TransportPlaybackStart\", \"key\": \"Return\" },\n"
+"  { \"command\": \"TransportFastPlaybackStart\", \"key\": \"Alt + Return\" },\n"
 "  { \"command\": \"TransportRecordingStart\", \"key\": \"Shift + Return\" },\n"
 "  { \"command\": \"TransportRecordingAwait\", \"key\": \"Control + Return\" },\n"
 "  { \"command\": \"TransportRecordingAwait\", \"key\": \"Command + Return\" },\n"
@@ -5724,7 +5726,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 5930; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 26074; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 26214; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 13262; return scales_json;

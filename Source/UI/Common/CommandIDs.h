@@ -112,7 +112,8 @@ namespace CommandIDs
         TransportRecordingAwait         = 0x2015,
         TransportRecordingStart         = 0x2016,
         TransportPlaybackStart          = 0x2017,
-        TransportStop                   = 0x2018,
+        TransportFastPlaybackStart      = 0x2018,
+        TransportStop                   = 0x2019,
 
         RenderToFLAC                    = 0x2030,
         RenderToWAV                     = 0x2031,

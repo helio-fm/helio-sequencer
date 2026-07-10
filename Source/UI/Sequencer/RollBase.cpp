@@ -1580,10 +1580,13 @@ void RollBase::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::TransportPlaybackStart:
+    case CommandIDs::TransportFastPlaybackStart:
         if (!this->getTransport().isPlaying())
         {
             this->timeStartedPlayback = Time::getMillisecondCounter();
-            this->getTransport().startPlayback();
+            const auto speed =
+                (commandId == CommandIDs::TransportFastPlaybackStart) ? 1.5f : 1.f;
+            this->getTransport().startPlayback(speed);
         }
         else
         {
