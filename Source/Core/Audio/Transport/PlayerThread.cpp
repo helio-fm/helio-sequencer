@@ -34,6 +34,7 @@ PlayerThread::~PlayerThread()
 
 void PlayerThread::startPlayback(Transport::PlaybackContext::Ptr context, float speed)
 {
+    jassert(!this->isThreadRunning());
     this->context = context;
     this->sequences = this->transport.getPlaybackCache();
     this->speedFactor = speed;
@@ -45,15 +46,14 @@ void PlayerThread::run()
     Array<Instrument *> uniqueInstruments;
     uniqueInstruments.addArray(this->sequences.getUniqueInstruments());
 
-    this->currentTempo = this->context->startBeatTempo;
-
-    const bool isLooped = this->context->playbackLoopMode;
-
     this->sequences.seekToTime(this->context->startBeat);
 
-    Atomic<float> previousEventBeat = this->context->startBeat;
-    this->transport.broadcastSeek(previousEventBeat.get());
-    this->transport.broadcastCurrentTempoChanged(this->currentTempo.get() / this->speedFactor.get());
+    const bool isLooped = this->context->playbackLoopMode;
+    float previousEventBeat = this->context->startBeat;
+    double currentTempo = this->context->startBeatTempo;
+
+    this->transport.broadcastSeek(previousEventBeat);
+    this->transport.broadcastCurrentTempoChanged(currentTempo / this->speedFactor);
 
     // This hack is here to keep track of still playing events
     // to be able to send noteOff's when playback interrupts.
@@ -147,10 +147,9 @@ void PlayerThread::run()
         if (!this->sequences.getNextMessage(wrapper))
         {
             const auto previousEventTime = Time::getMillisecondCounter();
-            const auto beatDelta = this->context->endBeat - previousEventBeat.get();
+            const auto beatDelta = this->context->endBeat - previousEventBeat;
 
-            nextEventTimeDelta = beatDelta *
-                (this->currentTempo.get() / this->speedFactor.get());
+            nextEventTimeDelta = beatDelta * (currentTempo / this->speedFactor);
 
             deltaTimePassed = 0.0;
             while (deltaTimePassed < (nextEventTimeDelta - PlayerThread::minStopCheckTimeMs))
@@ -174,7 +173,7 @@ void PlayerThread::run()
             {
                 this->sequences.seekToTime(this->context->rewindBeat);
                 previousEventBeat = this->context->rewindBeat;
-                this->transport.broadcastSeek(previousEventBeat.get());
+                this->transport.broadcastSeek(previousEventBeat);
                 continue;
             }
             else
@@ -199,17 +198,15 @@ void PlayerThread::run()
 
         const auto messageBeat = wrapper.message.getTimeStamp();
 
-        const bool shouldRewind =
-            (isLooped && (messageBeat > this->context->endBeat));
+        const bool shouldRewind = (isLooped && (messageBeat > this->context->endBeat));
 
         const auto nextEventBeat =
             float(shouldRewind ? this->context->endBeat : messageBeat);
 
-        jassert(previousEventBeat.get() <= nextEventBeat);
-        const auto beatDelta = nextEventBeat - previousEventBeat.get();
+        jassert(previousEventBeat <= nextEventBeat);
+        const auto beatDelta = nextEventBeat - previousEventBeat;
 
-        nextEventTimeDelta = beatDelta *
-            (this->currentTempo.get() / this->speedFactor.get());
+        nextEventTimeDelta = beatDelta * (currentTempo / this->speedFactor);
 
         // Zero-delay check (we're playing a chord or so)
         if (uint32(nextEventTimeDelta) != 0)
@@ -247,7 +244,7 @@ void PlayerThread::run()
         {
             this->sequences.seekToTime(this->context->rewindBeat);
             previousEventBeat = this->context->rewindBeat;
-            this->transport.broadcastSeek(previousEventBeat.get());
+            this->transport.broadcastSeek(previousEventBeat);
         }
         else
         {
@@ -260,8 +257,8 @@ void PlayerThread::run()
             // Master tempo event is sent to everybody
             if (wrapper.message.isTempoMetaEvent())
             {
-                this->currentTempo = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
-                this->transport.broadcastCurrentTempoChanged(this->currentTempo.get() / this->speedFactor.get());
+                currentTempo = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
+                this->transport.broadcastCurrentTempoChanged(currentTempo / this->speedFactor);
 
                 // Sends this to everybody (need to do that for drum-machines) - TODO test
                 sendTempoChangeToEverybody(wrapper.message);

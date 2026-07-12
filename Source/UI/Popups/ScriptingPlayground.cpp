@@ -1015,7 +1015,7 @@ void ScriptingPlayground::dismiss()
     if (App::isOpenGLRendererEnabled())
     {
         App::animateComponent(this,
-            this->getBounds().reduced(10).translated(0, 10),
+            this->getBounds().translated(0, 8),
                 0.f, Globals::UI::fadeOutShort, true, 1.0, 0.0);
     }
     else
@@ -1220,8 +1220,8 @@ static SerializedData makePianoTrackTemplate(const String &name,
 
     Random r;
     const auto colours = ColourIDs::getColoursList();
-    const int ci = r.nextInt(colours.size());
-    newNode->setTrackColour(colours[ci], false, dontSendNotification);
+    const auto index = r.nextInt({ int(colours.size() * 0.420), colours.size() });
+    newNode->setTrackColour(colours[index], false, dontSendNotification);
     newNode->setTrackInstrumentId(instrumentId, false, dontSendNotification);
 
     outTrackId = newNode->getTrackId();

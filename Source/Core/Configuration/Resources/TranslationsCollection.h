@@ -52,7 +52,6 @@ private:
     Translation::Ptr currentTranslation;
 
     String getSelectedLocaleId() const;
-    friend struct PluralEquationWrapper;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationsCollection)
 };

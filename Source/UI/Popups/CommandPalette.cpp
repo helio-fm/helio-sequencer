@@ -349,7 +349,7 @@ void CommandPalette::dismiss()
     if (App::isOpenGLRendererEnabled())
     {
         App::animateComponent(this,
-            this->getBounds().reduced(10).translated(0, -10),
+            this->getBounds().reduced(8).translated(0, -8),
                 0.f, Globals::UI::fadeOutShort, true, 1.0, 0.0);
     }
     else
@@ -366,7 +366,8 @@ void CommandPalette::updatePosition()
     const auto top = App::isUsingNativeTitleBar() ?
         Globals::UI::headlineHeight : Globals::UI::headlineHeight + 1;
 
-    const auto centered = this->getBounds().withCentre(Point<int>(this->getParentWidth() / 2, 0)
+    const auto centered = this->getBounds()
+        .withCentre(Point<int>(this->getParentWidth() / 2, 0)
         .transformedBy(this->getTransform().inverted()));
 
     this->setTopLeftPosition(centered.getX(), top);

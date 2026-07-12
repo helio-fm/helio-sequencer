@@ -30,6 +30,7 @@
 #include "SuccessTooltip.h"
 #include "FailTooltip.h"
 #include "CommandPalette.h"
+#include "ScriptingPlayground.h"
 #include "ProjectNode.h"
 #include "PianoTrackNode.h"
 #include "PatternEditorNode.h"
@@ -209,7 +210,7 @@ static void findVisibleCommandReceivers(Component *root, Array<WeakReference<Com
     // avoid iterating children of complex components like piano roll
     if (root->getNumChildComponents() < 16)
     {
-        for (const auto child : root->getChildren())
+        for (auto *child : root->getChildren())
         {
             findVisibleCommandReceivers(child, outArray);
         }

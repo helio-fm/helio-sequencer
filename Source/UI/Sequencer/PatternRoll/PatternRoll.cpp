@@ -1067,22 +1067,25 @@ void PatternRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::EditCurrentInstrumentRouting:
     case CommandIDs::EditCurrentInstrumentKeymap:
-        for (auto *instrumentNode :
-            App::Workspace().getTreeRoot()->findChildrenOfType<InstrumentNode>())
+        if (auto *instrument = App::Workspace().getAudioCore().
+            findInstrumentById(this->getCurrentInstrumentIdOrDefault()))
         {
-            if (instrumentNode->getInstrument()->getIdAndHash() ==
-                this->getCurrentInstrumentIdOrDefault())
+            for (auto *instrumentNode :
+                App::Workspace().getTreeRoot()->findChildrenOfType<InstrumentNode>())
             {
-                instrumentNode->recreateChildrenEditors();
-                if (commandId == CommandIDs::EditCurrentInstrumentRouting)
+                if (instrumentNode->getInstrument().get() == instrument)
                 {
-                    instrumentNode->setSelected();
-                }
-                else if (commandId == CommandIDs::EditCurrentInstrumentKeymap)
-                {
-                    auto *kbmNode = instrumentNode->findChildOfType<KeyboardMappingNode>();
-                    jassert(kbmNode != nullptr);
-                    kbmNode->setSelected();
+                    instrumentNode->recreateChildrenEditors();
+                    if (commandId == CommandIDs::EditCurrentInstrumentRouting)
+                    {
+                        instrumentNode->setSelected();
+                    }
+                    else if (commandId == CommandIDs::EditCurrentInstrumentKeymap)
+                    {
+                        auto *kbmNode = instrumentNode->findChildOfType<KeyboardMappingNode>();
+                        jassert(kbmNode != nullptr);
+                        kbmNode->setSelected();
+                    }
                 }
             }
         }

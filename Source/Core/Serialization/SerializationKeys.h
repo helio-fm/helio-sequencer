@@ -377,7 +377,7 @@ namespace Serialization
         static const Identifier localeName = "name";
 
         static const Identifier literal = "literal";
-        static const Identifier pluralEquation = "pluralEquation";
+        // static const Identifier pluralEquation = "pluralEquation";
         static const Identifier pluralLiteral = "pluralLiteral";
         static const Identifier pluralForm = "pluralForm";
         static const Identifier pluralName = "name";

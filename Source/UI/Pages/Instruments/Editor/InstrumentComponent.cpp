@@ -35,12 +35,22 @@ InstrumentComponent::~InstrumentComponent() = default;
 
 void InstrumentComponent::mouseDown(const MouseEvent &e)
 {
+    if (e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
+    {
+        return;
+    }
+
     this->originalPos = this->localPointToGlobal(Point<int>());
     this->toFront(false);
 }
 
 void InstrumentComponent::mouseDrag(const MouseEvent &e)
 {
+    if (e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
+    {
+        return;
+    }
+
     auto pos = this->originalPos +
         Point<int>(e.getDistanceFromDragStartX(), e.getDistanceFromDragStartY());
 
@@ -58,6 +68,11 @@ void InstrumentComponent::mouseDrag(const MouseEvent &e)
 
 void InstrumentComponent::mouseUp(const MouseEvent &e)
 {
+    if (e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
+    {
+        return;
+    }
+
     if (e.source.hasMovedSignificantlySincePressed())
     {
         this->getParentEditor()->updateComponents();

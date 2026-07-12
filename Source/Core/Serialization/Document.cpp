@@ -147,11 +147,7 @@ void Document::exportAs(const String &exportExtension,
             if (auto outStream = url.createOutputStream())
             {
                 outStream->setPosition(0); // just in case
-                if (this->owner.onDocumentExport(*outStream.get()))
-                {
-                    App::Layout().showTooltip({}, MainLayout::TooltipIcon::Success);
-                }
-                else
+                if (!this->owner.onDocumentExport(*outStream.get()))
                 {
                     App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
                 }

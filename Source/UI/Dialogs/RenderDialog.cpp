@@ -247,7 +247,7 @@ void RenderDialog::timerCallback()
     {
         this->stopTrackingProgress();
         transport.stopRender();
-        App::Layout().showTooltip({}, MainLayout::TooltipIcon::Success); // will dismiss the dialog
+        this->dismiss();
     }
 }
 

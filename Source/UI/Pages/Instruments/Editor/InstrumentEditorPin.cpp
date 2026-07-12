@@ -47,6 +47,11 @@ void InstrumentEditorPin::paint(Graphics &g)
 
 void InstrumentEditorPin::mouseDown(const MouseEvent &e)
 {
+    if (e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
+    {
+        return;
+    }
+
     const AudioProcessorGraph::NodeID sourceId(this->isInput ? 0 : this->nodeId.uid);
     const AudioProcessorGraph::NodeID destinationId(this->isInput ? this->nodeId.uid : 0);
     this->getParentEditor()->beginConnectorDrag(sourceId, this->index, destinationId, this->index, e);
@@ -55,11 +60,21 @@ void InstrumentEditorPin::mouseDown(const MouseEvent &e)
 
 void InstrumentEditorPin::mouseDrag(const MouseEvent &e)
 {
+    if (e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
+    {
+        return;
+    }
+
     this->getParentEditor()->dragConnector(e);
 }
 
 void InstrumentEditorPin::mouseUp(const MouseEvent &e)
 {
+    if (e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
+    {
+        return;
+    }
+
     this->setMouseCursor(MouseCursor::PointingHandCursor);
     this->getParentEditor()->endDraggingConnector(e);
 }

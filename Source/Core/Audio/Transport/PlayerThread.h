@@ -37,8 +37,7 @@ private:
 
     Transport::PlaybackContext::Ptr context;
 
-    Atomic<double> speedFactor = 1.f;
-    Atomic<double> currentTempo = 0.f;
+    double speedFactor = 1.0;
 
     // check if the thread needs to stop at least every x ms:
     static constexpr auto minStopCheckTimeMs = 200;

@@ -58,8 +58,8 @@ void Translation::deserialize(const SerializedData &root) noexcept
 
     using namespace Serialization;
 
-    this->id = root.getProperty(Translations::localeId, String()).toString().toLowerCase();
-    this->name = root.getProperty(Translations::localeName, String());
+    this->id = root.getProperty(Translations::localeId, this->id).toString().toLowerCase();
+    this->name = root.getProperty(Translations::localeName, this->name);
 
     forEachChildWithType(root, pluralLiteral, Translations::pluralLiteral)
     {

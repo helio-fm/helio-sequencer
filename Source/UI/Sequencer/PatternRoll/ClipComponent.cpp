@@ -60,9 +60,12 @@ void ClipComponent::updateColours()
         Colours::black.interpolatedWith(findDefaultColour(ColourIDs::Roll::headerRecording), 0.5f) :
         findDefaultColour(ColourIDs::Roll::clipFill);
 
+    const auto trackColour = this->getClip().getTrackColour()
+        .withMultipliedSaturationHSL(1.420f);
+
     const auto foregroundColour = findDefaultColour(ColourIDs::Roll::clipForeground);
     this->frameColour = foregroundColour
-        .interpolatedWith(this->getClip().getTrackColour(), this->flags.isSelected ? 0.45f : 0.5f)
+        .interpolatedWith(trackColour, this->flags.isSelected ? 0.45f : 0.5f)
         .withAlpha(this->flags.isGhost ? 0.2f : (this->flags.isSelected ? 0.85f : 0.75f))
         .darker(this->flags.isInstanceOfSelected ? 0.25f : 0.f);
 
@@ -70,7 +73,7 @@ void ClipComponent::updateColours()
     this->frameCornerColour = this->frameColour.withAlpha(0.6f);
 
     this->eventColour = foregroundColour
-        .interpolatedWith(this->getClip().getTrackColour(), this->flags.isSelected ? 0.6f : 0.7f)
+        .interpolatedWith(trackColour, this->flags.isSelected ? 0.6f : 0.7f)
         .withAlpha(0.2f + 0.5f * this->clip.getVelocity());
 
     this->eventMutedColour = eventColour.withMultipliedAlpha(0.3f);

@@ -70,6 +70,16 @@ String TranslationsCollection::translate(I18n::Key key)
         return foundCurrentSingular->second;
     }
 
+    // and in case the current language has exactly one plural form for this:
+    const auto foundPlurals = this->currentTranslation->plurals.find(key);
+    if (foundPlurals != this->currentTranslation->plurals.end())
+    {
+        if (foundPlurals->second->size() == 1)
+        {
+            return foundPlurals->second->begin()->second;
+        }
+    }
+
     return {};
 }
 

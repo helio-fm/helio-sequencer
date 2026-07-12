@@ -146,14 +146,24 @@ bool InstrumentEditorConnector::hitTest(int x, int y)
     return false;
 }
 
-void InstrumentEditorConnector::mouseDown(const MouseEvent &)
+void InstrumentEditorConnector::mouseDown(const MouseEvent &e)
 {
+    if (e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
+    {
+        return;
+    }
+
     this->dragging = false;
     this->setMouseCursor(MouseCursor::DraggingHandCursor);
 }
 
 void InstrumentEditorConnector::mouseDrag(const MouseEvent &e)
 {
+    if (e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
+    {
+        return;
+    }
+
     if ((!this->dragging) && !e.mouseWasClicked())
     {
         this->dragging = true;
@@ -179,6 +189,11 @@ void InstrumentEditorConnector::mouseDrag(const MouseEvent &e)
 
 void InstrumentEditorConnector::mouseUp(const MouseEvent &e)
 {
+    if (e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
+    {
+        return;
+    }
+
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 
     if (this->dragging)
