@@ -92,6 +92,8 @@ public:
     // a wrapper around JUCE's Random that remembers the original seed
     struct Random final
     {
+        Random() : generator(originalSeed) {}
+
         void randomize()
         {
             this->generator.setSeedRandomly();
@@ -128,9 +130,9 @@ public:
             return list.getUnchecked(this->generator.nextInt(list.size()));
         }
 
-        juce::Random generator;
+        script::Value::Integer originalSeed = 1337;
 
-        script::Value::Integer originalSeed = 0;
+        juce::Random generator;
     };
 
     Random random;
@@ -148,10 +150,6 @@ public:
     const Optional<script::ParsingError> &getParsingError() const;
     const Optional<script::EvaluationError> &getEvaluationError() const;
 
-    int getEditorDefaultCaretPosition() const noexcept;
-    int getEditorDefaultStartLine() const noexcept;
-    void updateEditorDefaults(int caretPosition, int startLine) noexcept;
-
     //===------------------------------------------------------------------===//
     // EvaluationContext
     //===------------------------------------------------------------------===//
@@ -167,6 +165,9 @@ public:
 
     int getMaxCallStackSize() const override;
     int getMaxEvaluationTimeMs() const override;
+
+    void onEditorOpen(int &outCaretPosition, int &outStartLine) noexcept;
+    void onEditorClose(int caretPosition, int startLine) noexcept;
 
     //===------------------------------------------------------------------===//
     // Serializable

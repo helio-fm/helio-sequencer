@@ -493,8 +493,8 @@ public:
             return other;
         }
 
-        if ((this->isNumber() != other.isNumber()) ||
-            (this->isString() != other.isString()))
+        if (!this->isList() &&
+            (this->isNumber() != other.isNumber() || this->isString() != other.isString()))
         {
             throw EvaluationError(EvaluationError::Type::InvalidBinaryOperation,
                 (this->debug() + " + " + other.debug()));
@@ -509,7 +509,7 @@ public:
             {
                 return Value(this->castToFloat() + other.floatValue);
             }
-            return Value(this->intValue + other.intValue);
+            return Value(this->intValue + other.castToInteger());
         case Type::String:
             return Value::makeString(this->string + other.string);
         case Type::List:
@@ -549,7 +549,7 @@ public:
             }
             else
             {
-                return Value(this->intValue - other.intValue);
+                return Value(this->intValue - other.castToInteger());
             }
         case Type::Nil:
             return *this;
@@ -582,7 +582,7 @@ public:
             }
             else
             {
-                return Value(this->intValue * other.intValue);
+                return Value(this->intValue * other.castToInteger());
             }
         case Type::Nil:
             return *this;
@@ -598,7 +598,12 @@ public:
             return other;
         }
 
-        if (other.type != Type::Float && other.type != Type::Integer)
+        const auto divisionByZero =
+            ((other.type == Type::Integer && other.intValue == 0) ||
+            (other.type == Type::Float && other.floatValue == 0.f));
+
+        if (divisionByZero ||
+            (other.type != Type::Float && other.type != Type::Integer))
         {
             throw EvaluationError(EvaluationError::Type::InvalidBinaryOperation,
                 (this->debug() + " / " + other.debug()));
@@ -615,7 +620,7 @@ public:
             }
             else
             {
-                return Value(this->intValue / other.intValue);
+                return Value(this->intValue / other.castToInteger());
             }
         case Type::Nil:
             return *this;
@@ -631,7 +636,12 @@ public:
             return other;
         }
 
-        if (other.type != Type::Float && other.type != Type::Integer)
+        const auto divisionByZero =
+            ((other.type == Type::Integer && other.intValue == 0) ||
+            (other.type == Type::Float && other.floatValue == 0.f));
+
+        if (divisionByZero ||
+            (other.type != Type::Float && other.type != Type::Integer))
         {
             throw EvaluationError(EvaluationError::Type::InvalidBinaryOperation,
                 (this->debug() + " % " + other.debug()));
@@ -648,7 +658,7 @@ public:
             }
             else
             {
-                return Value(this->intValue % other.intValue);
+                return Value(this->intValue % other.castToInteger());
             }
         case Type::Nil:
             return *this;
@@ -832,6 +842,7 @@ struct ParsingError final
 
 bool isSymbolBody(juce_wchar ch) noexcept;
 
+void checkNumArgs(const Value &value, int number);
 void checkNumArgs(const Value::List &args, int number);
 
 Value::List evaluateArgs(const Value::List &args,

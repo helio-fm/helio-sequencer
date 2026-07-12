@@ -306,7 +306,9 @@ namespace Serialization
             static const Identifier uiScaleFactor = "uiScaleFactor";
             static const Identifier leftSidebarWidth = "leftSidebarWidth";
             static const Identifier rightSidebarWidth = "rightSidebarWidth";
-            static const Identifier scriptEditorSize = "scriptEditorSize";
+            static const Identifier scriptEditorSize = "size";
+            static const Identifier scriptEditorFontName = "fontName";
+            static const Identifier scriptEditorFontSize = "fontSize";
             static const Identifier mouseWheelAltMode = "wheelAltMode";
             static const Identifier mouseWheelVerticalPanningByDefault = "wheelVerticalPan";
             static const Identifier mouseWheelVerticalZoomingByDefault = "wheelVerticalZoom";

@@ -72,7 +72,18 @@ String EvaluationError::getTypeName() const noexcept
 // Built-in functions
 //===----------------------------------------------------------------------===//
 
-inline void checkNumArgs(const Value::List &args, int number)
+void checkNumArgs(const Value &args, int number)
+{
+    const auto &list = args.asList();
+    if (list.size() != number)
+    {
+        throw args.makeError(list.size() > number ?
+            EvaluationError::Type::TooManyArguments :
+            EvaluationError::Type::TooFewArguments);
+    }
+}
+
+void checkNumArgs(const Value::List &args, int number)
 {
     if (args.size() != number)
     {
@@ -294,8 +305,8 @@ Value let(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &c
     localScope.setParent(&scope);
     for (const auto &binding : bindings)
     {
+        checkNumArgs(binding, 2);
         const auto &list = binding.asList();
-        checkNumArgs(list, 2);
         localScope.setValue(list.getReference(0).asSymbol(),
             list.getReference(1).evaluate(localScope, context));
     }
@@ -853,6 +864,7 @@ Value range(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext 
 
     return Value(move(result));
 }
+
 } // namespace list
 
 namespace functional
@@ -887,6 +899,28 @@ Value map(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &c
     {
         tmp.add(list.getUnchecked(i));
         result.add(args.getReference(0).apply(tmp, scope, context));
+        tmp.clear();
+    }
+
+    return Value(move(result));
+}
+
+Value filterIndexed(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
+{
+    const auto args = evaluateArgs(unevaluatedArgs, scope, context);
+    checkNumArgs(args, 2);
+
+    Value::List result, tmp;
+    const auto &list = args.getReference(1).asList();
+    for (int i = 0; i < list.size(); i++)
+    {
+        const auto &current = list.getReference(i);
+        tmp.add(Value(Value::Integer(i)));
+        tmp.add(current);
+        if (args.getReference(0).apply(tmp, scope, context).castToBoolean())
+        {
+            result.add(current);
+        }
         tmp.clear();
     }
 
@@ -1036,6 +1070,7 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
     if (name == "map") return Value::makeBuiltInFunction(name, functional::map);
     if (name == "map-indexed") return Value::makeBuiltInFunction(name, functional::mapIndexed);
     if (name == "filter") return Value::makeBuiltInFunction(name, functional::filter);
+    if (name == "filter-indexed") return Value::makeBuiltInFunction(name, functional::filterIndexed);
     if (name == "reduce") return Value::makeBuiltInFunction(name, functional::reduce);
 
     if (name == "true" || name == "#t") return Value(true);
@@ -1167,45 +1202,41 @@ Value Value::apply(const List &args, Scope &scope, EvaluationContext &context) c
         // insert the arguments into the scope
         for (int i = 0; i < params.list.size(); i++)
         {
-            const auto &parameterValue = params.list.getReference(i);
+            const auto &maybeOptionalParameter = params.list.getReference(i);
 
-            // symbol = parameter name, list = optional parameter with default value
-            if (!parameterValue.isSymbol() && !parameterValue.isList())
-            {
-                throw this->makeError(EvaluationError::Type::InvalidArgument);
-            }
-
-            String parameterName;
-            Range<int> parameterListRange;
+            Value parameterValue;
+            Range<int> parameterParentRange;
             Optional<Value> defaultValue;
-
-            if (parameterValue.isSymbol())
+            if (maybeOptionalParameter.isSymbol()) // symbol = parameter name
             {
-                parameterName = parameterValue.asSymbol();
-                parameterListRange = params.sourceCodeRange;
+                parameterValue = maybeOptionalParameter;
+                parameterParentRange = params.sourceCodeRange;
             }
-            else if (parameterValue.isList()) // optional arguments
+            else if (maybeOptionalParameter.isList()) // list = optional parameter with default value
             {
-                const auto &optionalParameter = parameterValue.asList();
-                if (optionalParameter.size() != 2 ||
-                    !optionalParameter.getReference(0).isSymbol())
+                checkNumArgs(maybeOptionalParameter, 2);
+                parameterValue = maybeOptionalParameter.asList().getUnchecked(0);
+                defaultValue = maybeOptionalParameter.asList().getUnchecked(1);
+                parameterParentRange = maybeOptionalParameter.sourceCodeRange;
+                if (!parameterValue.isSymbol())
                 {
-                    parameterValue.makeError(EvaluationError::Type::InvalidArgument);
+                    throw maybeOptionalParameter.makeError(EvaluationError::Type::InvalidArgument);
                 }
-
-                parameterName = optionalParameter.getReference(0).asSymbol();
-                parameterListRange = parameterValue.sourceCodeRange;
-                defaultValue = optionalParameter.getReference(1);
+            }
+            else
+            {
+                throw maybeOptionalParameter.makeError(EvaluationError::Type::InvalidArgument);
             }
 
+            const String parameterName = parameterValue.asSymbol();
             jassert(parameterName.isNotEmpty());
+
             if (args.size() > i)
             {
-                if (context.shouldBreakAt(parameterValue, parameterListRange))
+                if (context.shouldBreakAt(parameterValue, parameterParentRange))
                 {
                     throw EvaluationError(EvaluationError::Type::BreakpointHit,
                         args.getReference(i).getTypeName(),
-                        // parameterName + ", " + args.getReference(i).getTypeName(),
                         args.getReference(i).debug());
                 }
 
@@ -1218,12 +1249,10 @@ Value Value::apply(const List &args, Scope &scope, EvaluationContext &context) c
                 defaultScope.setParent(&evaluationScope);
                 const auto evaluatedDefault = defaultValue->evaluate(defaultScope, context);
 
-                jassert(parameterValue.isList());
-                if (context.shouldBreakAt(parameterValue.asList().getReference(0), parameterListRange))
+                if (context.shouldBreakAt(parameterValue, parameterParentRange))
                 {
                     throw EvaluationError(EvaluationError::Type::BreakpointHit,
                         evaluatedDefault.getTypeName(),
-                        // parameterName + ", " + evaluatedDefault.getTypeName(),
                         evaluatedDefault.debug());
                 }
 
@@ -1336,8 +1365,6 @@ Value Value::evaluate(Scope &scope, EvaluationContext &context) const
                 {
                     throw EvaluationError(EvaluationError::Type::BreakpointHit,
                         "evaluated to " + result.getTypeName(),
-                        //(evaluatedHead.debug() == result.getTypeName() ? result.getTypeName() :
-                        //    evaluatedHead.debug() + " evaluated to " + result.getTypeName()),
                         result.debug());
                 }
 
@@ -1358,7 +1385,6 @@ Value Value::evaluate(Scope &scope, EvaluationContext &context) const
 
                         throw EvaluationError(EvaluationError::Type::BreakpointHit,
                             evaluated.getTypeName(),
-                            //unevaluated.string + ", " + evaluated.getTypeName(),
                             evaluated.debug());
                     }
                 }

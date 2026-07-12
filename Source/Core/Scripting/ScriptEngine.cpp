@@ -68,7 +68,12 @@ bool ScriptEngine::evaluate(const String &code,
             this->signalThreadShouldExit();
         }
 
+        // the playground uses fixed seed by default
+        // so that evaluation pop-ups in the editor are less confusing
+        // (but the user can still set a different seed in the code):
+        this->random.randomize(this->random.originalSeed);
         this->playgroundMode = true;
+
         constexpr auto debounceMs = 69;
         this->startTimer(debounceMs);
     }
@@ -171,18 +176,24 @@ const Optional<script::EvaluationError> &ScriptEngine::getEvaluationError() cons
     return this->evaluationError;
 }
 
-int ScriptEngine::getEditorDefaultCaretPosition() const noexcept
+void ScriptEngine::onEditorOpen(int &outCaretPosition, int &outStartLine) noexcept
 {
-    return this->editorDefaultCaretPosition;
+    const ScopedWriteLock lock(this->evaluationResultLock);
+    if (this->evaluationError.hasValue() &&
+        this->evaluationError->type == script::EvaluationError::Type::BreakpointHit)
+    {
+        this->evaluationError = {};
+    }
+
+    outCaretPosition = this->editorDefaultCaretPosition;
+    outStartLine = this->editorDefaultStartLine;
 }
 
-int ScriptEngine::getEditorDefaultStartLine() const noexcept
+void ScriptEngine::onEditorClose(int caretPosition, int startLine) noexcept
 {
-    return this->editorDefaultStartLine;
-}
+    this->stopTimer();
+    this->stopThread(1000);
 
-void ScriptEngine::updateEditorDefaults(int caretPosition, int startLine) noexcept
-{
     this->editorDefaultCaretPosition = caretPosition;
     this->editorDefaultStartLine = startLine;
 }
@@ -293,11 +304,7 @@ script::Value seed(const script::Value::List &unevaluatedArgs,
 
     auto &random = castToSelf(context)->random;
 
-    if (args.isEmpty())
-    {
-        random.randomize();
-    }
-    else
+    if (!args.isEmpty())
     {
         random.randomize(args.getReference(0).castToInteger());
     }
@@ -822,15 +829,36 @@ script::Value invertMelody(const script::Value::List &unevaluatedArgs,
 script::Value invertChord(const script::Value::List &unevaluatedArgs,
     script::Scope &scope, script::EvaluationContext &context)
 {
-    const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
-    script::checkNumArgs(args, 1);
+    auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
+    script::checkNumArgs(args, 2);
 
-    const auto order = args.getReference(0).castToInteger();
-    const auto notes = parseNotesList(args.getReference(0),
+    const auto inversionOrder = args.getReference(0).castToInteger();
+    if (inversionOrder == 0)
+    {
+        return args.getUnchecked(1);
+    }
+
+    if (abs(inversionOrder) > 7)
+    {
+        throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
+            "(refactor:invert-chord order ((note1) (note2) ...))",
+            "order of inversion looks too large");
+    }
+
+    const auto notes = parseNotesList(args.getReference(1),
         "(refactor:invert-chord order ((note1) (note2) ...))");
 
+    auto *self = castToSelf(context);
+    const ScopedReadLock lock(self->hostLock);
+    const auto periodSize = self->hostContext.temperament->getPeriodSize();
+
     TemporaryPianoTrack tempTrack(notes);
-    SequencerOperations::invertChord(*tempTrack.sequence, order, false, false);
+    for (int i = 0; i < abs(inversionOrder); ++i)
+    {
+        SequencerOperations::invertChord(*tempTrack.sequence,
+            (inversionOrder > 0 ? 1 : -1) * periodSize, false, false);
+    }
+
     return tempTrack.toValue();
 }
 
@@ -873,7 +901,7 @@ Optional<script::Value> ScriptEngine::makeLanguageExtension(const String &name) 
 
     if (name == "load") return Value::makeBuiltInFunction(name, extensions::load);
 
-    if (name == "randomize") return Value::makeBuiltInFunction(name, extensions::seed);
+    if (name == "seed") return Value::makeBuiltInFunction(name, extensions::seed);
     if (name == "random") return Value::makeBuiltInFunction(name, extensions::random);
     if (name.startsWithChar('d') && name.substring(1).getIntValue() > 0)
     {
@@ -889,15 +917,45 @@ Optional<script::Value> ScriptEngine::makeLanguageExtension(const String &name) 
     if (name == "submediant") return Value(6);
     if (name == "subtonic") return Value(7);
 
-    if (name == "chord:triad") return Value({ Value(1), Value(3), Value(5) });
-    if (name == "chord:seventh") return Value({ Value(1), Value(3), Value(5), Value(7) });
-    // plus basic triads for all degrees:
-    if (name == "chord:supertonic") return Value({ Value(2), Value(4), Value(6) });
-    if (name == "chord:mediant") return Value({ Value(3), Value(5), Value(7) });
-    if (name == "chord:subdominant") return Value({ Value(4), Value(6), Value(8) });
-    if (name == "chord:dominant") return Value({ Value(5), Value(7), Value(9) });
-    if (name == "chord:submediant") return Value({ Value(6), Value(8), Value(10) });
-    if (name == "chord:subtonic") return Value({ Value(7), Value(9), Value(11) });
+    #define makeTriad(x) Value({ Value(x), Value((x) + 2), Value((x) + 4) })
+    if (name == "triad:tonic" || name == "triad") return makeTriad(1);
+    if (name == "triad:supertonic") return makeTriad(2);
+    if (name == "triad:mediant") return makeTriad(3);
+    if (name == "triad:subdominant") return makeTriad(4);
+    if (name == "triad:dominant") return makeTriad(5);
+    if (name == "triad:submediant") return makeTriad(6);
+    if (name == "triad:subtonic") return makeTriad(7);
+    #undef makeTriad
+
+    #define makeSeventh(x) Value({ Value(x), Value((x) + 2), Value((x) + 4), Value((x) + 6) })
+    if (name == "seventh:tonic" || name == "seventh") return makeSeventh(1);
+    if (name == "seventh:supertonic") return makeSeventh(2);
+    if (name == "seventh:mediant") return makeSeventh(3);
+    if (name == "seventh:subdominant") return makeSeventh(4);
+    if (name == "seventh:dominant") return makeSeventh(5);
+    if (name == "seventh:submediant") return makeSeventh(6);
+    if (name == "seventh:subtonic") return makeSeventh(7);
+    #undef makeSeventh
+
+    #define makeSus2(x) Value({ Value(x), Value((x) + 1), Value((x) + 4) })
+    if (name == "sus2:tonic" || name == "sus2") return makeSus2(1);
+    if (name == "sus2:supertonic") return makeSus2(2);
+    if (name == "sus2:mediant") return makeSus2(3);
+    if (name == "sus2:subdominant") return makeSus2(4);
+    if (name == "sus2:dominant") return makeSus2(5);
+    if (name == "sus2:submediant") return makeSus2(6);
+    if (name == "sus2:subtonic") return makeSus2(7);
+    #undef makeSus2
+
+    #define makeSus4(x) Value({ Value(x), Value((x) + 3), Value((x) + 4) })
+    if (name == "sus4:tonic" || name == "sus4") return makeSus4(1);
+    if (name == "sus4:supertonic") return makeSus4(2);
+    if (name == "sus4:mediant") return makeSus4(3);
+    if (name == "sus4:subdominant") return makeSus4(4);
+    if (name == "sus4:dominant") return makeSus4(5);
+    if (name == "sus4:submediant") return makeSus4(6);
+    if (name == "sus4:subtonic") return makeSus4(7);
+    #undef makeSus4
 
     if (name == "track:make") return Value::makeBuiltInFunction(name, extensions::track::make);
     if (name == "track:add-notes") return Value::makeBuiltInFunction(name, extensions::track::addNotes);

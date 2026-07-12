@@ -260,7 +260,7 @@ private:
         static const char *const keywords6Char[] =
             { "define", "lambda", "filter", "reduce", "while", nullptr };
         static const char *const keywordsOther[] =
-            { "map-indexed", nullptr };
+            { "map-indexed", "filter-indexed", nullptr };
 
         const char *const *k;
         switch (tokenLength)
@@ -296,33 +296,33 @@ private:
         static const char *const keywords3Char[] =
             { "abs", "min", "max", "sin", "cos", "nth", nullptr };
         static const char *const keywords4Char[] =
-            { "list", "head", "tail", "last", "push", nullptr };
+            { "list", "head", "tail", "last", "push", "seed", "sus2", "sus4", nullptr };
         static const char *const keywords5Char[] =
-            { "empty", "first", "range", "round", "floor", "tonic", nullptr };
+            { "empty", "first", "range", "round", "floor", "triad", "tonic", nullptr };
         static const char *const keywords6Char[] =
             { "append", "insert", "length", "random", "remove", nullptr };
         static const char *const keywordsOther[] =
-            { "reverse", "randomize",
+            { "reverse",
               "supertonic", "mediant", "subdominant",
               "dominant", "submediant", "subtonic",
-              "chord:triad", "chord:seventh", "chord:supertonic",
-              "chord:mediant", "chord:subdominant", "chord:dominant",
-              "chord:submediant", "chord:subtonic",
-              "project:reset", "project:period-size",
+              "project:period-size", "project:reset",
               "timeline:reset", "timeline:add-key",
               "track:make", "track:add-notes",
               "scale:find", "scale:render-key",
-              "refactor:align-to-scale",
-              "refactor:arpeggiate", 
-              "refactor:cleanup-overlaps",
-              "refactor:invert-chord",
-              "refactor:invert-melody",
-              "refactor:join-adjacent", 
-              "refactor:legato",
-              "refactor:quantize",
-              "refactor:retrograde",
-              "refactor:staccato",
+              "refactor:align-to-scale", "refactor:arpeggiate", 
+              "refactor:cleanup-overlaps", "refactor:invert-chord",
+              "refactor:invert-melody", "refactor:join-adjacent", 
+              "refactor:legato", "refactor:quantize",
+              "refactor:retrograde", "refactor:staccato",
               "refactor:transpose-in-scale",
+              "triad:tonic", "triad:supertonic", "triad:mediant",
+              "triad:subdominant", "triad:dominant", "triad:submediant", "triad:subtonic",
+              "seventh", "seventh:tonic", "seventh:supertonic", "seventh:mediant",
+              "seventh:subdominant", "seventh:dominant", "seventh:submediant", "seventh:subtonic",
+              "sus2:tonic", "sus2:supertonic", "sus2:mediant",
+              "sus2:subdominant", "sus2:dominant", "sus2:submediant", "sus2:subtonic",
+              "sus4:tonic", "sus4:supertonic", "sus4:mediant",
+              "sus4:subdominant", "sus4:dominant", "sus4:submediant", "sus4:subtonic",
                nullptr };
 
         const char *const *k;

@@ -501,18 +501,10 @@ static void emitScriptingPlayground()
 {
     if (auto *project = findParentProjectOfSelectedNode())
     {
-        project->getTransport().stopPlaybackAndRecording();
-
-        RollBase *activeRoll = nullptr;
-        auto *activeNode = App::Workspace().getTreeRoot()->findActiveNode();
-        if (nullptr != dynamic_cast<PianoTrackNode *>(activeNode))
-        {
-            activeRoll = project->getLastFocusedRoll();
-        }
-
+        // project->getTransport().stopPlaybackAndRecording();
         // the scripting playground will manage its modal state
         // to avoid being deleted automatically while updating the project
-        const bool autoDelete = false;
+        constexpr bool autoDelete = false;
         App::showModalComponent(make<ScriptingPlayground>(*project), false);
     }
 }

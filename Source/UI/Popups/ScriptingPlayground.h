@@ -175,8 +175,6 @@ private:
     UniquePointer<IconButton> copyOutputButton;
     UniquePointer<IconButton> runButton;
 
-    bool hadErrors = false;
-
     static constexpr int iconSize = 20;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlayground)

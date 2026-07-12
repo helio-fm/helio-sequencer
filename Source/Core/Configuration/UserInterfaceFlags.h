@@ -34,6 +34,19 @@ public:
         bool useVerticalZoomingByDefault = false;
     };
 
+    struct ScriptEditorSettings final : public Serializable
+    {
+        static constexpr Point<int> minSize = { 690, 690 };
+        static constexpr Point<int> defaultSize = { 900, 960 };
+        Point<int> size = defaultSize;
+        String fontName = Font::getDefaultMonospacedFontName();
+        float fontSize = Globals::UI::Fonts::S - 1;
+
+        SerializedData serialize() const noexcept override;
+        void deserialize(const SerializedData &data) noexcept override;
+        void reset() noexcept override;
+    };
+
     class Listener
     {
     public:
@@ -121,10 +134,6 @@ public:
     int getRightSidebarWidth() const noexcept;
     void setRightSidebarWidth(int width);
 
-    Point<int> getMinScriptEditorSize() const noexcept;
-    Point<int> getScriptEditorSize() const noexcept;
-    void setScriptEditorSize(Point<int> size);
-
     void setMouseWheelUsePanningByDefault(bool usePanning);
     void setMouseWheelUseVerticalPanningByDefault(bool useVerticalPanning);
     void setMouseWheelUseVerticalZoomingByDefault(bool useVerticalZooming);
@@ -141,6 +150,9 @@ public:
     KnownPluginList::SortMethod getPluginSorting() const noexcept;
     bool isPluginSortingForwards() const noexcept;
     void setPluginSorting(KnownPluginList::SortMethod sorting, bool forwards);
+
+    const ScriptEditorSettings &getScriptEditorSettings() const noexcept;
+    void setScriptEditorSettings(const ScriptEditorSettings &settings);
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -197,10 +209,6 @@ private:
     int leftSidebarWidth = Globals::UI::sidebarWidth;
     int rightSidebarWidth = Globals::UI::sidebarWidth;
 
-    static constexpr Point<int> minScriptEditorSize = { 690, 690 };
-    static constexpr Point<int> defaultScriptEditorSize = { 900, 960 };
-    Point<int> scriptEditorSize = defaultScriptEditorSize;
-
     MouseWheelFlags mouseWheelFlags;
 
     float uiScaleFactor = 1.f;
@@ -216,6 +224,8 @@ private:
 #endif
     KnownPluginList::SortMethod pluginSorting =
         KnownPluginList::SortMethod::sortByFormat;
+
+    ScriptEditorSettings scriptEditorSettings;
 
 private:
 

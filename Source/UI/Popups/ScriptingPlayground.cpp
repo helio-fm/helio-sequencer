@@ -77,8 +77,6 @@ class ScriptingPlaygroundPopup final : public Component
 {
 public:
 
-    static constexpr auto font = Globals::UI::Fonts::XS - 1.f;
-
     ScriptingPlaygroundPopup() noexcept
     {
         this->setOpaque(false);
@@ -86,11 +84,13 @@ public:
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
 
+        const auto editorConfig = App::Config().getUiFlags()->getScriptEditorSettings();
+        Font font(editorConfig.fontSize);
+        font.setTypefaceName(editorConfig.fontName);
+
         this->label = make<Label>();
         this->addAndMakeVisible(this->label.get());
-        Font f2(ScriptingPlaygroundPopup::font);
-        f2.setTypefaceName(Font::getDefaultMonospacedFontName());
-        this->label->setFont(f2);
+        this->label->setFont(font);
         this->label->setJustificationType(Justification::topLeft);
         this->label->setBorderSize({ 7, 6, 7, 6 });
         this->label->setMinimumHorizontalScale(0.995f);
@@ -525,8 +525,7 @@ void ScriptingPlaygroundEditor::handleReturnKey()
 
     this->newTransaction();
     this->insertTextAtCaret(this->getDocument().getNewLineCharacters());
-
-    if (!CharacterFunctions::isWhitespace(this->getCaretPos().getCharacter()))
+    if (this->getCaretPos().getCharacter() != ' ')
     {
         const auto numTabs = myIndentLevel / this->getTabSize();
         for (int i = 0; i < numTabs; ++i)
@@ -640,15 +639,21 @@ void ScriptingPlaygroundEditor::toggleCommentSelection()
 
     bool hasUncommentedLines = false;
     int minLineStartIndex = INT_MAX;
+    const auto newLineChars = this->getDocument().getNewLineCharacters();
     const int lineFrom = this->selectionStart.getLineNumber();
-    const int lineTo = this->selectionEnd.getLineNumber();
+    int lineTo = this->selectionEnd.getLineNumber();
+    if (lineTo > lineFrom && this->selectionEnd.getIndexInLine() == 0)
+    {
+        lineTo--;
+    }
+
     for (int i = lineFrom; i <= lineTo; ++i)
     {
         this->moveCaretTo(CodeDocument::Position(this->getDocument(), i, 0), false);
         this->moveCaretToStartOfLine(false);
 
         const auto lineText = this->getCaretPos().getLineText();
-        if (lineText.isEmpty() || lineText.startsWith(newLine))
+        if (lineText.isEmpty() || lineText.startsWith(newLineChars))
         {
             continue;
         }
@@ -667,7 +672,7 @@ void ScriptingPlaygroundEditor::toggleCommentSelection()
         if (hasUncommentedLines)
         {
             const auto lineText = this->getCaretPos().getLineText();
-            if (!lineText.isEmpty() && !lineText.startsWith(newLine))
+            if (!lineText.isEmpty() && !lineText.startsWith(newLineChars))
             {
                 this->insertTextAtCaret("; ");
             }
@@ -832,15 +837,14 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project) noexcept :
     this->shadowRight = make<ShadowRightwards>(ShadowType::Light);
     this->addAndMakeVisible(this->shadowRight.get());
 
+    const auto editorConfig = App::Config().getUiFlags()->getScriptEditorSettings();
+    Font font(editorConfig.fontSize);
+    font.setTypefaceName(editorConfig.fontName);
+
     this->codeEditor = make<ScriptingPlaygroundEditor>(project.getScriptCodeDocument(),
         make<ScriptTokeniser>());
-
-    Font f(Globals::UI::Fonts::S - 1.f); // fixme configurable fonts
-    f.setTypefaceName(Font::getDefaultMonospacedFontName());
-    this->codeEditor->setFont(f);
+    this->codeEditor->setFont(font);
     this->addAndMakeVisible(this->codeEditor.get());
-    this->codeEditor->configure(project.getScriptEngine().getEditorDefaultCaretPosition(),
-        project.getScriptEngine().getEditorDefaultStartLine());
 
     this->cornerResizer = make<ScriptingPlaygroundCornerResizer>();
     this->addAndMakeVisible(this->cornerResizer.get());
@@ -849,7 +853,7 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project) noexcept :
     this->addAndMakeVisible(this->outputText.get());
     this->outputText->setMultiLine(false, false);
     this->outputText->setColour(TextEditor::textColourId,
-        findDefaultColour(TextEditor::textColourId).withMultipliedAlpha(0.69f));
+        findDefaultColour(TextEditor::textColourId).withMultipliedAlpha(0.6f));
     const auto codeBg =
         findDefaultColour(CodeEditorComponent::backgroundColourId);
     const auto outputBg = codeBg.brighter(0.025f);
@@ -857,9 +861,7 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project) noexcept :
     this->outputText->setColour(TextEditor::outlineColourId, outputBg);
     this->outputText->setIndents(ScriptingPlayground::iconSize * 2, 0);
     this->outputText->setJustification(Justification::centredLeft);
-    Font f2(ScriptingPlaygroundPopup::font);
-    f2.setTypefaceName(Font::getDefaultMonospacedFontName());
-    this->outputText->setFont(f2);
+    this->outputText->setFont(font);
 
     this->copyOutputButton = make<IconButton>(Icons::copy,
         CommandIDs::ScriptEditorCopyOutput, this, ScriptingPlayground::iconSize);
@@ -871,20 +873,24 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project) noexcept :
     this->shadowBottom = make<ShadowUpwards>(ShadowType::Light);
     this->addAndMakeVisible(this->shadowBottom.get());
 
-    const auto size = App::Config().getUiFlags()->getScriptEditorSize();
-    this->setSize(size.getX(), size.getY());
+    this->setSize(editorConfig.size.getX(), editorConfig.size.getY());
+
+    int caretPosition = 0;
+    int startLine = 0;
+    this->project.getScriptEngine().onEditorOpen(caretPosition, startLine);
+    this->codeEditor->configure(caretPosition, startLine);
+
+    this->postCommandMessage(CommandIDs::ScriptEditorReevaluate);
 
     this->updateOnParse();
     this->updateOnEvaluate();
-
-    this->postCommandMessage(CommandIDs::ScriptEditorReevaluate);
 }
 
 ScriptingPlayground::~ScriptingPlayground()
 {
-    this->project.getScriptEngine().
-        updateEditorDefaults(this->codeEditor->getCaretPos().getPosition(),
-            this->codeEditor->getFirstLineOnScreen());
+    this->project.getScriptEngine().onEditorClose(
+        this->codeEditor->getCaretPos().getPosition(),
+        this->codeEditor->getFirstLineOnScreen());
 }
 
 void ScriptingPlayground::paint(Graphics &g)
@@ -963,7 +969,9 @@ void ScriptingPlayground::handleCommandMessage(int commandId)
         // so that any downstream code dismissing modal components
         // doesn't delete this playground while it's evaluating:
         this->exitModalState(0);
-        this->project.getScriptEngine().evaluate(this->codeEditor->getDocument().getAllContent(), this, false);
+        this->project.getScriptEngine().evaluate(
+            this->codeEditor->getDocument().getAllContent(), this, false);
+        App::Layout().broadcastCommandMessage(CommandIDs::SwitchToClipInViewport);
         this->enterModalState(true);
         // this->dismiss();
         break;
@@ -1035,7 +1043,7 @@ void ScriptingPlayground::updateBounds()
         const auto parentRelative =
             parent->getBounds().transformedBy(this->getTransform().inverted());
         const auto minSize =
-            App::Config().getUiFlags()->getMinScriptEditorSize().
+            App::Config().getUiFlags()->getScriptEditorSettings().minSize.
                 transformedBy(this->getTransform().inverted());
         const auto newWidth =
             jmin(parent->getWidth(),
@@ -1046,7 +1054,9 @@ void ScriptingPlayground::updateBounds()
                 jmax(minSize.getY(), parentRelative.getHeight() - this->getY() -
                     this->cornerResizer->getY() + marginTop));
         this->setSize(newWidth, newHeight);
-        App::Config().getUiFlags()->setScriptEditorSize({ newWidth, newHeight });
+        auto editorConfig = App::Config().getUiFlags()->getScriptEditorSettings();
+        editorConfig.size = { newWidth, newHeight };
+        App::Config().getUiFlags()->setScriptEditorSettings(editorConfig);
         this->updatePosition();
     }
 }
@@ -1076,12 +1086,10 @@ void ScriptingPlayground::updateOnParse()
         this->copyOutputButton->setVisible(true);
         this->outputText->setText(scriptEngine.getParsingError()->getDescription());
         this->codeEditor->setError(errorRange, {});
-        this->hadErrors = true;
     }
     else if (!scriptEngine.getEvaluationError().hasValue())
     {
         this->codeEditor->setError({}, {});
-        this->hadErrors = false;
     }
 }
 
@@ -1099,9 +1107,8 @@ void ScriptingPlayground::updateOnEvaluate()
         this->copyOutputButton->setVisible(true);
         this->outputText->setText(errorText);
         this->codeEditor->setError(errorRange, errorText);
-        this->hadErrors = true;
     }
-    else if (scriptEngine.getEvaluationError().hasValue()) // fixme breakpoints fuck the saved state
+    else if (scriptEngine.getEvaluationError().hasValue())
     {
         const auto errorType = scriptEngine.getEvaluationError()->type;
         if (errorType == script::EvaluationError::Type::Aborted)
@@ -1114,7 +1121,6 @@ void ScriptingPlayground::updateOnEvaluate()
 
         if (errorType == script::EvaluationError::Type::BreakpointHit)
         {
-            //this->runButton->setVisible(true); // FIXME
             this->codeEditor->setBreakpointInfo(errorText);
         }
         else
@@ -1123,28 +1129,14 @@ void ScriptingPlayground::updateOnEvaluate()
             this->copyOutputButton->setVisible(true);
             this->outputText->setText(errorText);
             this->codeEditor->setError(errorRange, errorText);
-            this->hadErrors = true;
         }
     }
     else
     {
         this->runButton->setVisible(true);
-
-        if (!scriptEngine.isPlayground())
-        {
-            this->copyOutputButton->setVisible(true);
-            // const auto &result = scriptEngine.getEvaluationResult();
-            // this->outputText->setText(result.isNil() ? "" : result.toString());
-            this->outputText->setText("Seed: " + String(scriptEngine.random.originalSeed));
-        }
-        else if (this->hadErrors)
-        {
-            this->copyOutputButton->setVisible(false);
-            this->outputText->setText("");
-        }
-
+        this->copyOutputButton->setVisible(true);
+        this->outputText->setText("(seed " + String(scriptEngine.random.originalSeed) + ")");
         this->codeEditor->setError({}, {});
-        this->hadErrors = false;
     }
 }
 
@@ -1207,7 +1199,8 @@ void ScriptingPlayground::addKeySignature(const KeySignatureEvent &parameters)
     if (foundKey &&
         outKey == parameters.getRootKey() &&
         outKeyName == parameters.getRootKeyName() &&
-        outScale->isEquivalentTo(parameters.getScale()))
+        outScale->isEquivalentTo(parameters.getScale()) &&
+        beat > sequence->getFirstBeat())
     {
         //DBG("Skipped adding a key signature");
         return;
