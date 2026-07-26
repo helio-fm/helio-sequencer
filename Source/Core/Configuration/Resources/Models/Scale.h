@@ -52,7 +52,7 @@ public:
 
     // Wraps a possibly negative key in the [lower, upper) range;
     // the main use case is to wrapKey(key, 0, periodSize)
-    static int wrapKey(int key, int lowerKey, int upperKey);
+    static int wrapKey(int key, int lowerKey, int upperKey) noexcept;
 
     bool isValid() const noexcept;
     int getSize() const noexcept;

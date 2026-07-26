@@ -256,9 +256,9 @@ private:
         static const char *const keywords4Char[] =
             { "cond", "else", "true", nullptr };
         static const char *const keywords5Char[] =
-            { "begin", "quote", "false", nullptr };
+            { "begin", "quote", "false", "while", nullptr };
         static const char *const keywords6Char[] =
-            { "define", "lambda", "filter", "reduce", "while", nullptr };
+            { "define", "lambda", "filter", "reduce", "modulo", nullptr };
         static const char *const keywordsOther[] =
             { "map-indexed", "filter-indexed", nullptr };
 
@@ -302,7 +302,7 @@ private:
         static const char *const keywords6Char[] =
             { "append", "insert", "length", "random", "remove", nullptr };
         static const char *const keywordsOther[] =
-            { "reverse",
+            { "reverse", "index-of",
               "supertonic", "mediant", "subdominant",
               "dominant", "submediant", "subtonic",
               "project:period-size", "project:reset",

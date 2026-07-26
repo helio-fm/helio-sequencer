@@ -392,7 +392,6 @@ namespace math
 Value sum(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
 {
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
-
     if (args.size() < 2)
     {
         throw EvaluationError(EvaluationError::Type::TooFewArguments);
@@ -410,14 +409,33 @@ Value sum(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &c
 Value subtract(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
 {
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
-    checkNumArgs(args, 2);
-    return args.getReference(0) - args.getReference(1);
+    if (args.size() < 1)
+    {
+        throw EvaluationError(EvaluationError::Type::TooFewArguments);
+    }
+
+    if (args.size() == 1) // negation
+    {
+        if (!args.getReference(0).isNumber())
+        {
+            throw args.getReference(0).makeError(EvaluationError::Type::InvalidArgument);
+        }
+
+        return args.getReference(0) * Value(-1);
+    }
+
+    Value acc = args.getFirst();
+    for (int i = 1; i < args.size(); i++)
+    {
+        acc = acc - args.getReference(i);
+    }
+
+    return acc;
 }
 
 Value multiply(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
 {
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
-
     if (args.size() < 2)
     {
         throw EvaluationError(EvaluationError::Type::TooFewArguments);
@@ -435,8 +453,18 @@ Value multiply(const Value::List &unevaluatedArgs, Scope &scope, EvaluationConte
 Value divide(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
 {
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
-    checkNumArgs(args, 2);
-    return args.getReference(0) / args.getReference(1);
+    if (args.size() < 2)
+    {
+        throw EvaluationError(EvaluationError::Type::TooFewArguments);
+    }
+
+    Value acc = args.getFirst();
+    for (int i = 1; i < args.size(); i++)
+    {
+        acc = acc / args.getReference(i);
+    }
+
+    return acc;
 }
 
 Value remainder(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
@@ -444,6 +472,31 @@ Value remainder(const Value::List &unevaluatedArgs, Scope &scope, EvaluationCont
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
     checkNumArgs(args, 2);
     return args.getReference(0) % args.getReference(1);
+}
+
+Value modulo(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
+{
+    const auto args = evaluateArgs(unevaluatedArgs, scope, context);
+    checkNumArgs(args, 2);
+
+    if (!args.getReference(0).isInteger() ||
+        !args.getReference(1).isInteger() ||
+        args.getReference(1).castToInteger() == 0)
+    {
+        throw EvaluationError(EvaluationError::Type::InvalidArgument);
+    }
+
+    const auto a = args.getReference(0).castToInteger();
+    const auto b = args.getReference(1).castToInteger();
+
+    // Euclidean division for e.g. wrapping a key in a period
+    auto mod = a % b;
+    if (mod < 0)
+    {
+        mod -= (b < 0) ? b : -b;
+    }
+
+    return Value(mod);
 }
 
 Value abs(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
@@ -639,8 +692,8 @@ Value nth(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &c
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
     checkNumArgs(args, 2);
 
-    const auto &list = args.getReference(0).asList();
-    const auto i = args.getReference(1).castToInteger();
+    const auto i = args.getReference(0).castToInteger();
+    const auto &list = args.getReference(1).asList();
     if (list.isEmpty() || i >= list.size())
     {
         throw args.getReference(0).makeError(EvaluationError::Type::IndexOutOfRange);
@@ -649,19 +702,34 @@ Value nth(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &c
     return list.getUnchecked(i);
 }
 
+Value indexOf(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
+{
+    const auto args = evaluateArgs(unevaluatedArgs, scope, context);
+    checkNumArgs(args, 2);
+
+    const auto &item = args.getReference(0);
+    const auto &list = args.getReference(1).asList();
+    if (list.isEmpty())
+    {
+        throw args.getReference(1).makeError(EvaluationError::Type::IndexOutOfRange);
+    }
+
+    return Value(list.indexOf(item));
+}
+
 Value insert(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
 {
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
     checkNumArgs(args, 3);
 
-    auto list = args.getReference(0).asList();
     const auto i = args.getReference(1).castToInteger();
+    auto list = args.getReference(2).asList();
     if (i > list.size())
     {
         throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
     }
 
-    list.insert(args.getReference(1).castToInteger(), args.getReference(2));
+    list.insert(i, args.getReference(0));
     return Value(move(list));
 }
 
@@ -670,8 +738,8 @@ Value remove(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
     checkNumArgs(args, 2);
 
-    auto list = args.getReference(0).asList();
-    const auto i = args.getReference(1).castToInteger();
+    const auto i = args.getReference(0).castToInteger();
+    auto list = args.getReference(1).asList();
     if (list.isEmpty() || i >= list.size())
     {
         throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
@@ -776,8 +844,8 @@ Value first(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext 
     }
     else if (args.size() == 2)
     {
-        const auto &list = args.getReference(0).asList();
-        const auto numElements = args.getReference(1).castToInteger();
+        const auto numElements = args.getReference(0).castToInteger();
+        const auto &list = args.getReference(1).asList();
         if (numElements <= 0 || numElements > list.size())
         {
             throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
@@ -812,8 +880,8 @@ Value last(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &
     }
     else if (args.size() == 2)
     {
-        const auto &list = args.getReference(0).asList();
-        const auto numElements = args.getReference(1).castToInteger();
+        const auto numElements = args.getReference(0).castToInteger();
+        const auto &list = args.getReference(1).asList();
         if (numElements <= 0 || numElements > list.size())
         {
             throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
@@ -891,13 +959,26 @@ Value mapIndexed(const Value::List &unevaluatedArgs, Scope &scope, EvaluationCon
 Value map(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
 {
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
-    checkNumArgs(args, 2);
+    if (args.size() < 2)
+    {
+        throw EvaluationError(EvaluationError::Type::TooFewArguments);
+    }
 
     Value::List result, tmp;
-    const auto &list = args.getReference(1).asList();
-    for (int i = 0; i < list.size(); i++)
+    int resultLength = INT_MAX;
+    for (int l = 1; l < args.size(); ++l)
     {
-        tmp.add(list.getUnchecked(i));
+        resultLength = jmin(resultLength, args.getReference(l).asList().size());
+    }
+
+    for (int i = 0; i < resultLength; i++)
+    {
+        for (int l = 1; l < args.size(); ++l)
+        {
+            const auto &list = args.getReference(l).asList();
+            tmp.add(list.getUnchecked(i));
+        }
+
         result.add(args.getReference(0).apply(tmp, scope, context));
         tmp.clear();
     }
@@ -1042,6 +1123,7 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
     if (name == "*") return Value::makeBuiltInFunction(name, math::multiply);
     if (name == "/") return Value::makeBuiltInFunction(name, math::divide);
     if (name == "%") return Value::makeBuiltInFunction(name, math::remainder);
+    if (name == "modulo") return Value::makeBuiltInFunction(name, math::modulo);
     if (name == "abs") return Value::makeBuiltInFunction(name, math::abs);
     if (name == "min") return Value::makeBuiltInFunction(name, math::min);
     if (name == "max") return Value::makeBuiltInFunction(name, math::max);
@@ -1056,6 +1138,7 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
     if (name == "list") return Value::makeBuiltInFunction(name, list::make);
     if (name == "insert") return Value::makeBuiltInFunction(name, list::insert);
     if (name == "nth") return Value::makeBuiltInFunction(name, list::nth);
+    if (name == "index-of") return Value::makeBuiltInFunction(name, list::indexOf);
     if (name == "remove") return Value::makeBuiltInFunction(name, list::remove);
     if (name == "length") return Value::makeBuiltInFunction(name, list::length);
     if (name == "empty") return Value::makeBuiltInFunction(name, list::empty);

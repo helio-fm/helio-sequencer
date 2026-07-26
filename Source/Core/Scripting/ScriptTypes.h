@@ -57,7 +57,7 @@ Note makeNote(const Value &value)
     const auto length = (args.size() > 2) ?
         args[2].castToFloat() : Globals::Defaults::newNoteLength;
     const auto velocity = (args.size() > 3) ?
-        args[3].castToFloat() : Globals::Defaults::newNoteVelocity;
+        jlimit(0.f, 1.f, args[3].castToFloat()) : Globals::Defaults::newNoteVelocity;
 
     return Note(nullptr, key, beat, length, velocity);
 }
@@ -85,7 +85,7 @@ Value makeScaleValue(const Scale::Ptr scale)
 
 void validateScaleValue(const Value &value)
 {
-    if (!value.isListOf(Value::Type::Integer))
+    if (!value.isListOf(Value::Type::Integer) || value.asList().size() < 3)
     {
         throw EvaluationError(EvaluationError::Type::InvalidArgument, "",
             "expected a scale: (intervals), e.g. (2 2 1 2 2 2 1)");

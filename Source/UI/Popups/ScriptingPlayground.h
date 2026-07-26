@@ -42,8 +42,8 @@ public:
     void configure(int defaultCaretPosition,
         int defaultStartLine, int tabSize = 2) noexcept;
 
-    void selectNext();
-    void selectPrevious();
+    void selectNext(const String &text, bool shouldStopIfFound);
+    void selectPrevious(const String &text, bool shouldStopIfFound);
     void toggleCommentSelection();
 
     void mouseDown(const MouseEvent &e) override;
@@ -154,11 +154,15 @@ private:
     void updateOnParse();
     void updateOnEvaluate();
 
-    static constexpr int marginH = 8;
-    static constexpr int marginTop = 10; // bottom margin is 0
+    class SearchTextEditor final : public TextEditor
+    {
+    public:
 
-    const Colour frameColour =
-        findDefaultColour(ColourIDs::Shadows::borderLight);
+        bool keyPressed(const KeyPress &key) override;
+
+        int caretPositionAnchor = 0;
+        int startLineAnchor = 0;
+    };
 
 private:
 
@@ -174,8 +178,14 @@ private:
     UniquePointer<TextEditor> outputText;
     UniquePointer<IconButton> copyOutputButton;
     UniquePointer<IconButton> runButton;
+    UniquePointer<SearchTextEditor> searchInput;
 
     static constexpr int iconSize = 20;
+    static constexpr int marginH = 8;
+    static constexpr int marginTop = 10; // bottom margin is 0
+
+    const Colour frameColour =
+        findDefaultColour(ColourIDs::Shadows::borderLight);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlayground)
 };

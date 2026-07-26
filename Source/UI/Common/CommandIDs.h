@@ -312,8 +312,9 @@ namespace CommandIDs
         ScriptEditorReevaluate          = 0x4762,
         ScriptEditorCopyOutput          = 0x4763,
         ScriptEditorToggleComment       = 0x4764,
-        ScriptEditorSelectNext          = 0x4765,
-        ScriptEditorSelectPrevious      = 0x4766,
+        ScriptEditorFind                = 0x4765,
+        ScriptEditorFindNext            = 0x4766,
+        ScriptEditorFindPrevious        = 0x4767,
 
         YourNextCommandId               = 0x4800
     };

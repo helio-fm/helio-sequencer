@@ -71,7 +71,7 @@ bool ScriptEngine::evaluate(const String &code,
         // the playground uses fixed seed by default
         // so that evaluation pop-ups in the editor are less confusing
         // (but the user can still set a different seed in the code):
-        this->random.randomize(this->random.originalSeed);
+        this->random.randomize(this->random.originalSeed, true);
         this->playgroundMode = true;
 
         constexpr auto debounceMs = 69;
@@ -92,7 +92,7 @@ bool ScriptEngine::evaluate(const String &code,
                 this->resetEvaluationContext();
             }
 
-            this->random.randomize();
+            this->random.randomize(true);
             auto result = this->parsingResult.evaluate(this->rootScope, *this);
 
             {
@@ -230,7 +230,7 @@ void ScriptEngine::deserialize(const SerializedData &data) noexcept
     const auto lastSeed =
         root.getProperty(Serialization::Core::scriptEditorSeed,
             this->random.originalSeed);
-    this->random.randomize(lastSeed);
+    this->random.randomize(lastSeed, true);
 }
 
 void ScriptEngine::reset() noexcept {}
@@ -302,14 +302,19 @@ script::Value seed(const script::Value::List &unevaluatedArgs,
         throw script::EvaluationError(script::EvaluationError::Type::TooManyArguments);
     }
 
-    auto &random = castToSelf(context)->random;
+    auto *self = castToSelf(context);
+    const auto shouldRememberSeed = !self->isPlayground();
 
-    if (!args.isEmpty())
+    if (args.isEmpty())
     {
-        random.randomize(args.getReference(0).castToInteger());
+        self->random.randomize(shouldRememberSeed);
+    }
+    else
+    {
+        self->random.randomize(args.getReference(0).castToInteger(), shouldRememberSeed);
     }
 
-    return script::Value(random.originalSeed);
+    return script::Value(script::Value::Integer(self->random.generator.getSeed()));
 }
 
 script::Value random(const script::Value::List &unevaluatedArgs,
@@ -583,7 +588,8 @@ script::Value renderKey(const script::Value::List &unevaluatedArgs,
     const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
     script::checkNumArgs(args, 2);
 
-    if (!args.getReference(0).isList())
+    if (!args.getReference(0).isList() ||
+        args.getReference(0).asList().isEmpty())
     {
         throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
             "(scale:render-key scale degree)",

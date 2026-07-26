@@ -147,9 +147,15 @@ bool Scale::seemsMinor() const noexcept
     return this->getChromaticKey(int(Chord::Key::InScale::III), 0, false) == expectedNumSemitones;
 }
 
-int Scale::wrapKey(int key, int lowerKey, int upperKey)
+int Scale::wrapKey(int key, int lowerKey, int upperKey) noexcept
 {
     const int keyRange = upperKey - lowerKey;
+    if (keyRange == 0)
+    {
+        jassertfalse;
+        return key;
+    }
+
     const int safeKey =
         (key < lowerKey) ?
         key + keyRange * ((lowerKey - key) / keyRange + 1) :

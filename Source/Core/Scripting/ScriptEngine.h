@@ -94,17 +94,21 @@ public:
     {
         Random() : generator(originalSeed) {}
 
-        void randomize()
+        void randomize(bool shouldRememberSeed)
         {
             this->generator.setSeedRandomly();
             // when generating a random seed, let's make it look nicer: shorter
             // and always positive, 2 billion numbers should be enough for anybody
-            this->randomize(std::abs(script::Value::Integer(this->generator.getSeed())));
+            this->randomize(std::abs(script::Value::Integer(this->generator.getSeed())), shouldRememberSeed);
         }
 
-        void randomize(script::Value::Integer seed)
+        void randomize(script::Value::Integer seed, bool shouldRememberSeed = true)
         {
-            this->originalSeed = seed;
+            if (shouldRememberSeed)
+            {
+                this->originalSeed = seed;
+            }
+
             this->generator.setSeed(seed);
         }
 
@@ -264,7 +268,7 @@ private:
             }
 
             const MessageManagerLock mmLock(Thread::getCurrentThread());
-            jassert(mmLock.lockWasGained());
+            //jassert(mmLock.lockWasGained());
             if (mmLock.lockWasGained())
             {
                 const ScopedWriteLock lock(this->hostLock);
@@ -290,7 +294,7 @@ private:
             }
 
             const MessageManagerLock mmLock(Thread::getCurrentThread());
-            jassert(mmLock.lockWasGained());
+            //jassert(mmLock.lockWasGained());
             if (mmLock.lockWasGained())
             {
                 const ScopedWriteLock lock(this->hostLock);

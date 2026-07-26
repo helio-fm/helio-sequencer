@@ -584,8 +584,10 @@
   { "command": "ScriptEditorRunScript", "key": "F5" },
   { "command": "ScriptEditorToggleComment", "key": "Control + /" },
   { "command": "ScriptEditorToggleComment", "key": "Command + /" },
-  { "command": "ScriptEditorSelectNext", "key": "F3" },
-  { "command": "ScriptEditorSelectPrevious", "key": "Shift + F3" }
+  { "command": "ScriptEditorFind", "key": "Control + F" },
+  { "command": "ScriptEditorFind", "key": "Command + F" },
+  { "command": "ScriptEditorFindNext", "key": "F3" },
+  { "command": "ScriptEditorFindPrevious", "key": "Shift + F3" }
   // ANCHOR_END: ScriptEditor
   ]
 }

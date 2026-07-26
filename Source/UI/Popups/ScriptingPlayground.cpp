@@ -99,15 +99,14 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(this->fillColour);
-        const auto labelBounds = this->getLabelBounds();
+        auto labelBounds = this->getLocalBounds();
+        labelBounds.removeFromTop(topMargin);
         g.fillRect(labelBounds.reduced(0, 1));
         g.fillRect(labelBounds.reduced(1, 0));
 
         g.setColour(this->frameColour);
         HelioTheme::drawDashedHorizontalLine(g,
             1.f, 0.f, jmax(0.f, this->underlineWidth - 2.f));
-
-        //HelioTheme::drawBrackets(g, labelBounds, 7, 3, 1);
     }
 
     void show(const String &text, const Rectangle<int> &pointAtBounds)
@@ -119,11 +118,14 @@ public:
         const auto textWidth = this->label->getFont().getStringWidth(text);
         const auto width = textWidth + this->label->getBorderSize().getLeftAndRight();
         const auto position = pointAtBounds.getBottomLeft().translated(0, -1);
-        const auto margin = 3;
+        const auto labelPadding = 5;
+        const auto labelHeight = (labelPadding * 2) +
+            roundToIntAccurate(this->label->getFont().getHeight());
         this->setBounds(Rectangle<int>(position.x, position.y,
-            jmax(width, pointAtBounds.getWidth()), labelHeight + margin));
+            jmax(width, pointAtBounds.getWidth()),
+            labelHeight + topMargin));
 
-        this->label->setBounds(this->getLabelBounds());
+        this->label->setBounds(this->getLocalBounds().removeFromBottom(labelHeight));
         this->label->setText(text, dontSendNotification);
 
         this->setVisible(true);
@@ -139,16 +141,11 @@ private:
     float underlineWidth = 0.f;
 
     UniquePointer<Label> label;
-    static constexpr int labelHeight = 26;
-    Rectangle<int> getLabelBounds() const
-    {
-        return this->getLocalBounds().removeFromBottom(labelHeight);
-    }
 
+    static constexpr auto topMargin = 2;
     const Colour frameColour =
         findDefaultColour(CaretComponent::caretColourId)
             .withMultipliedAlpha(0.420f);
-
     const Colour fillColour =
         findDefaultColour(ColourIDs::CodeEditor::popup);
 
@@ -177,7 +174,7 @@ ScriptingPlaygroundEditor::ScriptingPlaygroundEditor(CodeDocument &document,
 void ScriptingPlaygroundEditor::configure(int defaultCaretPosition,
     int defaultStartLine, int tabSize) noexcept
 {
-    this->setTabSize(tabSize, false);
+    this->setTabSize(tabSize, true);
     this->scrollToLine(defaultStartLine);
     this->moveCaretTo(CodeDocument::Position(this->getDocument(), defaultCaretPosition), false);
 }
@@ -527,11 +524,7 @@ void ScriptingPlaygroundEditor::handleReturnKey()
     this->insertTextAtCaret(this->getDocument().getNewLineCharacters());
     if (this->getCaretPos().getCharacter() != ' ')
     {
-        const auto numTabs = myIndentLevel / this->getTabSize();
-        for (int i = 0; i < numTabs; ++i)
-        {
-            this->insertTabAtCaret();
-        }
+        this->insertTextAtCaret(this->getTabString(myIndentLevel));
     }
 }
 
@@ -587,43 +580,67 @@ bool ScriptingPlaygroundEditor::keyPressed(const KeyPress &key)
     return CodeEditorComponent::keyPressed(key);
 }
 
-void ScriptingPlaygroundEditor::selectNext()
+void ScriptingPlaygroundEditor::selectNext(const String &text, bool shouldStopIfFound)
 {
-    if (this->getHighlightedRegion().isEmpty())
+    this->highlightedToken = text;
+
+    const auto searchFrom =
+        this->getHighlightedRegion().isEmpty() ?
+        this->getCaretPos().getPosition() :
+        (shouldStopIfFound ?
+            this->getHighlightedRegion().getStart() :
+            this->getHighlightedRegion().getEnd());
+    const auto textAfter = this->getDocument().getTextBetween(
+        { this->getDocument(), searchFrom },
+        { this->getDocument(), std::numeric_limits<int>::max(), std::numeric_limits<int>::max() });
+    const auto nextDelta = textAfter.indexOf(text);
+    if (nextDelta >= 0)
     {
+        const auto newStart = searchFrom + nextDelta;
+        this->selectRegion({ this->getDocument(), newStart },
+            { this->getDocument(), newStart + text.length() });
         return;
     }
 
-    const auto selectedText = this->getTextInRange(this->getHighlightedRegion());
-    const auto searchIn = this->getDocument().getTextBetween(
-        { this->getDocument(), this->getHighlightedRegion().getEnd() },
-        { this->getDocument(), std::numeric_limits<int>::max(), std::numeric_limits<int>::max() });
-    const auto nextDelta = searchIn.indexOf(selectedText);
-    if (nextDelta >= 0)
+    const auto textBefore = this->getDocument().getTextBetween({},
+        { this->getDocument(), searchFrom });
+    const auto newStart = textBefore.indexOf(text);
+    if (newStart >= 0)
     {
-        const auto newStart = this->getHighlightedRegion().getEnd() + nextDelta;
         this->selectRegion({ this->getDocument(), newStart },
-            { this->getDocument(), newStart + selectedText.length() });
-        this->highlightedToken = selectedText;
+            { this->getDocument(), newStart + text.length() });
     }
 }
 
-void ScriptingPlaygroundEditor::selectPrevious()
+void ScriptingPlaygroundEditor::selectPrevious(const String &text, bool shouldStopIfFound)
 {
-    if (this->getHighlightedRegion().isEmpty())
-    {
-        return;
-    }
+    this->highlightedToken = text;
 
-    const auto selectedText = this->getTextInRange(this->getHighlightedRegion());
-    const auto searchIn = this->getDocument().getTextBetween({},
-        { this->getDocument(), this->getHighlightedRegion().getStart() });
-    const auto previous = searchIn.lastIndexOf(selectedText);
+    const auto searchFrom =
+        this->getHighlightedRegion().isEmpty() ?
+        this->getCaretPos().getPosition() :
+        (shouldStopIfFound ?
+            this->getHighlightedRegion().getEnd() :
+            this->getHighlightedRegion().getStart());
+    const auto textBefore = this->getDocument().getTextBetween({},
+        { this->getDocument(), searchFrom });
+    const auto previous = textBefore.lastIndexOf(text);
     if (previous >= 0)
     {
         this->selectRegion({ this->getDocument(), previous },
-            { this->getDocument(), previous + selectedText.length() });
-        this->highlightedToken = selectedText;
+            { this->getDocument(), previous + text.length() });
+        return;
+    }
+
+    const auto textAfter = this->getDocument().getTextBetween(
+        { this->getDocument(), searchFrom },
+        { this->getDocument(), std::numeric_limits<int>::max(), std::numeric_limits<int>::max() });
+    const auto nextDelta = textAfter.lastIndexOf(text);
+    if (nextDelta >= 0)
+    {
+        const auto newStart = searchFrom + nextDelta;
+        this->selectRegion({ this->getDocument(), newStart },
+            { this->getDocument(), newStart + text.length() });
     }
 }
 
@@ -703,7 +720,7 @@ void ScriptingPlaygroundEditor::editorViewportPositionChanged()
 void ScriptingPlaygroundEditor::caretPositionMoved()
 {
     this->resetBreakpointPopup();
-    this->highlightedToken.clear();
+    // this->highlightedToken.clear();
     this->retokenise();
 }
 
@@ -825,6 +842,23 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlaygroundCornerResizer)
 };
 
+bool ScriptingPlayground::SearchTextEditor::keyPressed(const KeyPress &key)
+{
+    static Array<KeyPress> scriptEditorKeyPresses =
+        App::Config().getHotkeySchemes()->getCurrent()->
+            findKeyPressesForReceiver(ComponentIDs::scriptEditor);
+
+    for (const auto &usedAsHotkey : scriptEditorKeyPresses)
+    {
+        if (key == usedAsHotkey)
+        {
+            return false;
+        }
+    }
+
+    return TextEditor::keyPressed(key);
+}
+
 ScriptingPlayground::ScriptingPlayground(ProjectNode &project) noexcept :
     project(project)
 {
@@ -849,9 +883,8 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project) noexcept :
     this->cornerResizer = make<ScriptingPlaygroundCornerResizer>();
     this->addAndMakeVisible(this->cornerResizer.get());
 
-    this->outputText = HelioTheme::makeMultiLineTextEditor(false);
+    this->outputText = HelioTheme::makeSingleLineTextEditor(false);
     this->addAndMakeVisible(this->outputText.get());
-    this->outputText->setMultiLine(false, false);
     this->outputText->setColour(TextEditor::textColourId,
         findDefaultColour(TextEditor::textColourId).withMultipliedAlpha(0.6f));
     const auto codeBg =
@@ -860,7 +893,6 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project) noexcept :
     this->outputText->setColour(TextEditor::backgroundColourId, outputBg);
     this->outputText->setColour(TextEditor::outlineColourId, outputBg);
     this->outputText->setIndents(ScriptingPlayground::iconSize * 2, 0);
-    this->outputText->setJustification(Justification::centredLeft);
     this->outputText->setFont(font);
 
     this->copyOutputButton = make<IconButton>(Icons::copy,
@@ -869,6 +901,32 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project) noexcept :
     this->runButton = make<IconButton>(Icons::play,
         CommandIDs::ScriptEditorRunScript, this, ScriptingPlayground::iconSize);
     this->addChildComponent(this->runButton.get());
+
+    this->searchInput = HelioTheme::makeSingleLineTextEditor<SearchTextEditor>(true);
+    this->addChildComponent(this->searchInput.get());
+    this->searchInput->setIndents(ScriptingPlayground::marginH, 0);
+    this->searchInput->setFont(font);
+    this->searchInput->onTextChange = [this]()
+    {
+        const auto searchedText = this->searchInput->getText();
+        if (searchedText.isEmpty())
+        {
+            this->codeEditor->configure(
+                this->searchInput->caretPositionAnchor,
+                this->searchInput->startLineAnchor);
+            return;
+        }
+
+        this->codeEditor->selectNext(searchedText, true);
+    };
+    this->searchInput->onReturnKey = [this]()
+    {
+        const auto searchedText = this->searchInput->getText();
+        if (!searchedText.isEmpty())
+        {
+            this->codeEditor->selectNext(searchedText, false);
+        }
+    };
 
     this->shadowBottom = make<ShadowUpwards>(ShadowType::Light);
     this->addAndMakeVisible(this->shadowBottom.get());
@@ -930,6 +988,7 @@ void ScriptingPlayground::resized()
         statusPanelSize);
 
     this->outputText->setBounds(outputTextBounds);
+    this->searchInput->setBounds(outputTextBounds);
 
     this->copyOutputButton->setBounds(
         outputTextBounds.removeFromLeft(ScriptingPlayground::iconSize * 2));
@@ -961,7 +1020,15 @@ void ScriptingPlayground::handleCommandMessage(int commandId)
     switch (commandId)
     {
     case CommandIDs::ScriptEditorDismiss:
-        this->dismiss();
+        if (this->searchInput->isVisible())
+        {
+            this->codeEditor->grabKeyboardFocus();
+            this->searchInput->setVisible(false);
+        }
+        else
+        {
+            this->dismiss();
+        }
         break;
     case CommandIDs::ScriptEditorRunScript:
         this->project.checkpoint();
@@ -988,11 +1055,33 @@ void ScriptingPlayground::handleCommandMessage(int commandId)
     case CommandIDs::ScriptEditorToggleComment:
         this->codeEditor->toggleCommentSelection();
         break;
-    case CommandIDs::ScriptEditorSelectNext:
-        this->codeEditor->selectNext();
+    case CommandIDs::ScriptEditorFind:
+        if (!this->searchInput->isVisible())
+        {
+            this->searchInput->setVisible(true);
+            this->searchInput->caretPositionAnchor =
+                this->codeEditor->getCaretPos().getPosition();
+            this->searchInput->startLineAnchor =
+                this->codeEditor->getFirstLineOnScreen();
+        }
+        if (!this->codeEditor->getHighlightedRegion().isEmpty())
+        {
+            this->searchInput->setText(this->codeEditor->
+                getTextInRange(this->codeEditor->getHighlightedRegion()));
+        }
+        this->searchInput->grabKeyboardFocus();
         break;
-    case CommandIDs::ScriptEditorSelectPrevious:
-        this->codeEditor->selectPrevious();
+    case CommandIDs::ScriptEditorFindNext:
+        if (!this->searchInput->isEmpty())
+        {
+            this->codeEditor->selectNext(this->searchInput->getText(), false);
+        }
+        break;
+    case CommandIDs::ScriptEditorFindPrevious:
+        if (!this->searchInput->isEmpty())
+        {
+            this->codeEditor->selectPrevious(this->searchInput->getText(), false);
+        }
         break;
     default:
         break;

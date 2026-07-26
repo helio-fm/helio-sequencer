@@ -271,8 +271,9 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
         CASE_FOR(ScriptEditorReevaluate)
         CASE_FOR(ScriptEditorCopyOutput)
         CASE_FOR(ScriptEditorToggleComment)
-        CASE_FOR(ScriptEditorSelectNext)
-        CASE_FOR(ScriptEditorSelectPrevious)
+        CASE_FOR(ScriptEditorFind)
+        CASE_FOR(ScriptEditorFindNext)
+        CASE_FOR(ScriptEditorFindPrevious)
         default: return None;
     }
 }
@@ -537,8 +538,9 @@ I18n::Key CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
         //TRANS_NONE(ScriptEditorReevaluate)
         //TRANS_NONE(ScriptEditorCopyOutput)
         //TRANS_NONE(ScriptEditorToggleComment)
-        //TRANS_NONE(ScriptEditorSelectNext)
-        //TRANS_NONE(ScriptEditorSelectPrevious)
+        //TRANS_NONE(ScriptEditorFind)
+        //TRANS_NONE(ScriptEditorFindNext)
+        //TRANS_NONE(ScriptEditorFindPrevious)
         default: return 0;
     }
 }
