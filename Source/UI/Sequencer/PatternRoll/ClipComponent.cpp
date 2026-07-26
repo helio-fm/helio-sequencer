@@ -186,9 +186,9 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (e.mods.isRightButtonDown() &&
-        this->roll.getEditMode().isMode(RollEditMode::eraseMode))
+    if (this->roll.getEditMode().isMode(RollEditMode::eraseMode))
     {
+        this->setMouseCursor(this->roll.getEditMode().getCursor());
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
         return;
     }
@@ -250,11 +250,11 @@ void ClipComponent::mouseUp(const MouseEvent &e)
         return;
     }
 
-    if (e.mods.isRightButtonDown() &&
-        (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
-            this->roll.getEditMode().isMode(RollEditMode::eraseMode)))
+    // deleting clips and dragging the canvas on desktop platforms
+    if (this->roll.getEditMode().isMode(RollEditMode::eraseMode) ||
+        (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(RollEditMode::defaultMode)))
     {
-        this->setMouseCursor(MouseCursor::NormalCursor);
+        this->setMouseCursor(this->roll.getEditMode().getCursor()); // fixme?
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));
         return;
     }

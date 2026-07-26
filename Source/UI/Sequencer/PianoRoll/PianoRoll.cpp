@@ -384,16 +384,44 @@ void PianoRoll::hideAllGhostNotes()
 void PianoRoll::onLongTap(const Point<float> &position,
     const WeakReference<Component> &target)
 {
-    // try to switch to selected note's track:
-    if (!this->multiTouchController->hasMultiTouch() &&
-        !this->getEditMode().forbidsSelectionMode({}))
+    if (this->multiTouchController->hasMultiTouch())
     {
-        const auto *nc = dynamic_cast<NoteComponent *>(target.get());
-        if (nc != nullptr && !nc->isActiveAndEditable())
-        {
-            this->project.setEditableScope(nc->getClip(), false);
-            return;
-        }
+        return;
+    }
+
+    const auto *nc = dynamic_cast<NoteComponent *>(target.get());
+
+    // try to switch to the inactive note's track:
+    if (nc != nullptr && !nc->isActiveAndEditable() &&
+        !this->getEditMode().isMode(RollEditMode::dragMode) &&
+        this->newNoteDragging == nullptr && // not drawing a new note right now
+        this->knifeToolHelper == nullptr) // and not cutting anything
+    {
+        this->project.setEditableScope(nc->getClip(), false);
+        return;
+    }
+
+    // the draw tool and the cut tool are switched to their
+    // opposite actions (erase/merge) on rmb and long-tap in both rolls,
+    // see similar checks in PatternRoll::onLongTap and RollBase::mouseDown,
+    // also RollBase::mouseUp will switch back to the cut mode or the draw mode
+    if (nc != nullptr && nc->isActiveAndEditable() &&
+        this->getEditMode().isMode(RollEditMode::drawMode) &&
+        this->newNoteDragging == nullptr)
+    {
+        this->getEditMode().setMode(RollEditMode::eraseMode);
+        const auto tapPositionInRoll = nc->getPosition().toFloat() + position;
+        this->startErasingEvents(tapPositionInRoll);
+        return;
+    }
+
+    if (target == this &&
+        this->getEditMode().isMode(RollEditMode::knifeMode))
+    {
+        this->endCuttingEventsIfNeeded();
+        this->getEditMode().setMode(RollEditMode::mergeMode);
+        this->startMergingEvents(position);
+        return;
     }
 
     // else - start dragging lasso, if needed:
@@ -2051,6 +2079,8 @@ void PianoRoll::switchToClipInViewport() const
 
 void PianoRoll::startErasingEvents(const Point<float> &mousePosition)
 {
+    this->hideAllGhostNotes();
+    this->getTransport().stopSound();
     // just in case:
     this->notesToEraseOnMouseUp.clearQuick();
     // if we are already pointing at a note:
@@ -2176,6 +2206,7 @@ void PianoRoll::endCuttingEventsIfNeeded()
 void PianoRoll::startMergingEvents(const Point<float> &mousePosition)
 {
     this->deselectAll();
+    this->hideAllGhostNotes();
 
     NoteComponent *targetNote = nullptr;
     forEachEventComponent(this->patternMap, e)

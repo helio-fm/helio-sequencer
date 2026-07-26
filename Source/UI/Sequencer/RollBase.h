@@ -51,10 +51,6 @@ class TimelineWarningMarker;
 #include "Temperament.h"
 #include "ColourIDs.h"
 
-#if PLATFORM_MOBILE
-#   define ROLL_LISTENS_LONG_TAP 1
-#endif
-
 #define ROLL_BATCH_REPAINT_START \
     if (this->isEnabled()) { this->setVisible(false); }
 

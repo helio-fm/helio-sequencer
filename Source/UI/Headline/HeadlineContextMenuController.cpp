@@ -124,13 +124,6 @@ HeadlineContextMenuController::HeadlineContextMenuController(Component &owner) :
 
 void HeadlineContextMenuController::showMenu(const MouseEvent &e, int delay)
 {
-#if PLATFORM_DESKTOP
-    if (!e.mods.isRightButtonDown())
-    {
-        jassertfalse;
-        return;
-    }
-
     this->menuPosition = e.getEventRelativeTo(&App::Layout()).getPosition();
 
     if (!App::isUsingNativeTitleBar())
@@ -139,7 +132,20 @@ void HeadlineContextMenuController::showMenu(const MouseEvent &e, int delay)
     }
 
     this->startTimer(delay);
-#endif
+}
+
+void HeadlineContextMenuController::showMenu(const Component *component,
+    Point<int> positionRelativeToComponent, int delay)
+{
+    jassert(component != nullptr);
+    this->menuPosition = App::Layout().getLocalPoint(component, positionRelativeToComponent);
+
+    if (!App::isUsingNativeTitleBar())
+    {
+        this->menuPosition.y += Globals::UI::headlineHeight;
+    }
+
+    this->startTimer(delay);
 }
 
 void HeadlineContextMenuController::cancelIfPending()

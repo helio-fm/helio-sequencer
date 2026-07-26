@@ -24,6 +24,9 @@ public:
     explicit HeadlineContextMenuController(Component &owner);
 
     void showMenu(const MouseEvent &e, int delay = 0);
+    void showMenu(const Component *component,
+        Point<int> positionRelativeToComponent, int delay = 0);
+
     void cancelIfPending();
     inline bool isPending() const noexcept
     {

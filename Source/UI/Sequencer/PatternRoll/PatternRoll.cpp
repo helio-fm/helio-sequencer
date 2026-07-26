@@ -676,13 +676,28 @@ void PatternRoll::onLongTap(const Point<float> &position, const WeakReference<Co
         return;
     }
 
-    if (target == this)
+    if (target == this && // children are disabled in the knife mode
+        this->getEditMode().isMode(RollEditMode::knifeMode))
     {
-        if (this->getEditMode().isMode(RollEditMode::knifeMode))
+        this->endCuttingClipsIfNeeded(false, false);
+        this->getEditMode().setMode(RollEditMode::mergeMode);
+        this->startMergingEvents(position);
+    }
+
+    if (const auto *cc = dynamic_cast<ClipComponent *>(target.get()))
+    {
+        const auto tapPositionInRoll = cc->getPosition().toFloat() + position;
+        if (this->getEditMode().isMode(RollEditMode::defaultMode))
         {
-            this->endCuttingClipsIfNeeded(false, false);
-            this->getEditMode().setMode(RollEditMode::mergeMode);
-            this->startMergingEvents(position);
+            this->contextMenuController->showMenu(cc, position.toInt());
+            return;
+        }
+        else if (this->newClipDragging == nullptr &&
+            this->getEditMode().isMode(RollEditMode::drawMode))
+        {
+            this->getEditMode().setMode(RollEditMode::eraseMode);
+            this->startErasingEvents(tapPositionInRoll);
+            return;
         }
     }
 

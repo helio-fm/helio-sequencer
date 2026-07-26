@@ -128,10 +128,8 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     this->playhead = make<Playhead>(*this, this->project.getTransport(), this);
     this->addAndMakeVisible(this->playhead.get());
 
-#if ROLL_LISTENS_LONG_TAP
     this->longTapController = make<LongTapController>(*this);
     this->addMouseListener(this->longTapController.get(), true); // true = listens child events as well
-#endif
 
     this->multiTouchController = make<MultiTouchController>(*this);
     this->addMouseListener(this->multiTouchController.get(), true);
@@ -181,10 +179,7 @@ RollBase::~RollBase()
     this->project.removeListener(this);
 
     this->removeMouseListener(this->multiTouchController.get());
-
-#if ROLL_LISTENS_LONG_TAP
     this->removeMouseListener(this->longTapController.get());
-#endif
 }
 
 Viewport &RollBase::getViewport() const noexcept
@@ -1242,7 +1237,7 @@ void RollBase::mouseUp(const MouseEvent &e)
     {
         this->endErasingEvents();
         // the only way we can switch to erasing mode is by holding the rmb
-        // in the draw mode, and on mouse up we're switching back:
+        // or long-tap in the draw mode, and on mouse up we're switching back:
         jassert(this->project.getEditMode().isMode(RollEditMode::eraseMode));
         this->project.getEditMode().setMode(RollEditMode::drawMode);
     }

@@ -345,9 +345,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (e.mods.isRightButtonDown() &&
-        this->roll.getEditMode().isMode(RollEditMode::eraseMode))
+    if (this->roll.getEditMode().isMode(RollEditMode::eraseMode))
     {
+        this->setMouseCursor(this->roll.getEditMode().getCursor());
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
         return;
     }
@@ -589,13 +589,12 @@ void NoteComponent::mouseUp(const MouseEvent &e)
 
     this->getRoll().hideAllGhostNotes();
 
-    // deleting the note on desktop platforms
-    if (e.mods.isRightButtonDown() &&
-        (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
-            this->roll.getEditMode().isMode(RollEditMode::eraseMode)))
+    // deleting notes and dragging the canvas on desktop platforms
+    if (this->roll.getEditMode().isMode(RollEditMode::eraseMode) ||
+        (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(RollEditMode::defaultMode)))
     {
         this->stopSound();
-        this->setMouseCursor(MouseCursor::NormalCursor);
+        this->setMouseCursor(this->roll.getEditMode().getCursor());
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));
         return;
     }

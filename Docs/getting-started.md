@@ -239,9 +239,9 @@ Interacting with piano roll also depends on the current edit mode:
 
  * **normal mode** to manage selection and edit notes,
  * **pen mode** to add and edit notes,
-   * alternatively, use it to delete notes or clips with right mouse button,
+   * alternatively, use it to delete notes or clips with right mouse button or long tap,
  * **knife mode**: cuts notes in the piano roll, [cuts tracks](tips-and-tricks.md#knife-tool) in the pattern roll,
-   * alternatively, use it to [merge tracks](tips-and-tricks.md#merging-tracks) or notes with right mouse button,
+   * alternatively, use it to [merge tracks](tips-and-tricks.md#merging-tracks) or notes with right mouse button or long tap,
  * **drag-only mode**: an auxiliary mode, hold `Space` to [toggle](tips-and-tricks.md#spacebar-panning) it temporarily,
  * **selection mode** is only displayed on mobile platforms.
 

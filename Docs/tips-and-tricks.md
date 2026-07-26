@@ -64,7 +64,9 @@ Hold `Shift` to drag-and-copy notes in the piano roll, clips in the pattern roll
 
 ### Pen tool
 
-Also hold `Shift` or any modifier key to change the behavior of the pen tool when adding notes. By default, the newly added note is edited in transpose-and-resize mode. Alternatively, there is the drag mode, which is more familiar:
+The pen tool is switched to erasing mode with long tap or when using the right mouse button.
+
+Hold `Shift` or any modifier key when adding notes to change the behavior of the pen tool, the new note can be dragged around or resized in place:
 
 ![pen-tool-alt]
 
@@ -137,7 +139,7 @@ In my workflow, I'm often adding new tracks with a knife tool: even though there
 
 #### Merging tracks
 
-The knife tool has an alternative mode: right-click and drag (or long-tap and drag on mobile platforms) to merge one clip with another:
+The knife tool has an alternative mode: right-click and drag (or long tap and drag) to merge one clip with another:
 
 ![patterns-merge-tool]
 
