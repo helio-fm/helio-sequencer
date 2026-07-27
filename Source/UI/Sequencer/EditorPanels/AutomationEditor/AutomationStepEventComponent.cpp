@@ -58,10 +58,11 @@ void AutomationStepEventComponent::paint(Graphics &g)
     const float right = jmax(left, this->floatLocalBounds.getWidth() - r);
     const float top = r + marginTop;
     const float h = this->floatLocalBounds.getHeight() - d - marginTop - marginBottom;
-    const float y = top + (h * this->event.getControllerValue());
-    const float previousY = top + (h * (this->prevEventHolder != nullptr ?
+    
+    const float y = top + (h * (1.f - this->event.getControllerValue()));
+    const float previousY = top + (h * (1.f - (this->prevEventHolder != nullptr ?
         this->prevEventHolder->getEvent().getControllerValue() :
-        Globals::Defaults::onOffControllerState));
+        Globals::Defaults::onOffControllerState)));
 
     g.setColour(this->dotColour);
     g.fillRect(right - r, y - r + 1.f, d, d - 2.f);
@@ -70,10 +71,10 @@ void AutomationStepEventComponent::paint(Graphics &g)
     g.setColour(this->lineColour);
     if (y > previousY)
     {
-        // _
-        //  |
-        const bool compactMode =
-            this->prevEventHolder != nullptr && (this->getX() - this->prevEventHolder->getRight()) <= 0;
+
+        //  ‾|
+    
+        const bool compactMode = this->prevEventHolder != nullptr && (this->getX() - this->prevEventHolder->getRight()) <= 0;
 
         const auto offset = compactMode ? d : 0.f;
         g.fillRect(right, previousY + offset, 1.f, y - previousY - d - offset);
@@ -81,10 +82,10 @@ void AutomationStepEventComponent::paint(Graphics &g)
     }
     else if (previousY > y)
     {
+
         // _|
-        const bool compactMode =
-            (this->prevEventHolder != nullptr && (this->getX() - this->prevEventHolder->getRight()) <= 0) ||
-            (this->nextEventHolder != nullptr && (this->nextEventHolder->getX() - this->getRight()) <= 0);
+
+        const bool compactMode = (this->prevEventHolder != nullptr && (this->getX() - this->prevEventHolder->getRight()) <= 0) || (this->nextEventHolder != nullptr && (this->nextEventHolder->getX() - this->getRight()) <= 0);
 
         g.fillRect(right, y + d, 1.f, previousY - y - d - (compactMode ? d : 0.f));
         g.drawHorizontalLine(roundToInt(previousY), left, compactMode ? right - r : right);
