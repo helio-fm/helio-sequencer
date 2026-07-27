@@ -254,6 +254,30 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
     this->uiScaleTitle->setBorderSize({ 0, 2, 0, 2 });
     this->uiScaleTitle->setInterceptsMouseClicks(false, false);
 
+    this->scaleUi05 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97 0.5"));
+    this->addAndMakeVisible(this->scaleUi05.get());
+    this->scaleUi05->onClick = [this]()
+    {
+        BailOutChecker checker(this);
+        App::Config().getUiFlags()->setUiScaleFactor(0.5f);
+        if (!checker.shouldBailOut())
+        {
+            this->updateButtons();
+        }
+    };
+
+    this->scaleUi075 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97 0.75"));
+    this->addAndMakeVisible(this->scaleUi075.get());
+    this->scaleUi075->onClick = [this]()
+    {
+        BailOutChecker checker(this);
+        App::Config().getUiFlags()->setUiScaleFactor(0.75f);
+        if (!checker.shouldBailOut())
+        {
+            this->updateButtons();
+        }
+    };
+    
     this->scaleUi1 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97 1"));
     this->addAndMakeVisible(this->scaleUi1.get());
     this->scaleUi1->onClick = [this]()
@@ -317,17 +341,22 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
     this->germanNotation->setRadioGroupId(1);
     this->fixedDoNotation->setRadioGroupId(1);
 
+    this->scaleUi05->setRadioGroupId(2);
+    this->scaleUi075->setRadioGroupId(2);
     this->scaleUi1->setRadioGroupId(2);
     this->scaleUi125->setRadioGroupId(2);
     this->scaleUi15->setRadioGroupId(2);
     this->scaleUi175->setRadioGroupId(2);
     this->scaleUi2->setRadioGroupId(2);
 
-#if SIMPLIFIED_UI_SETTINGS
-    this->setSize(100, 460);
-#else
-    this->setSize(100, 675);
-#endif
+    // This size for bg panel from "UI Options" section.
+    // Change it, if you will add new parameter into "UI Options" section, else "Audio" section has will overlapped by params of this section.
+    #if SIMPLIFIED_UI_SETTINGS
+        this->setSize(100, 510);
+    #else
+        this->setSize(100, 725);
+    #endif
+    
 }
 
 UserInterfaceSettings::~UserInterfaceSettings() = default;
@@ -432,8 +461,14 @@ void UserInterfaceSettings::resized()
         this->uiScaleSeparator->getBottom() + separatorMargin + rowSpacing,
         this->getWidth() - margin2 * 2, titleSize);
 
-    this->scaleUi1->setBounds(margin2,
+    this->scaleUi05->setBounds(margin2,
         this->uiScaleTitle->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+
+    this->scaleUi075->setBounds(margin2,
+        this->scaleUi05->getBottom(), this->getWidth() - margin2 * 2, rowSize);
+    
+    this->scaleUi1->setBounds(margin2,
+        this->scaleUi075->getBottom(), this->getWidth() - margin2 * 2, rowSize);
 
     this->scaleUi125->setBounds(margin2,
         this->scaleUi1->getBottom(), this->getWidth() - margin2 * 2, rowSize);
@@ -446,6 +481,7 @@ void UserInterfaceSettings::resized()
 
     this->scaleUi2->setBounds(margin2,
         this->scaleUi175->getBottom(), this->getWidth() - margin2 * 2, rowSize);
+    
 }
 
 void UserInterfaceSettings::visibilityChanged()
@@ -509,6 +545,8 @@ void UserInterfaceSettings::updateButtons()
     this->highlightScalesButton->setToggleState(uiFlags->isScalesHighlightingEnabled(), dontSendNotification);
     this->animationsEnabledButton->setToggleState(uiFlags->areUiAnimationsEnabled(), dontSendNotification);
 
+    this->scaleUi05->setToggleState(uiFlags->getUiScaleFactor() == 0.5f, dontSendNotification);
+    this->scaleUi075->setToggleState(uiFlags->getUiScaleFactor() == 0.75f, dontSendNotification);    
     this->scaleUi1->setToggleState(uiFlags->getUiScaleFactor() == 1.f, dontSendNotification);
     this->scaleUi125->setToggleState(uiFlags->getUiScaleFactor() == 1.25f, dontSendNotification);
     this->scaleUi15->setToggleState(uiFlags->getUiScaleFactor() == 1.5f, dontSendNotification);

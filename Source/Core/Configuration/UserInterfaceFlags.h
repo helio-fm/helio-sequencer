@@ -212,7 +212,7 @@ private:
     MouseWheelFlags mouseWheelFlags;
 
     float uiScaleFactor = 1.f;
-    static constexpr auto minUiScaleFactor = 1.f;
+    static constexpr auto minUiScaleFactor = 0.5f;
     static constexpr auto maxUiScaleFactor = 3.f;
 
     bool metronomeEnabled = false;

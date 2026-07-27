@@ -58,6 +58,8 @@ private:
     UniquePointer<ToggleButton> animationsEnabledButton;
     UniquePointer<SeparatorHorizontal> uiScaleSeparator;
     UniquePointer<Label> uiScaleTitle;
+    UniquePointer<ToggleButton> scaleUi05;
+    UniquePointer<ToggleButton> scaleUi075;
     UniquePointer<ToggleButton> scaleUi1;
     UniquePointer<ToggleButton> scaleUi125;
     UniquePointer<ToggleButton> scaleUi15;
