@@ -429,7 +429,7 @@ bool RollBase::panByOffset(int offsetX, int offsetY)
     {
         const float numBeatsToExpand = getNumBeatsToExpand(this->beatWidth);
         const float deltaW = float(this->beatWidth * numBeatsToExpand);
-        this->clickAnchor.addXY(deltaW, 0); // an ugly hack
+        this->clickAnchor.addXY(deltaW * this->uiScaleFactor, 0); // to avoid glitches while dragging
         this->project.broadcastChangeViewBeatRange(this->firstBeat - numBeatsToExpand, this->lastBeat);
         this->viewport.setViewPosition(offsetX + int(deltaW), offsetY); // after setFirstBeat
         this->header->addAndMakeVisible(new RollExpandMark(*this, this->firstBeat, numBeatsToExpand));
