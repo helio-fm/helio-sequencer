@@ -21,6 +21,7 @@
 #include "OrchestraPitNode.h"
 #include "InstrumentMenu.h"
 #include "HeadlineContextMenuController.h"
+#include "LongTapController.h"
 #include "Instrument.h"
 #include "MainLayout.h"
 #include "HelioTheme.h"
@@ -47,11 +48,17 @@ InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner,
 
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
+    this->longTapController = make<LongTapController>(*this);
+    this->addMouseListener(this->longTapController.get(), true);
+
     this->instrumentsList->setMultipleSelectionEnabled(false);
     this->instrumentsList->setRowHeight(InstrumentsListComponent::rowHeight);
 }
 
-InstrumentsListComponent::~InstrumentsListComponent() = default;
+InstrumentsListComponent::~InstrumentsListComponent()
+{
+    this->removeMouseListener(this->longTapController.get());
+}
 
 void InstrumentsListComponent::resized()
 {
@@ -177,6 +184,34 @@ void InstrumentsListComponent::listBoxItemDoubleClicked(int rowNumber, const Mou
         instrumentNode->setSelected();
     }
 #endif
+}
+
+//===----------------------------------------------------------------------===//
+// Long Tap
+//===----------------------------------------------------------------------===//
+
+void InstrumentsListComponent::onLongTap(const Point<float> &position,
+    const WeakReference<Component> &target)
+{
+    if (target == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
+    const auto positionInList = this->instrumentsList->
+        getLocalPoint(target, position).toInt();
+    const auto row = this->instrumentsList->
+        getRowContainingPosition(positionInList.x, positionInList.y);
+
+    if (row >= 0 && this->instrumentsList->isRowSelected(row))
+    {
+        const auto instrument = this->instruments[row];
+        if (instrument != nullptr)
+        {
+            this->contextMenuController->showMenu(target, position.toInt());
+        }
+    }
 }
 
 //===----------------------------------------------------------------------===//

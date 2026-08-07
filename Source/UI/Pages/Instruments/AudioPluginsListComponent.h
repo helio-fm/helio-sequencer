@@ -21,7 +21,9 @@ class PluginScanner;
 class OrchestraPitNode;
 class MenuItemComponent;
 class HeadlineContextMenuController;
+class LongTapController;
 
+#include "LongTapListener.h"
 #include "HeadlineItemDataSource.h"
 #include "SeparatorHorizontalFading.h"
 #include "SeparatorHorizontalFading.h"
@@ -29,6 +31,7 @@ class HeadlineContextMenuController;
 
 class AudioPluginsListComponent final :
     public Component,
+    public LongTapListener,
     public TableListBoxModel,
     public HeadlineItemDataSource
 {
@@ -63,6 +66,13 @@ public:
     bool canBeSelectedAsMenuItem() const override;
 
     //===------------------------------------------------------------------===//
+    // LongTapListener
+    //===------------------------------------------------------------------===//
+
+    void onLongTap(const Point<float> &position,
+        const WeakReference<Component> &target) override;
+
+    //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
@@ -73,7 +83,9 @@ private:
 
     PluginScanner &pluginScanner;
     OrchestraPitNode &instrumentsRoot;
+
     UniquePointer<HeadlineContextMenuController> contextMenuController;
+    UniquePointer<LongTapController> longTapController;
 
 #if PLATFORM_DESKTOP
     static constexpr auto rowHeight = 60;

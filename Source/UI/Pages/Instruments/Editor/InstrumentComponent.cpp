@@ -79,6 +79,11 @@ void InstrumentComponent::mouseUp(const MouseEvent &e)
         return;
     }
 
+    if (this->getParentEditor()->isNodeSelected(this->nodeId))
+    {
+        return;
+    }
+
 #if PLATFORM_DESKTOP
     if (e.mods.isRightButtonDown() ||
         e.mods.isAnyModifierKeyDown() ||

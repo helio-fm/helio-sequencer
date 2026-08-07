@@ -23,6 +23,7 @@
 #include "InstrumentEditorConnector.h"
 #include "InstrumentNodeSelectionMenu.h"
 #include "HeadlineContextMenuController.h"
+#include "LongTapController.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "MainLayout.h"
@@ -41,6 +42,9 @@ InstrumentEditor::InstrumentEditor(WeakReference<Instrument> instrument) :
 
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
+    this->longTapController = make<LongTapController>(*this);
+    this->addMouseListener(this->longTapController.get(), true);
+
     this->instrument->addChangeListener(this);
 
     App::Workspace().getAudioCore().getDevice().addChangeListener(this);
@@ -54,6 +58,8 @@ InstrumentEditor::~InstrumentEditor()
     {
         this->instrument->removeChangeListener(this);
     }
+
+    this->removeMouseListener(this->longTapController.get());
 
     this->draggingConnector = nullptr;
     this->background = nullptr;
@@ -74,6 +80,34 @@ void InstrumentEditor::resized()
 void InstrumentEditor::changeListenerCallback(ChangeBroadcaster *)
 {
     this->updateComponents();
+}
+
+void InstrumentEditor::onLongTap(const Point<float> &position,
+    const WeakReference<Component> &target)
+{
+    if (const auto *ic = dynamic_cast<InstrumentComponent *>(target.get()))
+    {
+        this->selectedNode = ic->nodeId;
+
+        // this duplicates the code at selectNode, except we don't have a mouse event here
+        for (int i = this->getNumChildComponents(); --i >= 0 ;)
+        {
+            if (auto *c = dynamic_cast<InstrumentComponent *>(this->getChildComponent(i)))
+            {
+                c->setSelected(c->nodeId == this->selectedNode);
+            }
+        }
+
+        App::Layout().hideSelectionMenu();
+
+        if (this->selectedNode != idZero)
+        {
+            App::Layout().showSelectionMenu(this);
+            this->contextMenuController->showMenu(ic, position.toInt(), 0);
+        }
+
+        return;
+    }
 }
 
 InstrumentComponent *InstrumentEditor::getComponentForNode(AudioProcessorGraph::NodeID id) const
@@ -139,6 +173,11 @@ void InstrumentEditor::deselectAllNodes()
     App::Layout().hideSelectionMenu();
 }
 
+bool InstrumentEditor::isNodeSelected(AudioProcessorGraph::NodeID id) const noexcept
+{
+    return this->selectedNode == id;
+}
+
 void InstrumentEditor::selectNode(AudioProcessorGraph::NodeID id, const MouseEvent &e)
 {
     if (e.mods.isRightButtonDown())
@@ -178,7 +217,7 @@ void InstrumentEditor::updateComponents()
 
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
-        if (auto *fc = dynamic_cast<InstrumentComponent *>(getChildComponent(i)))
+        if (auto *fc = dynamic_cast<InstrumentComponent *>(this->getChildComponent(i)))
         {
             fc->update();
         }
@@ -186,7 +225,7 @@ void InstrumentEditor::updateComponents()
 
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
-        auto *cc = dynamic_cast<InstrumentEditorConnector *>(getChildComponent(i));
+        auto *cc = dynamic_cast<InstrumentEditorConnector *>(this->getChildComponent(i));
         if (cc != nullptr && cc != this->draggingConnector.get())
         {
             if (!instrument->isConnected(cc->connection))

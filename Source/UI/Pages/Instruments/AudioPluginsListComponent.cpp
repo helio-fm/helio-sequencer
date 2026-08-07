@@ -24,6 +24,7 @@
 #include "OrchestraPitNode.h"
 #include "AudioPluginSelectionMenu.h"
 #include "HeadlineContextMenuController.h"
+#include "LongTapController.h"
 #include "PluginScanner.h"
 #include "MainLayout.h"
 #include "HelioTheme.h"
@@ -66,6 +67,9 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     this->addAndMakeVisible(this->titleSeparator.get());
 
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
+
+    this->longTapController = make<LongTapController>(*this);
+    this->addMouseListener(this->longTapController.get(), true);
 
     this->initialScanButton1 = make<MenuItemComponent>(this, nullptr,
         MenuItem::item(Icons::instrument, CommandIDs::ScanAllPlugins,
@@ -120,7 +124,10 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     this->pluginsList->setMultipleSelectionEnabled(false);
 }
 
-AudioPluginsListComponent::~AudioPluginsListComponent() = default;
+AudioPluginsListComponent::~AudioPluginsListComponent()
+{
+    this->removeMouseListener(this->longTapController.get());
+}
 
 void AudioPluginsListComponent::resized()
 {
@@ -379,6 +386,30 @@ void AudioPluginsListComponent::selectedRowsChanged(int lastRowSelected)
     if (auto *parent = dynamic_cast<OrchestraPitPage *>(this->getParentComponent()))
     {
         parent->onPluginsSelectionChanged();
+    }
+}
+
+//===----------------------------------------------------------------------===//
+// Long Tap
+//===----------------------------------------------------------------------===//
+
+void AudioPluginsListComponent::onLongTap(const Point<float> &position,
+    const WeakReference<Component> &target)
+{
+    if (target == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
+    const auto positionInList =
+        this->pluginsList->getLocalPoint(target, position).toInt();
+    const auto row = this->pluginsList->
+        getRowContainingPosition(positionInList.x, positionInList.y);
+
+    if (row >= 0 && this->pluginsList->isRowSelected(row))
+    {
+        this->contextMenuController->showMenu(target, position.toInt());
     }
 }
 

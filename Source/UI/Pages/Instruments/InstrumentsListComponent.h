@@ -20,13 +20,16 @@
 class PluginScanner;
 class OrchestraPitNode;
 class HeadlineContextMenuController;
+class LongTapController;
 
+#include "LongTapListener.h"
 #include "HeadlineItemDataSource.h"
 #include "InstrumentNode.h"
 #include "SeparatorHorizontalFadingReversed.h"
 
 class InstrumentsListComponent final :
     public Component,
+    public LongTapListener,
     public ListBoxModel,
     public HeadlineItemDataSource
 {
@@ -59,6 +62,13 @@ public:
     bool canBeSelectedAsMenuItem() const override;
 
     //===------------------------------------------------------------------===//
+    // LongTapListener
+    //===------------------------------------------------------------------===//
+
+    void onLongTap(const Point<float> &position,
+        const WeakReference<Component> &target) override;
+
+    //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
@@ -71,6 +81,7 @@ private:
     OrchestraPitNode &instrumentsRoot;
 
     UniquePointer<HeadlineContextMenuController> contextMenuController;
+    UniquePointer<LongTapController> longTapController;
 
     Array<WeakReference<InstrumentNode>> instruments;
     Image instrumentIcon;

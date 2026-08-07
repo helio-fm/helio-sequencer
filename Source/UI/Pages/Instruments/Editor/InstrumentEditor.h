@@ -18,9 +18,11 @@
 #pragma once
 
 #include "Instrument.h"
+#include "LongTapListener.h"
 #include "HeadlineItemDataSource.h"
 #include "ComponentFader.h"
 
+class LongTapController;
 class HeadlineContextMenuController;
 class InstrumentComponent;
 class InstrumentEditorConnector;
@@ -29,7 +31,8 @@ class AudioCore;
 
 class InstrumentEditor final :
     public Component,
-    public ChangeListener,
+    public ChangeListener, // listens to instrument and audio device
+    public LongTapListener,
     public HeadlineItemDataSource
 {
 public:
@@ -39,17 +42,28 @@ public:
 
     void deselectAllNodes();
     void selectNode(AudioProcessorGraph::NodeID id, const MouseEvent &e);
+    bool isNodeSelected(AudioProcessorGraph::NodeID id) const noexcept;
     void updateComponents();
 
     InstrumentComponent *getComponentForNode(AudioProcessorGraph::NodeID id) const;
     InstrumentEditorConnector *getComponentForConnection(AudioProcessorGraph::Connection conn) const;
     InstrumentEditorPin *findPinAt(const int x, const int y) const;
 
+    void changeListenerCallback(ChangeBroadcaster *) override;
+
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
     void mouseDown(const MouseEvent &e) override;
     void resized() override;
 
-    // Listens to instrument and audio device
-    void changeListenerCallback(ChangeBroadcaster *) override;
+    //===------------------------------------------------------------------===//
+    // LongTapListener
+    //===------------------------------------------------------------------===//
+
+    void onLongTap(const Point<float> &position,
+        const WeakReference<Component> &target) override;
 
     //===------------------------------------------------------------------===//
     // HeadlineItemDataSource
@@ -83,6 +97,7 @@ private:
 
     AudioProcessorGraph::NodeID selectedNode;
 
+    UniquePointer<LongTapController> longTapController;
     UniquePointer<HeadlineContextMenuController> contextMenuController;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentEditor)

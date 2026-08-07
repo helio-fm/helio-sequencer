@@ -37,7 +37,6 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu() noexcept
     const bool acceptsAudio = this->node->getProcessor()->getTotalNumInputChannels() > 0;
     const bool producesAudio = this->node->getProcessor()->getTotalNumOutputChannels() > 0;
     const bool hasConnections = this->instrument.hasConnectionsFor(this->node);
-
     const auto hasEditor = this->node->getProcessor()->hasEditor();
 
     menu.add(MenuItem::item(Icons::instrument,
@@ -46,7 +45,7 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu() noexcept
         withAction([this]()
         {
             MessageManager::callAsync([this]() {
-                PluginWindow::showWindowFor(this->instrument.getIdAndHash());
+                PluginWindow::showWindowFor(this->node);
             });
         }));
 
