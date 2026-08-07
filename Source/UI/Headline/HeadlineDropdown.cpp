@@ -226,6 +226,11 @@ void HeadlineDropdown::resized()
 
 void HeadlineDropdown::mouseDown(const MouseEvent &e)
 {
+    if (e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
+    {
+        return;
+    }
+
     if (this->item != nullptr)
     {
         this->item->onSelectedAsMenuItem();
@@ -253,7 +258,6 @@ void HeadlineDropdown::handleCommandMessage(int commandId)
     case CommandIDs::DismissModalComponentAsync:
     case CommandIDs::MenuDismiss:
         // exit triggered asynchronously by the content component:
-        // fixme doesnt work well, the menu may re-appear instantly
         this->dismiss();
         return;
     case CommandIDs::MenuSelect:

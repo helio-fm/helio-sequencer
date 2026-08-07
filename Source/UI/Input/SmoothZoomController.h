@@ -103,7 +103,7 @@ private:
         static constexpr auto zoomDecayFactor = 0.72f;
         static constexpr auto zoomDecayFactorNoAnim = 0.8f;
         static constexpr auto zoomStopFactor = 0.0005f;
-        static constexpr auto initialZoomSpeed = 0.35f;
+        static constexpr auto initialZoomSpeed = 0.33f;
     };
 
     float factorX = 0.f;

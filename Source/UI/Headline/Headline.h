@@ -31,7 +31,7 @@ class HeadlineItemDataSource;
 class Headline final :
     public Component,
     public AsyncUpdater, // called when any child needs to be updated
-    UserInterfaceFlags::Listener
+    public UserInterfaceFlags::Listener
 {
 public:
 

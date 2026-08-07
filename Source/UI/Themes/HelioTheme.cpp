@@ -789,8 +789,7 @@ void HelioTheme::initResources() noexcept
     }
 
 #if JUCE_LINUX
-    preferredFontNames.add("Ubuntu");
-    preferredFontNames.add("Liberation Sans");
+    preferredFontNames.addArray({ "Ubuntu", "Liberation Sans" });
 #endif
 
     String pickedFontName;
@@ -876,7 +875,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
     this->setColour(CodeEditorComponent::highlightColourId, codeEditorFill.
         interpolatedWith(s->getScriptFunctionColour(), 0.0420f).
         withMultipliedLightness(1.337f));
-    
+
     this->setColour(CodeEditorComponent::defaultTextColourId, s->getScriptTextColour());
     this->setColour(CodeEditorComponent::lineNumberBackgroundId, codeEditorFill);
     this->setColour(CodeEditorComponent::lineNumberTextId,

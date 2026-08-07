@@ -119,7 +119,7 @@ MainLayout::MainLayout() noexcept
     this->setFocusContainerType(Component::FocusContainerType::keyboardFocusContainer);
     this->setWantsKeyboardFocus(true);
     this->setPaintingIsUnclipped(true);
-    this->setInterceptsMouseClicks(false, true);
+    this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(true);
     this->setAccessible(false);
 
@@ -538,9 +538,6 @@ void MainLayout::handleCommandMessage(int commandId)
         {
             project->selectFirstChildOfType<VersionControlNode>();
         }
-        break;
-    case CommandIDs::ShowRootPage:
-        App::Workspace().getTreeRoot()->setSelected();
         break;
     case CommandIDs::ShowPreviousPage:
         App::Workspace().navigateBackwardIfPossible();

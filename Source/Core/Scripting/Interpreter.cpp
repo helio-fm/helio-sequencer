@@ -694,7 +694,7 @@ Value nth(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &c
 
     const auto i = args.getReference(0).castToInteger();
     const auto &list = args.getReference(1).asList();
-    if (list.isEmpty() || i >= list.size())
+    if (list.isEmpty() || i < 0 || i >= list.size())
     {
         throw args.getReference(0).makeError(EvaluationError::Type::IndexOutOfRange);
     }
@@ -724,7 +724,7 @@ Value insert(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
 
     const auto i = args.getReference(1).castToInteger();
     auto list = args.getReference(2).asList();
-    if (i > list.size())
+    if (i < 0 || i > list.size())
     {
         throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
     }
@@ -740,7 +740,7 @@ Value remove(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
 
     const auto i = args.getReference(0).castToInteger();
     auto list = args.getReference(1).asList();
-    if (list.isEmpty() || i >= list.size())
+    if (list.isEmpty() || i < 0 || i >= list.size())
     {
         throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
     }

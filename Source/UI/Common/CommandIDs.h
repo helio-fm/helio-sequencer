@@ -139,8 +139,7 @@ namespace CommandIDs
         SwitchToVersioningMode          = 0x2503,
         ShowPreviousPage                = 0x2504,
         ShowNextPage                    = 0x2505,
-        ShowRootPage                    = 0x2506,
-        ToggleShowHideCombo             = 0x2507,
+        ToggleShowHideCombo             = 0x2506,
 
         StartDragViewport               = 0x2510,
         EndDragViewport                 = 0x2511,
