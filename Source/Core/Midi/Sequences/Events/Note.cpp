@@ -43,7 +43,7 @@ void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
 {
     const auto keyWithOffset = this->key + clip.getKey();
     const auto finalVolume = this->velocity * clip.getVelocity();
-    const auto tupletLength = this->length / float(this->tuplet);
+    const auto tupletLength = jmax(this->length, Globals::minNoteLength) / float(this->tuplet);
     const auto mapped = keyMap.map(keyWithOffset, this->sequence->getChannel());
 
     for (int i = 0; i < this->tuplet; ++i)
@@ -214,7 +214,7 @@ SerializedData Note::serialize() const noexcept
     tree.setProperty(Midi::id, packId(this->id));
     tree.setProperty(Midi::key, this->key);
     tree.setProperty(Midi::timestamp, int(this->beat * Globals::ticksPerBeat));
-    tree.setProperty(Midi::length, int(this->length * Globals::ticksPerBeat));
+    tree.setProperty(Midi::length, int(jmax(this->length, Globals::minNoteLength) * Globals::ticksPerBeat));
     tree.setProperty(Midi::volume, int(this->velocity * Globals::velocitySaveResolution));
     if (this->tuplet > 1)
     {
@@ -230,7 +230,8 @@ void Note::deserialize(const SerializedData &data) noexcept
     this->id = unpackId(data.getProperty(Midi::id));
     this->key = data.getProperty(Midi::key);
     this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
-    this->length = float(data.getProperty(Midi::length)) / Globals::ticksPerBeat;
+    this->length = jmax(Globals::minNoteLength,
+        float(data.getProperty(Midi::length)) / Globals::ticksPerBeat);
     this->velocity = jlimit(0.f, 1.f,
         float(data.getProperty(Midi::volume)) / Globals::velocitySaveResolution);
     this->tuplet = Tuplet(int(data.getProperty(Midi::tuplet, 1)));
