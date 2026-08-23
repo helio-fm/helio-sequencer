@@ -81,7 +81,7 @@ namespace Serialization
         static const Identifier temperamentPeriodRange = "periodRange";
         static const Identifier temperamentHighlighting = "highlighting";
         static const Identifier temperamentChromaticMap = "chromaticMap";
-        static const Identifier temperamentChromaticScale = "chromaticScale";
+        // static const Identifier temperamentChromaticScale = "chromaticScale";
 
         // Chords
         static const Identifier chord = "chord";

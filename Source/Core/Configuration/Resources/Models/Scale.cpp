@@ -282,7 +282,11 @@ int Scale::compare(const Scale::Ptr other) const
         return 0;
     }
 
-    jassert(this->basePeriod == other->basePeriod);
+    if (const auto diff = this->basePeriod - other->basePeriod)
+    {
+        // jassertfalse;
+        return diff < 0 ? -1 : 1;
+    }
 
     if (const auto diff = this->keys.size() - other->keys.size())
     {

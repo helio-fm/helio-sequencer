@@ -28,9 +28,9 @@ KeySelector::KeySelector(const Temperament::Period &period)
     const auto useFixedDo = App::Config().getUiFlags()->isUsingFixedDoNotation();
 
     // arrange the enharmonics so that the first one in the list
-    // is considered the main one andis placed in the center;
+    // is considered the main one and is placed in the center;
     // if any others are present, sharps are placed in
-    // the top row andflats are placed in the bottom row:
+    // the top row and flats are placed in the bottom row:
     for (int i = 0; i < period.size(); ++i)
     {
         const auto &enharmonics = period.getReference(i);
@@ -156,7 +156,7 @@ void KeySelector::setSelectedKey(int key, const String &keyName)
         if (auto *button = dynamic_cast<RadioButton *>(child))
         {
             if (button->getButtonIndex() == key &&
-                button->getButtonName() == keyName)
+                (keyName.isEmpty() || button->getButtonName() == keyName))
             {
                 button->select();
             }

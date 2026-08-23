@@ -684,6 +684,7 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
         const auto &oldKey = static_cast<const KeySignatureEvent &>(oldEvent);
         const auto &newKey = static_cast<const KeySignatureEvent &>(newEvent);
         if (oldKey.getRootKey() != newKey.getRootKey() ||
+            oldKey.getRootKeyName() != newKey.getRootKeyName() ||
             !oldKey.getScale()->isEquivalentTo(newKey.getScale()))
         {
             this->removeBackgroundCacheFor(oldKey);

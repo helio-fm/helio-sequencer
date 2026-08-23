@@ -5517,35 +5517,12 @@ static const unsigned char temp_binary_data_121[] =
 "        \"name\": \"12 equal temperament\",\n"
 "        \"period\": \"C/B# C#/Db D Eb/D# E/Fb F/E# F#/Gb G G#/Ab A Bb/A# B/Cb\",\n"
 "        \"highlighting\": \"2 2 1 2 2 2 1\",\n"
-"        \"chromaticMap\": \"1 1 1 1 1 1 1 1 1 1 1 1\",\n"
-"        \"chromaticScale\": [\n"
-"          { \"key\": \"A\", \"scale\": \"A A# B C C# D D# E F F# G G#\" },\n"
-"          { \"key\": \"Ab\", \"scale\": \"Ab A Bb B C Db D Eb E F Gb G\" },\n"
-"          { \"key\": \"A#\", \"scale\": \"A# B C C# D D# E F F# G G# A\" },\n"
-"          { \"key\": \"B\", \"scale\": \"B C C# D D# E F F# G G# A A#\" },\n"
-"          { \"key\": \"Bb\", \"scale\": \"Bb B C Db D Eb E F Gb G Ab A\" },\n"
-"          { \"key\": \"B#\", \"scale\": \"B# C# D D# E F F# G G# A A# B\" },\n"
-"          { \"key\": \"C\", \"scale\": \"C C# D D# E F F# G G# A A# B\" },\n"
-"          { \"key\": \"Cb\", \"scale\": \"Cb C Db D Eb E F Gb G Ab A Bb\" },\n"
-"          { \"key\": \"C#\", \"scale\": \"C# D D# E F F# G G# A A# B C\" },\n"
-"          { \"key\": \"D\", \"scale\": \"D D# E F F# G G# A A# B C C#\" },\n"
-"          { \"key\": \"Db\", \"scale\": \"Db D Eb E F Gb G Ab A Bb B C\" },\n"
-"          { \"key\": \"D#\", \"scale\": \"D# E F F# G G# A A# B C C# D\" },\n"
-"          { \"key\": \"E\", \"scale\": \"E F F# G G# A A# B C C# D D#\" },\n"
-"          { \"key\": \"Eb\", \"scale\": \"Eb E F Gb G Ab A Bb B C Db D\" },\n"
-"          { \"key\": \"E#\", \"scale\": \"E# F# G G# A A# B C C# D D# E\" },\n"
-"          { \"key\": \"F\", \"scale\": \"F Gb G Ab A Bb B C Db D Eb E\" },\n"
-"          { \"key\": \"Fb\", \"scale\": \"Fb F Gb G Ab A Bb B C Db D Eb\" },\n"
-"          { \"key\": \"F#\", \"scale\": \"F# G G# A A# B C C# D D# E F\" },\n"
-"          { \"key\": \"G\", \"scale\": \"G G# A A# B C C# D D# E F F#\" },\n"
-"          { \"key\": \"Gb\", \"scale\": \"Gb G Ab A Bb B C Db D Eb E F\" },\n"
-"          { \"key\": \"G#\", \"scale\": \"G# A A# B C C# D D# E F F# G\" }\n"
-"        ]\n"
+"        \"chromaticMap\": \"1 1 1 1 1 1 1 1 1 1 1 1\"\n"
 "      },\n"
 "      {\n"
 "        \"id\": \"19edo\",\n"
 "        \"name\": \"19 equal temperament\",\n"
-"        \"period\": \"C C# Cx D D# Eb E E# F F# Fx G G# Ab A A# Bb B B#\",\n"
+"        \"period\": \"C/Bx C#/Dbb Db/Cx D D#/Ebb Eb/Dx E/Fbb E#/Fb F/Ex F#/Gbb Gb/Fx G G#/Abb Ab/Gx A A#/Bbb Bb/Ax B/Cbb B#/Cb\",\n"
 "        \"highlighting\": \"2 1 2 1 2 2 1 2 1 2 2 1\",\n"
 "        \"chromaticMap\": \"2 1 2 1 2 2 1 2 1 2 2 1\"\n"
 "      },\n"
@@ -5559,7 +5536,7 @@ static const unsigned char temp_binary_data_121[] =
 "      {\n"
 "        \"id\": \"26edo\",\n"
 "        \"name\": \"26 equal temperament\",\n"
-"        \"period\": \"D D# Ebb Eb E E# Fb F F# Fx Gb G G# Gx Ab A A# Bbb Bb B B# Cb C C# Cx Db\",\n"
+"        \"period\": \"C C# Cx Db D D# Ebb Eb E E# Fb F F# Fx Gb G G# Gx Ab A A# Bbb Bb B B# Cb\",\n"
 "        \"highlighting\": \"2 2 3 1 3 2 2 2 2 3 2 2\",\n"
 "        \"chromaticMap\": \"2 2 3 1 3 2 2 2 2 3 2 2\"\n"
 "      },\n"
@@ -5732,7 +5709,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 13262; return scales_json;
-        case 0x77719112:  numBytes = 2856; return temperaments_json;
+        case 0x77719112:  numBytes = 1448; return temperaments_json;
         case 0xf8655f25:  numBytes = 664; return translations_json;
         default: break;
     }

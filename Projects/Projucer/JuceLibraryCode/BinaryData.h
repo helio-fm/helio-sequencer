@@ -372,7 +372,7 @@ namespace BinaryData
     const int            scales_jsonSize = 13262;
 
     extern const char*   temperaments_json;
-    const int            temperaments_jsonSize = 2856;
+    const int            temperaments_jsonSize = 1448;
 
     extern const char*   translations_json;
     const int            translations_jsonSize = 664;

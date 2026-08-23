@@ -48,14 +48,14 @@ String Temperament::getMidiNoteName(Note::Key note, int scaleRootKey,
     if (isPositiveAndBelow(note, this->getNumKeys()))
     {
         const auto rootKeyNameFallback = this->period[scaleRootKey % this->getPeriodSize()][0];
-        const auto foundUserScale = this->chromaticScales.find(
+        const auto foundChromaticScale = this->chromaticScales.find(
             rootKeyEnharmonic.isEmpty() ? rootKeyNameFallback : rootKeyEnharmonic);
 
         const auto inScaleKey = Scale::wrapKey(note - scaleRootKey, 0, this->getPeriodSize());
 
         const auto noteNameFallback = this->period[note % this->getPeriodSize()][0];
-        const String result = foundUserScale != this->chromaticScales.end() ?
-            foundUserScale->second[inScaleKey] :
+        const String result = foundChromaticScale != this->chromaticScales.end() ?
+            foundChromaticScale->second[inScaleKey] :
             noteNameFallback;
 
         outPeriodNumber = note / this->getPeriodSize() +
@@ -102,6 +102,78 @@ String Temperament::getResourceId() const noexcept
 
 static const String defaultTemperamentId = "12edo";
 
+static StringArray makeChromaticNames(const String &rootKeyEnharmonic,
+    const Temperament::Period &period)
+{
+    int rootIndex = -1;
+    for (int i = 0; i < period.size(); ++i)
+    {
+        if (period.getReference(i).indexOf(rootKeyEnharmonic) >= 0)
+        {
+            rootIndex = i;
+            break;
+        }
+    }
+
+    if (rootIndex < 0)
+    {
+        jassertfalse;
+        return {};
+    }
+
+    const auto isFlatRoot = rootKeyEnharmonic.endsWithChar('b');
+
+    StringArray result;
+    result.add(rootKeyEnharmonic);
+    for (int i = 1; i < period.size(); ++i)
+    {
+        const auto index = (i + rootIndex) % period.size();
+        const auto &keyTokens = period.getReference(index);
+
+        bool foundToken = false;
+        for (const auto &keyToken : keyTokens)
+        {
+            if (keyToken.length() == 1)
+            {
+                result.add(keyToken);
+                foundToken = true;
+                break;
+            }
+
+            const auto isFlatKey = keyToken.endsWithChar('b');
+            if ((isFlatRoot && isFlatKey) || (!isFlatRoot && !isFlatKey))
+            {
+                result.add(keyToken);
+                foundToken = true;
+                break;
+            }
+        }
+
+        if (!foundToken)
+        {
+            jassert(!keyTokens.isEmpty());
+            result.add(keyTokens[0]);
+        }
+    }
+
+    return result;
+}
+
+static FlatHashMap<String, StringArray, StringHash> makeChromaticScales(const Temperament::Period &period)
+{
+    FlatHashMap<String, StringArray, StringHash> result;
+
+    for (const auto &keyTokens : period)
+    {
+        for (const auto &keyName : keyTokens)
+        {
+            result[keyName] = makeChromaticNames(keyName, period);
+        }
+    }
+
+    return result;
+}
+
 Temperament::Ptr Temperament::makeTwelveToneEqualTemperament() noexcept
 {
     Temperament::Ptr t(new Temperament());
@@ -126,6 +198,7 @@ Temperament::Ptr Temperament::makeTwelveToneEqualTemperament() noexcept
     t->keysTotal = Globals::twelveToneKeyboardSize;
     t->middleC = Globals::twelveTonePeriodSize * Temperament::periodNumForMiddleC;
     t->middleA = t->middleC + Note::Key(Semitones::MajorSixth);
+    t->chromaticScales = makeChromaticScales(t->period);
     return t;
 }
 
@@ -213,20 +286,7 @@ void Temperament::deserialize(const SerializedData &data) noexcept
         this->chromaticMap = Scale::makeChromaticScale();
     }
 
-    this->chromaticScales.clear();
-    forEachChildWithType(root, e, Midi::temperamentChromaticScale)
-    {
-        const String keyName = e.getProperty(Midi::key);
-        const String scaleTokens = e.getProperty(Midi::scale);
-
-        StringArray chromaticScale;
-        chromaticScale.addTokens(scaleTokens, false);
-
-        if (!keyName.isEmpty() && !chromaticScale.isEmpty())
-        {
-            this->chromaticScales[keyName] = move(chromaticScale);
-        }
-    }
+    this->chromaticScales = makeChromaticScales(this->period);
 
     this->keysTotal = int(Globals::numPeriodsInKeyboard * float(this->getPeriodSize()));
     this->middleC = Temperament::periodNumForMiddleC * this->getPeriodSize();
@@ -270,3 +330,87 @@ bool operator!=(const Temperament &l, const Temperament &r)
 {
     return !operator== (l, r);
 }
+
+//===----------------------------------------------------------------------===//
+// Tests
+//===----------------------------------------------------------------------===//
+
+#if JUCE_UNIT_TESTS
+
+class NoteNamingTests final : public UnitTest
+{
+public:
+
+    NoteNamingTests() :
+        UnitTest("Note naming tests", UnitTestCategories::helio) {}
+
+    static Temperament::Period makePeriod(const String &periodString)
+    {
+        StringArray enharmonicTokens;
+        enharmonicTokens.addTokens(periodString, true);
+        Temperament::Period result;
+        for (const auto &keyTokens : enharmonicTokens)
+        {
+            StringArray keys;
+            keys.addTokens(keyTokens, "/", "");
+            result.add(move(keys));
+        }
+        return result;
+    }
+
+    static String makeScaleString(const String &keyName, const Temperament::Period &period)
+    {
+        return makeChromaticNames(keyName, period).joinIntoString(" ");
+    }
+
+    void runTest() override
+    {
+        beginTest("12-edo chromatic scales");
+
+        {
+            const auto p = makePeriod("C/B# C#/Db D Eb/D# E/Fb F/E# F#/Gb G G#/Ab A Bb/A# B/Cb");
+            expect(makeScaleString("A", p) == "A A# B C C# D D# E F F# G G#");
+            expect(makeScaleString("Ab", p) == "Ab A Bb B C Db D Eb E F Gb G");
+            expect(makeScaleString("A#", p) == "A# B C C# D D# E F F# G G# A");
+            expect(makeScaleString("B", p) == "B C C# D D# E F F# G G# A A#");
+            expect(makeScaleString("Bb", p) == "Bb B C Db D Eb E F Gb G Ab A");
+            expect(makeScaleString("B#", p) == "B# C# D D# E F F# G G# A A# B");
+            expect(makeScaleString("C", p) == "C C# D D# E F F# G G# A A# B");
+            expect(makeScaleString("Cb", p) == "Cb C Db D Eb E F Gb G Ab A Bb");
+            expect(makeScaleString("C#", p) == "C# D D# E F F# G G# A A# B C");
+            expect(makeScaleString("D", p) == "D D# E F F# G G# A A# B C C#");
+            expect(makeScaleString("Db", p) == "Db D Eb E F Gb G Ab A Bb B C");
+            expect(makeScaleString("D#", p) == "D# E F F# G G# A A# B C C# D");
+            expect(makeScaleString("E", p) == "E F F# G G# A A# B C C# D D#");
+            expect(makeScaleString("Eb", p) == "Eb E F Gb G Ab A Bb B C Db D");
+            expect(makeScaleString("E#", p) == "E# F# G G# A A# B C C# D D# E");
+            expect(makeScaleString("F", p) == "F F# G G# A A# B C C# D D# E");
+            expect(makeScaleString("Fb", p) == "Fb F Gb G Ab A Bb B C Db D Eb");
+            expect(makeScaleString("F#", p) == "F# G G# A A# B C C# D D# E F");
+            expect(makeScaleString("G", p) == "G G# A A# B C C# D D# E F F#");
+            expect(makeScaleString("Gb", p) == "Gb G Ab A Bb B C Db D Eb E F");
+            expect(makeScaleString("G#", p) == "G# A A# B C C# D D# E F F# G");
+        }
+
+        beginTest("19-edo chromatic scales");
+
+        {
+            const auto p = makePeriod("C/Bx C#/Dbb Db/Cx D D#/Ebb Eb/Dx E/Fbb E#/Fb F/Ex F#/Gbb Gb/Fx G G#/Abb Ab/Gx A A#/Bbb Bb/Ax B/Cbb B#/Cb");
+            expect(makeScaleString("A", p) == "A A# Ax B B# C C# Cx D D# Dx E E# F F# Fx G G# Gx");
+            expect(makeScaleString("Ab", p) == "Ab A Bbb Bb B Cb C Dbb Db D Ebb Eb E Fb F Gbb Gb G Abb");
+            expect(makeScaleString("Abb", p) == "Abb Ab A Bbb Bb B Cb C Dbb Db D Ebb Eb E Fb F Gbb Gb G");
+            expect(makeScaleString("A#", p) == "A# Ax B B# C C# Cx D D# Dx E E# F F# Fx G G# Gx A");
+            expect(makeScaleString("Ax", p) == "Ax B B# C C# Cx D D# Dx E E# F F# Fx G G# Gx A A#");
+            expect(makeScaleString("B", p) == "B B# C C# Cx D D# Dx E E# F F# Fx G G# Gx A A# Ax");
+            expect(makeScaleString("Bb", p) == "Bb B Cb C Dbb Db D Ebb Eb E Fb F Gbb Gb G Abb Ab A Bbb");
+            expect(makeScaleString("Bbb", p) == "Bbb Bb B Cb C Dbb Db D Ebb Eb E Fb F Gbb Gb G Abb Ab A");
+            expect(makeScaleString("B#", p) == "B# C C# Cx D D# Dx E E# F F# Fx G G# Gx A A# Ax B");
+            expect(makeScaleString("Bx", p) == "Bx C# Cx D D# Dx E E# F F# Fx G G# Gx A A# Ax B B#");
+            // hopefully the rest is ok too, too lazy to write them all
+        }
+    }
+};
+
+static NoteNamingTests noteNamingTests;
+
+#endif

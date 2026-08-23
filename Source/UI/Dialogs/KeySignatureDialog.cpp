@@ -104,9 +104,9 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScalePreviewThread)
 };
 
-static inline const Temperament::Period &getPeriod(ProjectNode &project)
+static inline const Temperament::Ptr getTemperament(ProjectNode &project)
 {
-    return project.getProjectInfo()->getTemperament()->getPeriod();
+    return project.getProjectInfo()->getTemperament();
 }
 
 KeySignatureDialog::KeySignatureDialog(ProjectNode &project,
@@ -144,14 +144,14 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project,
         this->dialogApplyAction();
     };
 
-    const auto &period = getPeriod(project);
+    const auto temperament = getTemperament(this->project);
 
     this->keySelectorShadowLeft = make<ShadowRightwards>(ShadowType::Hard);
     this->addChildComponent(this->keySelectorShadowLeft.get());
     this->keySelectorShadowRight = make<ShadowLeftwards>(ShadowType::Hard);
     this->addChildComponent(this->keySelectorShadowRight.get());
 
-    this->keySelector = make<KeySelector>(period);
+    this->keySelector = make<KeySelector>(temperament->getPeriod());
     this->keySelectorViewport = make<Viewport>();
     this->keySelectorViewport->setWantsKeyboardFocus(false);
     this->keySelectorViewport->setViewedComponent(this->keySelector.get());
@@ -277,7 +277,7 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project,
 
         this->scale = this->scales[i];
         this->rootKey = 0;
-        this->rootKeyName = period.getFirst()[0];
+        this->rootKeyName = temperament->getPeriod().getFirst()[0];
 
         this->scaleEditor->setScale(this->scale);
         this->keySelector->setSelectedKey(this->rootKey, this->rootKeyName);
@@ -299,7 +299,7 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project,
         this->rootKeyName = this->originalEvent.getRootKeyName();
         if (this->rootKeyName.isEmpty())
         {
-            this->rootKeyName = period[this->rootKey][0];
+            this->rootKeyName = temperament->getPeriod()[this->rootKey][0];
         }
 
         this->scaleEditor->setScale(this->scale);
@@ -572,7 +572,7 @@ void KeySignatureDialog::savePreset()
 void KeySignatureDialog::reloadScalesList()
 {
     this->scales.clearQuick();
-    const auto periodSize = getPeriod(project).size();
+    const auto periodSize = getTemperament(this->project)->getPeriodSize();
     for (const auto &scale : App::Config().getScales()->getAll())
     {
         if (scale->getBasePeriod() == periodSize)

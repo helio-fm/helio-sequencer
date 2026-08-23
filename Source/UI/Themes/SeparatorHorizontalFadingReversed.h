@@ -25,6 +25,7 @@ public:
 
     SeparatorHorizontalFadingReversed()
     {
+        this->setAccessible(false);
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
     }
@@ -33,14 +34,14 @@ public:
     {
         g.setGradientFill(ColourGradient(this->lightColour,
             float(this->getWidth() / 2), 0.f,
-            this->lightColour.withAlpha(0.f),
+            this->lightColour.withMultipliedAlpha(0.2f),
             0.f, 0.f, true));
 
         g.fillRect(0, 0, this->getWidth(), 1);
 
         g.setGradientFill(ColourGradient(this->darkColour,
             float(this->getWidth() / 2), 0.f,
-            this->darkColour.withAlpha(0.f),
+            this->darkColour.withMultipliedAlpha(0.2f),
             0.f, 0.f, true));
 
         g.fillRect(0, 1, this->getWidth(), 1);
@@ -49,10 +50,12 @@ public:
 private:
 
     const Colour lightColour =
-        findDefaultColour(ColourIDs::Common::separatorLineLight);
+        findDefaultColour(ColourIDs::Common::separatorLineLight)
+            .withMultipliedAlpha(0.5f);
 
     const Colour darkColour =
-        findDefaultColour(ColourIDs::Common::separatorLineDark);
+        findDefaultColour(ColourIDs::Common::separatorLineDark)
+            .withMultipliedAlpha(0.5f);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SeparatorHorizontalFadingReversed)
 };

@@ -31,7 +31,7 @@ public:
 
     explicit RadioButtonFrame(float alpha) :
         fillColour(findDefaultColour(Label::textColourId).withAlpha(alpha)),
-        outlineColour(findDefaultColour(Label::textColourId).withAlpha(alpha * 0.5f))
+        outlineColour(findDefaultColour(Label::textColourId).withAlpha(alpha * 0.6f))
     {
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
@@ -69,7 +69,7 @@ RadioButton::RadioButton(const String &text,
     fillColour(colour.interpolatedWith(
         findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.075f)),
     outlineColour(colour.interpolatedWith(
-        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.1f))
+        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.075f))
 {
     this->setWantsKeyboardFocus(false);
     this->setMouseClickGrabsKeyboardFocus(false);
@@ -85,7 +85,7 @@ RadioButton::RadioButton(const String &text,
 
     this->content = move(label);
 
-    this->checkMark = make<RadioButtonFrame>(0.85f);
+    this->checkMark = make<RadioButtonFrame>(0.8f);
     this->addChildComponent(this->checkMark.get());
 }
 
@@ -107,7 +107,7 @@ RadioButton::RadioButton(const String &noteName, bool shouldUseFixedDo, Listener
 
     this->content = move(noteNameComponent);
 
-    this->checkMark = make<RadioButtonFrame>(0.85f);
+    this->checkMark = make<RadioButtonFrame>(0.8f);
     this->addChildComponent(this->checkMark.get());
 }
 
