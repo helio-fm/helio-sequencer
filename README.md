@@ -6,19 +6,13 @@
 
 ![On tablet (iPad mini)](Docs/images/screen-v3-ios.png)
 
-## Why another sequencer?
-
-Most of the DAW interfaces often seem overcomplicated, and they only tend to get more and more bloated over time. Many of them are commercial, proprietary-licensed and almost none of them support all major operating systems at the same time.
-
-Helio is an attempt to rethink a music sequencer to create a tool that **feels right**.
-
-It aims to be a modern music creation software, featuring linear-based/pattern-based sequencer with clean UI, integrated version control, microtonal temperaments support, small portable builds and more; mainly targeted at hobbyist composers, game developers and indie artists. Check out this [YouTube channel](https://www.youtube.com/channel/UCO3K8iCd1k2FTqSocoE-WXw/) for some showcases.
+This project is an attempt to rethink a music sequencer: prefer uncluttered, distraction-free UI, aim for clear over clever, and encourage experimentation in underexplored areas in music, like exotic scales and microtonal temperaments.
 
 ## Getting started
 
 The latest builds can be found at [helio.fm](https://helio.fm).
 
-Check out the documentation to get started: [docs.helio.fm](https://docs.helio.fm).
+Check out [the documentation](https://docs.helio.fm) to get started, or see this [YouTube channel](https://www.youtube.com/channel/UCO3K8iCd1k2FTqSocoE-WXw/) for some showcases.
 
 ## Building
 
@@ -48,6 +42,8 @@ App icon by Valery Davletbaev, distributed under [CC-BY](https://creativecommons
 Built-in [metronome sounds](https://stash.reaper.fm/40824/Metronomes.zip) are recorded by Ludwig Peter Müller, [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
 
 The built-in SoundFont player instument is based on [SFZero](https://github.com/stevefolta/SFZero), written by Steve Folta and [extended](https://github.com/cognitone/SFZeroMT) by Leo Olivers and Cognitone.
+
+The built-in scripting language is based on a [Lisp interpreter](https://github.com/adam-mcdaniel/wisp) by Adam McDaniel.
 
 All documentation, translations and logotypes are distributed under [CC-BY](https://creativecommons.org/licenses/by/4.0/).
 

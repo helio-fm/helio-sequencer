@@ -15,3 +15,24 @@ sidebar-header-nav = false
 editable = false
 runnable = false
 copy-js = false
+
+[output.html.redirect]
+"/getting-microtonal.html" = "microtonal-setup.html"
+"/getting-polymetric.html" = "polymetric-setup.html"
+"/getting-microtonal.html#microtonal-setup" = "microtonal-setup.html#microtonal-setup"
+"/getting-microtonal.html#setting-up-instruments" = "microtonal-setup.html#setting-up-instruments"
+"/getting-microtonal.html#keyboard-mapping-page" = "microtonal-setup.html#keyboard-mapping-page"
+"/getting-microtonal.html#scala-keyboard-mapping" = "microtonal-setup.html#scala-keyboard-mapping"
+"/getting-microtonal.html#helio-keyboard-mapping-format" = "microtonal-setup.html#helio-keyboard-mapping-format"
+"/getting-microtonal.html#format-description" = "microtonal-setup.html#format-description"
+"/getting-microtonal.html#switching-temperaments" = "microtonal-setup.html#switching-temperaments"
+"/getting-microtonal.html#limitations" = "microtonal-setup.html#limitations"
+"/getting-microtonal.html#adding-a-custom-temperament" = "microtonal-setup.html#adding-a-custom-temperament"
+"/getting-microtonal.html#recording-midi-from-12-tone-keyboard" = "microtonal-setup.html#recording-midi-from-12-tone-keyboard"
+"/getting-microtonal.html#examples" = "microtonal-setup.html#examples"
+"/getting-microtonal.html#pianoteq" = "microtonal-setup.html#pianoteq"
+"/getting-microtonal.html#surge-xt" = "microtonal-setup.html#surge-xt"
+"/getting-polymetric.html#how-time-signatures-work" = "polymetric-setup.html#how-time-signatures-work"
+"/getting-polymetric.html#timeline-behavior" = "polymetric-setup.html#timeline-behavior"
+"/getting-polymetric.html#limitations" = "polymetric-setup.html#limitations"
+"/getting-polymetric.html#metronome" = "polymetric-setup.html#metronome"

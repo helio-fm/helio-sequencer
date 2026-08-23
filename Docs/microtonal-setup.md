@@ -119,7 +119,7 @@ This feature is enabled by default, but it can be disabled in the audio settings
 ## Examples
 
 This section will describe setting up various microtonal plugins in Helio. For now, it's just a couple of examples, 
-if you managed to make any other plugin work, please [share](https://github.com/helio-fm/helio-sequencer/blob/develop/Docs/getting-microtonal.md) your findings.
+if you managed to make any other plugin work, please [share](https://github.com/helio-fm/helio-sequencer/blob/develop/Docs/microtonal-setup.md) your findings.
 
 ### Pianoteq
 

@@ -26,6 +26,10 @@ The iOS file picker will allow you to select either the app's local folder or th
 
 The iCloud folder should only be used for one-time actions like importing/exporting MIDI or rendering WAV/FLAC audio. Due to the iOS security model, the folder will not be accessible across sessions.
 
+## Android issues
+
+On some devices, the app will fail to read SoundFonts from the Downloads folder. The workaround is to keep them in Documents or Music or any public folder or subfolder other than Downloads.
+
 ## Sidebar cut-off
 
 Some mobile devices have a display notch or a frontal camera cutout, partially covering either of the sidebars, depending on which orientation you're using. To workaround this, sidebars allow dragging them sideways a bit:

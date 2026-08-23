@@ -132,7 +132,7 @@ A few built-in instruments are created automatically and cannot be removed:
 
 * the "Helio Default" instrument is a simple sine wave voice that supports all built-in temperaments with no setup; aside from being the default instrument, it is used to preview scales in the [key signature](#key-signatures) dialog,
 * the "MIDI Output" instrument generates no sound but sends all events, except meta-events, to the MIDI output specified on the settings page,
-* the "Metronome" instrument gives you the option to select custom [metronome](getting-polymetric.md#metronome) samples.
+* the "Metronome" instrument gives you the option to select custom [metronome](polymetric-setup.md#metronome) samples.
 
 Apart from those, Helio includes the built-in SoundFont player instrument which can be found in the plugins list after scanning. It can load SF2 format and SF3 format with OGG/FLAC sample compression and supports microtonal temperaments. On mobile platforms it will be automatically added to the orchestra pit on the first launch.
 
@@ -172,7 +172,7 @@ Time signatures simply define the way the vertical grid lines are aligned in the
 
 Right-click on the time signature selects all notes of the active track up to the next time signature.
 
-If you need to manage complex rhythms, see [this page](getting-polymetric.md).
+If you need to manage complex rhythms, see [this page](polymetric-setup.md).
 
 #### Key signatures
 
@@ -186,7 +186,7 @@ A key signature is a combination of the root key and the scale:
 
 ![key-signature-dialog]
 
-*Tip: right-click on any key button to preview it.*
+*Tip: right-click on any key button to preview the key.*
 
 The root key selection allows you to pick one of the key's enharmonic equivalents, which only affects [note naming](tips-and-tricks.md#note-name-guides) to provide better compatibility with traditional notation language.
 
@@ -376,7 +376,7 @@ The right side shows the tree of all revisions that you have saved. Note a coupl
 [timeline-key-signatures]: images/timeline-key-signatures.png "Timeline: key signature events"
 [timeline-time-signatures]: images/timeline-time-signatures.png "Timeline: time signature events"
 [timeline-reprise]: images/timeline-reprise.png "Timeline: repeat signs"
-[key-signature-dialog]: images/key-signature-dialog.png "Key signature dialog"
+[key-signature-dialog]: images/scales-highlighting.png "Key signature dialog"
 
 [sidebar-left-1]: images/sidebar-l1.png "Navigation sidebar 1"
 [sidebar-left-2]: images/sidebar-l2.png "Navigation sidebar 2"

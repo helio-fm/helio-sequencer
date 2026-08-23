@@ -22,7 +22,7 @@ These are the clipping and over-saturation warning markers:
 
 One quick way to switch between the current editing mode and the canvas panning mode is holding the `Space` key:
 
-![space-drag]
+![space-dragging]
 
 Dragging the canvas with the right mouse button does the same thing.
 
@@ -34,17 +34,19 @@ Hold the `Space` key, then click-and-drag over the timeline to measure time betw
 
 ![time-measure-tool]
 
-### Sound probe tool
+#### Sound probe tool
 
-Holding `Space` and clicking on the timeline is what I call a "sound probe", and it's supposed to give you an idea of what notes are playing at any given time:
-
-![sound-probe]
+Holding `Space` and clicking on the timeline is what I call a "sound probe", and it's supposed to give you an idea of what notes are playing at any given time.
 
 ### Range selection
 
+Click-and-drag on the timeline while holding `Shift` to select a group of key signatures (on mobile platforms just use the selection tool on the timeline):
+
+![key-signatures-selection]
+
 Click-and-drag on the timeline while holding `Control` or `Command` to select all notes or clips in a time range:
 
-![range-select]
+![range-selection]
 
 ### Freeform selection
 
@@ -158,10 +160,10 @@ Track grouping also affects MIDI export: all segments on a single row are export
 #### See also: [piano roll hotkeys](hotkeys.md#piano-roll), [pattern roll hotkeys](hotkeys.md#pattern-roll), [refactoring options](refactoring.md)
 
 
-[space-drag]: images/space-drag.png "Dragging the canvas"
-[time-measure-tool]: images/time-measure.png "Time measure tool"
-[sound-probe]: images/sound-probe.png "Sound probe tool"
-[range-select]: images/range-select.png "Range selection"
+[space-dragging]: images/space-dragging.png "Dragging the canvas"
+[time-measure-tool]: images/time-measure-tool.png "Time measure tool"
+[range-selection]: images/range-selection.png "Range selection"
+[key-signatures-selection]: images/key-signatures-selection.png "Key signatures selection"
 
 [group-resizing]: images/group-resizing.png "Resizing notes with shift"
 [pen-tool-alt]: images/pen-tool-alt.png "Adding notes with shift"
