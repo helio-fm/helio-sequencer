@@ -40,7 +40,7 @@ Scale::Ptr Scale::withKeys(const Array<int> &keys) const noexcept
 }
 
 //===----------------------------------------------------------------------===//
-// Hard-coded defaults
+// Hard-coded defaults for 12 edo
 //===----------------------------------------------------------------------===//
 
 inline static Array<int> getChromaticKeys()
@@ -290,7 +290,7 @@ int Scale::compare(const Scale::Ptr other) const
 
     if (const auto diff = this->keys.size() - other->keys.size())
     {
-        jassertfalse;
+        // jassertfalse; // a dummy scale here maybe
         return diff < 0 ? -1 : 1;
     }
 

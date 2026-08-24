@@ -97,7 +97,7 @@ public:
     int getBasePeriod() const noexcept;
 
     //===------------------------------------------------------------------===//
-    // Hard-coded defaults
+    // Hard-coded defaults for 12 edo
     //===------------------------------------------------------------------===//
 
     static Scale::Ptr makeChromaticScale();

@@ -272,10 +272,17 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project,
 
     if (this->addsNewEvent)
     {
-        Random r;
-        const auto i = r.nextInt(this->scales.size());
+        if (this->scales.isEmpty())
+        {
+            this->scale = Scale::Ptr(new Scale({}, { 0 }, temperament->getPeriodSize()));
+        }
+        else
+        {
+            Random r;
+            const auto i = r.nextInt(this->scales.size());
+            this->scale = this->scales[i];
+        }
 
-        this->scale = this->scales[i];
         this->rootKey = 0;
         this->rootKeyName = temperament->getPeriod().getFirst()[0];
 
