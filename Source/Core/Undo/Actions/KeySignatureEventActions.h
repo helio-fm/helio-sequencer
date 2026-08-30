@@ -139,6 +139,16 @@ public:
     void deserialize(const SerializedData &data) noexcept override;
     void reset() noexcept override;
 
+    const Array<KeySignatureEvent> &getGroupBefore() const noexcept
+    {
+        return this->groupBefore;
+    }
+
+    const Array<KeySignatureEvent> &getGroupAfter() const noexcept
+    {
+        return this->groupAfter;
+    }
+
 private:
 
     String trackId;

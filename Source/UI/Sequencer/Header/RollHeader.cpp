@@ -449,6 +449,14 @@ Lasso &RollHeader::getLassoSelection()
     return this->roll.keySignaturesMap->getLassoSelection();
 }
 
+void RollHeader::deselectAll()
+{
+    if (this->roll.keySignaturesMap != nullptr)
+    {
+        this->roll.keySignaturesMap->getLassoSelection().deselectAll();
+    }
+}
+
 inline Point<float> RollHeader::getLassoAnchor(const Point<float> &position) const
 {
     return { position.x / this->roll.getBeatWidth() + this->roll.getFirstBeat(), position.y };
@@ -488,7 +496,7 @@ void RollHeader::mouseDown(const MouseEvent &e)
     const bool rollCanSelectKeys = this->roll.keySignaturesMap != nullptr;
     if (rollCanSelectKeys)
     {
-        this->getLassoSelection().deselectAll();
+        this->deselectAll();
     }
 
     if (this->soundProbeMode.get())

@@ -63,7 +63,9 @@ MidiSequence *GeneratedSequenceBuilder::getSequenceFor(const Clip &clip)
         // todo test if beat range updates are needed:
         //this->project.broadcastChangeTrackBeatRange();
 
+        this->generatedSequences.erase(clip);
         this->generatedSequences[clip] = move(sequence);
+
         this->clipsToUpdate.erase(clip);
 
         return this->generatedSequences[clip].get();
@@ -291,6 +293,8 @@ void GeneratedSequenceBuilder::handleAsyncUpdate()
         }
 
         this->project.broadcastReloadGeneratedSequence(*originalClip, sequence.get());
+
+        this->generatedSequences.erase(clip);
         this->generatedSequences[clip] = move(sequence);
     }
 

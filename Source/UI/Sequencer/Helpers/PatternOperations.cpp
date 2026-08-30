@@ -178,7 +178,8 @@ void PatternOperations::transposeProject(ProjectNode &project,
     while (project.getUndoStack()->getUndoActionId() == operationId)
     {
         // we only need one changeset, others are expected to have the same key deltas
-        auto *transposeAction = project.getUndoStack()->findUndoAction<ClipsGroupChangeAction>();
+        const auto *transposeAction = project.getUndoStack()->
+            findFirstInCurrentTransaction<ClipsGroupChangeAction>();
         if (transposeAction == nullptr ||
             transposeAction->getClipsBefore().isEmpty() ||
             transposeAction->getClipsAfter().isEmpty())

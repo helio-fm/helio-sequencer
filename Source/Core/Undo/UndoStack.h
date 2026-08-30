@@ -68,7 +68,7 @@ public:
     }
 
     template <typename T>
-    T *findUndoAction() const
+    T *findFirstInCurrentTransaction() const
     {
         auto *s = this->getCurrentSet();
         if (s != nullptr)
@@ -83,6 +83,26 @@ public:
         }
 
         return nullptr;
+    }
+
+    template <typename T>
+    Array<T *> findInCurrentTransaction() const
+    {
+        Array<T *> result;
+
+        auto *s = this->getCurrentSet();
+        if (s != nullptr)
+        {
+            for (int i = 0; i < s->actions.size(); ++i)
+            {
+                if (auto *foundAction = dynamic_cast<T *>(s->actions.getUnchecked(i)))
+                {
+                    result.add(foundAction);
+                }
+            }
+        }
+
+        return result;
     }
 
     // for multi-step interactive actions which might involve >1 checkpoints

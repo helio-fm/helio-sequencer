@@ -44,6 +44,8 @@ Click-and-drag on the timeline while holding `Shift` to select a group of key si
 
 ![key-signatures-selection]
 
+*Tip: the transposition commands will transpose both the selected notes, if any, and the selected key signatures, if any.*
+
 Click-and-drag on the timeline while holding `Control` or `Command` to select all notes or clips in a time range:
 
 ![range-selection]

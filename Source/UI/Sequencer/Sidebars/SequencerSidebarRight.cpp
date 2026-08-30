@@ -208,6 +208,8 @@ void SequencerSidebarRight::recreateMenu()
 #if PLATFORM_MOBILE
     if (this->menuMode == MenuMode::PianoRollTools)
     {
+        this->menu.add(MenuItem::item(Icons::up, CommandIDs::TransposeUp));
+        this->menu.add(MenuItem::item(Icons::down, CommandIDs::TransposeDown));
         this->menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteEvents));
     }
     else if (this->menuMode == MenuMode::PatternRollTools)

@@ -305,7 +305,7 @@ void RollBase::onLongTap(const Point<float> &position,
         return;
     }
 
-    if (target == this->header.get())
+    if (target == this->header.get() && !this->spaceDragMode)
     {
         this->header->showPopupMenu();
         return;
@@ -1126,7 +1126,7 @@ void RollBase::onReloadProjectContent(const Array<MidiTrack *> &tracks,
 
 void RollBase::onBeforeReloadProjectContent()
 {
-    this->selection.deselectAll();
+    this->deselectAll();
 }
 
 //===----------------------------------------------------------------------===//
@@ -1600,6 +1600,7 @@ void RollBase::handleCommandMessage(int commandId)
             this->resetAllClippingIndicators();
             this->resetAllOversaturationIndicators();
             this->deselectAll();
+            this->header->deselectAll();
 
             if (!this->getTransport().isRecording())
             {
@@ -1622,6 +1623,7 @@ void RollBase::handleCommandMessage(int commandId)
         if (auto *vcs = this->project.findChildOfType<VersionControlNode>())
         {
             this->deselectAll(); // a couple of hacks, instead will need to improve event system
+            this->header->deselectAll();
             this->getTransport().stopPlaybackAndRecording(); // with a pre-reset callback or so
             vcs->toggleQuickStash();
         }

@@ -98,7 +98,10 @@ struct SequencerOperations final
         Clip &targetClip, bool shouldCheckpoint = true);
 
     // set forceCheckpoint to avoid coalescing similar transpositions into one
-    static void shiftKeyRelative(const NoteListBase &notes, int deltaKey,
+    static void transposeNotes(const NoteListBase &notes, int deltaKey,
+        bool undoable = true, bool shouldCheckpoint = true, bool forceCheckpoint = false);
+    static void transposeNotesAndKeys(const ProjectNode &project,
+        const NoteListBase &notes, const Lasso &keySignatures, int deltaKey,
         bool undoable = true, bool shouldCheckpoint = true, bool forceCheckpoint = false);
 
     // pass deltaKey=0 to do snap-to-scale:
@@ -144,7 +147,6 @@ struct SequencerOperations final
     static bool remapNotesToTemperament(const ProjectNode &project,
         Temperament::Ptr temperament, bool shouldUseChromaticMaps = true,
         bool shouldCheckpoint = true);
-
     static bool remapKeySignaturesToTemperament(KeySignaturesSequence *keySignatures,
         Temperament::Ptr currentTemperament, Temperament::Ptr otherTemperament,
         const Array<Scale::Ptr> &availableScales, bool shouldCheckpoint = true);

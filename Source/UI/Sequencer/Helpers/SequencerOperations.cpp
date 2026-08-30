@@ -27,6 +27,7 @@
 
 #include "NoteComponent.h"
 #include "ClipComponent.h"
+#include "KeySignatureComponent.h"
 #include "PianoRoll.h"
 #include "PianoTrackNode.h"
 #include "AutomationTrackNode.h"
@@ -158,6 +159,8 @@ void SequencerOperations::previewSelection(const Lasso &selection, Transport &tr
 
     if (selection.getNumSelected() <= maxSize)
     {
+        transport.stopSound();
+
         for (int i = 0; i < selection.getNumSelected(); ++i)
         {
             auto *nc = selection.getItemAs<NoteComponent>(i);
@@ -199,8 +202,6 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
         for (int i = 0; i < notes.size(); ++i)
         {
             const auto &note = notes.getNoteUnchecked(i);
-
-            // для каждой ноты найти ноту, которая полностью перекрывает ее на максимальную длину
 
             float deltaLength = -FLT_MAX;
             const Note *overlappingNote = nullptr;
@@ -262,8 +263,6 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
         {
             const auto &note = notes.getNoteUnchecked(i);
 
-            // для каждой ноты найти ноту, которая полностью перекрывает ее на максимальную длину
-
             float deltaLength = -FLT_MAX;
             const Note *overlappingNote = nullptr;
 
@@ -324,8 +323,6 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
         for (int i = 0; i < notes.size(); ++i)
         {
             const auto &note = notes.getNoteUnchecked(i);
-
-            // для каждой ноты найти ноту, которая перекрывает ее максимально
 
             float overlappingBeats = -FLT_MAX;
             const Note *overlappingNote = nullptr;
@@ -1410,7 +1407,7 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
     }
 }
 
-void SequencerOperations::shiftKeyRelative(const NoteListBase &notes,
+void SequencerOperations::transposeNotes(const NoteListBase &notes,
     int deltaKey, bool undoable, bool shouldCheckpoint, bool forceCheckpoint)
 {
     jassert(undoable || !shouldCheckpoint);
@@ -1444,6 +1441,146 @@ void SequencerOperations::shiftKeyRelative(const NoteListBase &notes,
         }
 
         pianoSequence->changeGroup(groupBefore, groupAfter, undoable);
+    }
+}
+
+// the same as previous, but transposes both selected notes if any
+// and selected key signatures if any, and prevents redundant checkpoints
+void SequencerOperations::transposeNotesAndKeys(const ProjectNode &project,
+    const NoteListBase &notes, const Lasso &keySignatures, int deltaKey,
+    bool undoable, bool shouldCheckpoint, bool forceCheckpoint)
+{
+    jassert(undoable || !shouldCheckpoint);
+    jassert(shouldCheckpoint || !forceCheckpoint);
+    if (deltaKey == 0 || (notes.size() == 0 && keySignatures.size() == 0))
+    {
+        return;
+    }
+
+    bool didCheckpoint = !shouldCheckpoint;
+
+    const auto operationId = deltaKey > 0 ?
+        UndoActionIDs::KeyShiftUp : UndoActionIDs::KeyShiftDown;
+    const auto transactionId =
+        notes.generateTransactionId(operationId) +
+        keySignatures.generateTransactionId(operationId);
+    const bool repeatsLastAction = project.getUndoStack()->getUndoActionId() == transactionId;
+
+    // key signatures if any
+
+    Array<KeySignatureEvent> keysToStartFrom;
+    auto coalescedDeltaKey = deltaKey;
+    if (repeatsLastAction)
+    {
+        const auto keysTransposeActions = project.getUndoStack()->
+            findInCurrentTransaction<KeySignaturesGroupChangeAction>();
+        if (!keysTransposeActions.isEmpty() &&
+            !keysTransposeActions.getFirst()->getGroupBefore().isEmpty() &&
+            !keysTransposeActions.getFirst()->getGroupAfter().isEmpty())
+        {
+            keysToStartFrom = keysTransposeActions.getFirst()->getGroupBefore();
+
+            for (const auto *keysTransposeAction : keysTransposeActions)
+            {
+                if (keysTransposeAction->getGroupBefore().isEmpty() ||
+                    keysTransposeAction->getGroupAfter().isEmpty())
+                {
+                    jassertfalse;
+                    continue;
+                }
+
+                coalescedDeltaKey +=
+                    (keysTransposeAction->getGroupAfter().getFirst().getRootKey() -
+                        keysTransposeAction->getGroupBefore().getFirst().getRootKey());
+            }
+
+            // DBG("Transposition with key delta = " +
+            //    String(deltaKey) + ", coalesced delta = " + String(coalescedDeltaKey));
+        }
+    }
+
+    Array<KeySignatureEvent> keysBefore, keysAfter;
+    const auto temperament = project.getProjectInfo()->getTemperament();
+
+    for (int i = 0; i < keySignatures.size(); ++i)
+    {
+        auto *ksc = dynamic_cast<KeySignatureComponent *>(keySignatures.getSelectedItem(i));
+        if (ksc == nullptr)
+        {
+            jassertfalse;
+            return;
+        }
+
+        const auto &eventToChange = ksc->getEvent();
+
+        // need to compute the new key based on the first transposed event,
+        // so that chromatic scale is the same after several transpositions;
+        // see somewhat similar logic in PatternOperations::transposeProject
+        auto startingRootKey = eventToChange.getRootKey();
+        auto startingChromaticName = eventToChange.getRootKeyName();
+        for (const auto &keyToStartFrom : keysToStartFrom)
+        {
+            if (keyToStartFrom.getId() == eventToChange.getId())
+            {
+                startingRootKey = keyToStartFrom.getRootKey();
+                startingChromaticName = keyToStartFrom.getRootKeyName();
+                break;
+            }
+        }
+
+        int periodNumber;
+        const auto newRootKey = Scale::wrapKey(startingRootKey + coalescedDeltaKey, 0, temperament->getPeriodSize());
+        const auto newRootKeyName = temperament->getMidiNoteName(newRootKey,
+            startingRootKey, startingChromaticName, periodNumber);
+
+        keysBefore.add(eventToChange);
+        keysAfter.add(eventToChange.withRootKey(newRootKey, newRootKeyName));
+    }
+
+    if (!keysBefore.isEmpty())
+    {
+        if (!didCheckpoint && (!repeatsLastAction || forceCheckpoint))
+        {
+            project.getUndoStack()->beginNewTransaction(transactionId);
+            didCheckpoint = true;
+        }
+
+        auto *ksSequence = dynamic_cast<KeySignaturesSequence *>(keysBefore.getReference(0).getSequence());
+        jassert(ksSequence != nullptr);
+        if (ksSequence != nullptr)
+        {
+            ksSequence->changeGroup(keysBefore, keysAfter, undoable);
+        }
+    }
+
+    // notes if any
+
+    if (notes.size() > 0)
+    {
+        auto *pianoSequence = getPianoSequence(notes);
+        jassert(pianoSequence);
+
+        Array<Note> notesBefore, notesAfter;
+
+        for (int i = 0; i < notes.size(); ++i)
+        {
+            const auto &note = notes.getNoteUnchecked(i);
+            notesBefore.add(note);
+            notesAfter.add(note.withDeltaKey(deltaKey));
+        }
+
+        if (!notesBefore.isEmpty())
+        {
+            if (!didCheckpoint && (!repeatsLastAction || forceCheckpoint))
+            {
+                project.getUndoStack()->beginNewTransaction(transactionId);
+                didCheckpoint = true;
+            }
+
+            // (note: coalescing multiple transpositions into one action won't work here,
+            // because we've also got KeySignaturesGroupChangeAction in the transaction)
+            pianoSequence->changeGroup(notesBefore, notesAfter, undoable);
+        }
     }
 }
 

@@ -61,6 +61,7 @@ public:
     // DrawableLassoSource
     //===------------------------------------------------------------------===//
 
+    void deselectAll();
     Lasso &getLassoSelection() override;
     Point<float> getLassoAnchor(const Point<float> &position) const override;
     Point<int> getLassoPosition(const Point<float> &anchorPoint) const override;

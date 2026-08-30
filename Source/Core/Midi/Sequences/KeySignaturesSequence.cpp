@@ -158,18 +158,9 @@ bool KeySignaturesSequence::changeGroup(Array<KeySignatureEvent> &groupBefore,
 
     if (undoable)
     {
-        if (groupBefore.size() == 1)
-        {
-            this->getUndoStack()->
-                perform(new KeySignatureEventChangeAction(*this->getProject(),
-                    this->getTrackId(), groupBefore.getFirst(), groupAfter.getFirst()));
-        }
-        else
-        {
-            this->getUndoStack()->
-                perform(new KeySignaturesGroupChangeAction(*this->getProject(),
-                    this->getTrackId(), groupBefore, groupAfter));
-        }
+        this->getUndoStack()->
+            perform(new KeySignaturesGroupChangeAction(*this->getProject(),
+                this->getTrackId(), groupBefore, groupAfter));
     }
     else
     {

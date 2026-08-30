@@ -105,7 +105,7 @@ PianoRoll::~PianoRoll() = default;
 
 void PianoRoll::reloadRollContent()
 {
-    this->selection.deselectAll();
+    this->deselectAll();
     this->generatedNotes.clear();
     this->patternMap.clear();
 
@@ -977,7 +977,7 @@ void PianoRoll::onAddTrack(MidiTrack *const track)
 
 void PianoRoll::onRemoveTrack(MidiTrack *const track)
 {
-    this->selection.deselectAll();
+    this->deselectAll();
 
     this->hideDragHelpers();
     this->hideAllGhostNotes();
@@ -1079,7 +1079,7 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
         this->lassoComponent->endLasso();
     }
 
-    this->selection.deselectAll();
+    this->deselectAll();
 
     this->activeTrack = newActiveTrack;
     this->activeClip = newActiveClip;
@@ -1158,7 +1158,7 @@ void PianoRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldC
 {
     if (shouldClearAllOthers)
     {
-        this->selection.deselectAll();
+        this->deselectAll();
     }
 
     forEachEventComponent(this->patternMap, e)
@@ -1639,11 +1639,13 @@ void PianoRoll::handleCommandMessage(int commandId)
             -this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::TransposeUp:
-        SequencerOperations::shiftKeyRelative(this->selection, 1, true, true, false);
+        SequencerOperations::transposeNotesAndKeys(this->project,
+            this->selection, this->header->getLassoSelection(), 1, true, true, false);
         SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::TransposeDown:
-        SequencerOperations::shiftKeyRelative(this->selection, -1, true, true, false);
+        SequencerOperations::transposeNotesAndKeys(this->project,
+            this->selection, this->header->getLassoSelection(), -1, true, true, false);
         SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::TransposeScaleKeyUp:
@@ -1667,22 +1669,24 @@ void PianoRoll::handleCommandMessage(int commandId)
             this->temperament->getHighlighting(), 0, true, true);
         break;
     case CommandIDs::TransposeOctaveUp:
-        SequencerOperations::shiftKeyRelative(this->getLassoOrEntireSequence(),
+        SequencerOperations::transposeNotes(this->selection,
             this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave), true, true, true);
         SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::TransposeOctaveDown:
-        SequencerOperations::shiftKeyRelative(this->getLassoOrEntireSequence(),
+        SequencerOperations::transposeNotes(this->selection,
             -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave), true, true, true);
         SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::TransposeFifthUp:
-        SequencerOperations::shiftKeyRelative(this->getLassoOrEntireSequence(),
+        SequencerOperations::transposeNotesAndKeys(this->project,
+            this->selection, this->header->getLassoSelection(),
             this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth), true, true, true);
         SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::TransposeFifthDown:
-        SequencerOperations::shiftKeyRelative(this->getLassoOrEntireSequence(),
+        SequencerOperations::transposeNotesAndKeys(this->project,
+            this->selection, this->header->getLassoSelection(),
             -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth), true, true, true);
         SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;

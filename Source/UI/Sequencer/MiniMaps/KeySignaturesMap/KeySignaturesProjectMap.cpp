@@ -223,6 +223,8 @@ void KeySignaturesProjectMap::onRemoveTrack(MidiTrack *const track)
     if (this->project.getTimeline() != nullptr &&
         track == this->project.getTimeline()->getKeySignatures())
     {
+        this->lasso.deselectAll();
+
         for (int i = 0; i < track->getSequence()->size(); ++i)
         {
             const auto &keySignature =
