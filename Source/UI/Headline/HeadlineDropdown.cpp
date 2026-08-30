@@ -247,7 +247,10 @@ void HeadlineDropdown::mouseEnter(const MouseEvent &e)
 void HeadlineDropdown::mouseExit(const MouseEvent &e)
 {
 #if PLATFORM_DESKTOP
-    this->startTimer(50);
+    if (!e.source.isTouch())
+    {
+        this->startTimer(50);
+    }
 #endif
 }
 
