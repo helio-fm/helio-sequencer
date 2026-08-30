@@ -150,7 +150,7 @@ void HeadlineItem::mouseEnter(const MouseEvent &e)
     const auto lastMouseDown =
         Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition().toInt();
 
-    if (lastMouseDown != e.getScreenPosition())
+    if (lastMouseDown != e.getScreenPosition() && !e.source.isTouch())
     {
         this->showMenuIfAny();
     }
@@ -164,7 +164,7 @@ void HeadlineItem::mouseDown(const MouseEvent &e)
         // on desktop versions, a quick click on a headline item opens its node's page,
         // on mobile versions, it always opens the menu first
 #if PLATFORM_DESKTOP
-        if (this->dataSource->canBeSelectedAsMenuItem())
+        if (this->dataSource->canBeSelectedAsMenuItem() && !e.source.isTouch())
         {
             this->dataSource->onSelectedAsMenuItem();
         }
