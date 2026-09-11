@@ -4,6 +4,17 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.18
+ - New refactoring command: join adjacent notes
+ - New option: show MIDI numbers next to note names
+ - Keys on the timeline can be shift-selected and dragged/copied/transposed in groups
+ - Long tap or RMB on a note or a clip switches the drawing mode to erasing and cutting to merging
+ - You can render part of the project to audio by setting the reprise signs
+ - Added a toy scripting language for algorithmic music (beta)
+ - Reworked the old blueish color scheme
+ - Added options to scale the UI x0.5 and x0.75
+ - A few UI speedups and smaller binary size on some platforms
+
 ## Version 3.17
  - Removed update checks and project sync features from desktop builds, the app is now offline on both desktop and mobile platforms
  - Added initial support for keyboard-only editing in the sequencer, more hotkeys for menus, pop-ups, and dialogs
