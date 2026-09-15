@@ -5,6 +5,7 @@
 - [Getting Started](getting-started.md)
   - [Microtonal Setup](microtonal-setup.md)
   - [Polymetric Setup](polymetric-setup.md)
+  - [Aleatoric Setup](aleatoric-setup.md)
 ---
 - [Tips and Tricks](tips-and-tricks.md)
   - [Refactoring](refactoring.md)
