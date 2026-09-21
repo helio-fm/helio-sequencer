@@ -1248,6 +1248,43 @@ void SequencerOperations::changeVolumeSine(const Lasso &selection, float volumeF
     pianoSequence->changeGroup(groupBefore, groupAfter, true);
 }
 
+void SequencerOperations::changeVolumeRandom(const Lasso &selection, float volumeFactor)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        return;
+    }
+
+    const auto factor = jlimit(-1.f, 1.f, volumeFactor);
+
+    const float numSines = 2;
+    float midline = 0.f;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+        midline += nc->anchor.getVelocity();
+    }
+    midline = midline / float(selection.getNumSelected());
+
+    const float startBeat = SequencerOperations::findStartBeat(selection);
+    const float endBeat = SequencerOperations::findEndBeat(selection);
+
+    auto *pianoSequence = getPianoSequence(selection);
+    jassert(pianoSequence);
+
+    Array<Note> groupBefore, groupAfter;
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        auto *nc = selection.getItemAs<NoteComponent>(i);
+        const float phase = ((nc->getBeat() - startBeat) / (endBeat - startBeat)) * MathConstants<float>::pi * 2.f * numSines;
+        groupBefore.add(nc->getNote());
+        groupAfter.add(nc->continueTuningRandom(factor, midline, i));
+    }
+
+    pianoSequence->changeGroup(groupBefore, groupAfter, true);
+}
+
 void SequencerOperations::endTuning(const Lasso &selection)
 {
     jassert(selection.getNumSelected() > 0);

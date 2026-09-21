@@ -1175,10 +1175,24 @@ Note NoteComponent::continueTuningMultiplied(float factor) const noexcept
 
 Note NoteComponent::continueTuningSine(float factor, float midline, float phase) const noexcept
 {
-    // -1 .. 0   ->   0 .. anchor
-    // 0 .. 1    ->   anchor .. 1
     const float amplitude = jmin(midline, (1.f - midline));
     const float sine = cosf(phase) * amplitude;
+    const float av = this->anchor.getVelocity();
+    const float f = (factor < 0) ? (factor + 1.f) : factor;
+    const float downscale = ((av * f) + (midline * (1.f - f)));
+    const float upscale = ((midline + sine) * f) + (av * (1.f - f));
+    const float newVelocity = (factor < 0) ? downscale : upscale;
+    return this->getNote().withVelocity(newVelocity);
+}
+
+Note NoteComponent::continueTuningRandom(float factor, float midline, int phase) const noexcept
+{
+    // -1 .. 0   ->   0 .. anchor
+    // 0 .. 1    ->   anchor .. 1
+    srand(phase);
+
+    const float amplitude = jmin(midline, (1.f - midline));
+    const float sine = 2*((float)rand()/(float)INT_MAX-0.5) * amplitude;
     const float av = this->anchor.getVelocity();
     const float f = (factor < 0) ? (factor + 1.f) : factor;
     const float downscale = ((av * f) + (midline * (1.f - f)));
