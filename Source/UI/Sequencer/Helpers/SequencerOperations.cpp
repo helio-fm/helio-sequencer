@@ -1277,7 +1277,6 @@ void SequencerOperations::changeVolumeRandom(const Lasso &selection, float volum
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         auto *nc = selection.getItemAs<NoteComponent>(i);
-        const float phase = ((nc->getBeat() - startBeat) / (endBeat - startBeat)) * MathConstants<float>::pi * 2.f * numSines;
         groupBefore.add(nc->getNote());
         groupAfter.add(nc->continueTuningRandom(factor, midline, i));
     }
