@@ -167,7 +167,7 @@ private:
     Note continueTuningLinear(float delta) const noexcept;
     Note continueTuningMultiplied(float factor) const noexcept;
     Note continueTuningSine(float factor, float midline, float phase) const noexcept;
-    Note continueTuningRandom(float factor, float midline, int phase) const noexcept;
+    Note continueTuningRandom(float factor, float midline, int index) const noexcept;
     void endTuning();
 
     void startGroupScalingRight(float groupStartBeat);
