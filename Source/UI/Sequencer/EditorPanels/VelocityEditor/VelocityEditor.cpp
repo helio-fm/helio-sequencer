@@ -1119,6 +1119,10 @@ void VelocityEditor::continueFineTuning(VelocityEditorNoteComponent *target, con
             {
                 SequencerOperations::changeVolumeSine(*this->selection, velocityFactor);
             }
+            else if (e.mods.isCtrlDown())
+            {
+                SequencerOperations::changeVolumeRandom(*this->selection, velocityFactor);
+            }
             else
             {
                 SequencerOperations::changeVolumeLinear(*this->selection, velocityDelta);

@@ -88,6 +88,8 @@ Holding `Shift` while dragging will shape-shift group's velocities into a sine (
 
 *(the indicator displays the group's lowest and highest MIDI volume)*
 
+Additionally, holding `Ctrl` while dragging will shape-shift group's velocities by a random amount (when dragging up) or flatten them (when dragging down).
+
 You can also adjust notes volume linearly just by middle-button dragging the note components in the piano roll directly.
 
 ### Note name guides

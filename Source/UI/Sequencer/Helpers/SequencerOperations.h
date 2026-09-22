@@ -85,6 +85,7 @@ struct SequencerOperations final
     static void changeVolumeLinear(const Lasso &selection, float volumeDelta);
     static void changeVolumeMultiplied(const Lasso &selection, float volumeFactor);
     static void changeVolumeSine(const Lasso &selection, float volumeFactor);
+    static void changeVolumeRandom(const Lasso &selection, float volumeFactor);
     static void endTuning(const Lasso &selection);
 
     static void copyToClipboard(Clipboard &clipboard, const Lasso &selection);
