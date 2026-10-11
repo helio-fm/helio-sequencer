@@ -1502,7 +1502,7 @@
                    androidTargetSDK="28" androidMinimumSDK="21" androidKeyStore="${user.home}/helio.keystore"
                    androidKeyStorePass="android" androidKeyAliasPass="android" androidKeyAlias="release"
                    unityBuild="1" androidPushNotifications="0" androidCustomAppBuildGradleContent="ndkVersion &quot;28.2.13676358&quot;"
-                   gradleVersion="7.3.3" gradleWrapperVersion="7.2.0">
+                   gradleVersion="8.6" gradleWrapperVersion="8.4.2">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="helio"
                        androidArchitectures="armeabi-v7a arm64-v8a"/>
