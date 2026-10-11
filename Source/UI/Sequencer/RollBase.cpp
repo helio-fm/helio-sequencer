@@ -1591,7 +1591,8 @@ void RollBase::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::TransportStop:
-        if (!this->getTransport().isPlaying())
+        if (!this->getTransport().isPlaying() &&
+            !this->getTransport().isPreviewingAnyKey())
         {
             // when not playing, escape works as a panic button:
             this->getTransport().stopSound();
@@ -1608,7 +1609,16 @@ void RollBase::handleCommandMessage(int commandId)
             }
         }
 
-        this->getTransport().stopPlaybackAndRecording();
+        if (this->getTransport().isPlaying() ||
+            this->getTransport().isRecording())
+        {
+            this->getTransport().stopPlaybackAndRecording();
+        }
+
+        if (this->getTransport().isPreviewingAnyKey())
+        {
+            this->getTransport().stopSound();
+        }
         break;
     case CommandIDs::ToggleBottomMiniMap:
         App::Config().getUiFlags()->toggleProjectMapLargeMode();

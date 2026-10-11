@@ -440,6 +440,11 @@ void Transport::NotePreviewTimer::cancelAllPendingPreviews(bool sendRemainingNot
     }
 }
 
+bool Transport::NotePreviewTimer::hasPreviews() const noexcept
+{
+    return this->isTimerRunning();
+}
+
 void Transport::NotePreviewTimer::previewNote(WeakReference<Instrument> instrument,
     int channel, int key, float volume, int16 noteOffTimeoutMs)
 {
@@ -499,7 +504,7 @@ void Transport::NotePreviewTimer::hiResTimerCallback()
     const CriticalSection::ScopedLockType lock(this->previews.getLock());
 
 #if PLATFORM_MOBILE
-    // iSEM tends to hang >_< if too many messages are send simultaniously
+    // iSEM tends to hang >_< if too many messages are send simultaneously
     const auto time = TIME_NOW + float(rand() % 50) * 0.01;
 #elif PLATFORM_DESKTOP
     const auto time = TIME_NOW;
@@ -586,6 +591,11 @@ static void stopSoundForInstrument(Instrument *instrument)
         collector.addMessageToQueue(MidiMessage::allNotesOff(i).withTimeStamp(timeNow));
         collector.addMessageToQueue(MidiMessage::allSoundOff(i).withTimeStamp(timeNow));
     }
+}
+
+bool Transport::isPreviewingAnyKey() const noexcept
+{
+    return this->notePreviewTimer.hasPreviews();
 }
 
 void Transport::stopSound(const String &trackId) const

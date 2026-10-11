@@ -155,6 +155,7 @@ public:
         int key, float volume, float lengthInBeats) const;
     void previewKey(WeakReference<Instrument> instrument, int channel,
         int key, float volume, float lengthInBeats) const;
+    bool isPreviewingAnyKey() const noexcept;
 
     void stopSound(const String &trackId = "") const;
     void allNotesControllersAndSoundOff() const;
@@ -282,6 +283,7 @@ private:
         void cancelAllPendingPreviews(bool sendRemainingNoteOffs);
         void previewNote(WeakReference<Instrument> instrument,
             int channel, int key, float volume, int16 noteOffTimeoutMs);
+        bool hasPreviews() const noexcept;
 
     private:
 
