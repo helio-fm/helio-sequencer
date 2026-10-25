@@ -50,8 +50,8 @@ public:
                 project.getProjectInfo()->getTemperament(),
                 project.getTimeline()->getKeySignaturesSequence(),
                 project.getTimeline()->getTimeSignaturesAggregator(),
-                this->speedMultiplier,
-                0.f, false, false, false, false);
+                this->speedMultiplier, false,
+                false, false);
         }
     }
 

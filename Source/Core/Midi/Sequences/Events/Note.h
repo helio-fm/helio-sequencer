@@ -51,6 +51,7 @@ public:
     Note withDeltaKey(Key deltaKey) const noexcept;
     Note withLength(float newLength) const noexcept;
     Note withDeltaLength(float deltaLength) const noexcept;
+    Note withMaxLength(float lengthLimit) const noexcept;
     Note withVelocity(float newVelocity) const noexcept;
     Note withDeltaVelocity(float deltaVelocity) const noexcept;
     Note withTuplet(Tuplet tuplet) const noexcept;

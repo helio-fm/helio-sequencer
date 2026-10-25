@@ -36,7 +36,7 @@ class Arpeggiator final : public ConfigurationResource
 {
 public:
 
-    Arpeggiator() = default;
+    Arpeggiator() noexcept = default;
 
     using Ptr = ReferenceCountedObjectPtr<Arpeggiator>;
 
@@ -68,7 +68,7 @@ public:
 
     struct Key final : public Serializable
     {
-        Key() = default;
+        Key() noexcept = default;
         Key(int key, int period, float beat,
             float length, float velocity, bool isBarStart = false) noexcept :
             key(key), period(period), beat(beat),

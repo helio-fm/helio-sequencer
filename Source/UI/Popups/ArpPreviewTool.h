@@ -49,10 +49,8 @@ private:
 
     struct Options final
     {
-        bool reversed = false;
-        bool limitToChord = false;
-        float randomness = 0.f;
         float durationMultiplier = 1.f;
+        bool reversed = false;
     };
 
     void previewArp(Arpeggiator::Ptr arp, const Options options, bool forceRecreate);

@@ -329,7 +329,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeArpsMenu() noexcept
                     this->getProject().getProjectInfo()->getTemperament(),
                     this->getProject().getTimeline()->getKeySignaturesSequence(),
                     this->getProject().getTimeline()->getTimeSignaturesAggregator(),
-                    1.0f, 0.0f, false, false,
+                    1.0f, false,
                     true, true);
             }));
     }

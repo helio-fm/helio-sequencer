@@ -69,7 +69,7 @@ struct SequencerOperations final
         const Temperament::Ptr temperament,
         WeakReference<KeySignaturesSequence> harmonicContext,
         WeakReference<TimeSignaturesAggregator> timeContext,
-        float durationMultiplier, float randomness, bool reversed = false, bool limitToChord = false,
+        float durationMultiplier, bool reversed = false,
         bool undoable = true, bool shouldCheckpoint = true);
 
     static bool isBarStart(float absBeat,

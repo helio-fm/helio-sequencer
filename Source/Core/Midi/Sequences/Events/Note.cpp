@@ -150,6 +150,15 @@ Note Note::withDeltaLength(float deltaLength) const noexcept
     return other;
 }
 
+Note Note::withMaxLength(float lengthLimit) const noexcept
+{
+    Note other(*this);
+    other.length =
+        jmin(jmax(Globals::minNoteLength, lengthLimit),
+            jmax(Globals::minNoteLength, other.length));
+    return other;
+}
+
 Note Note::withVelocity(float newVelocity) const noexcept
 {
     Note other(*this);

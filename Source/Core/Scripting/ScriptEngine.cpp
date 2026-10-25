@@ -722,9 +722,7 @@ script::Value arpeggiate(const script::Value::List &unevaluatedArgs,
         self->hostContext.keySignatures,
         self->hostContext.timeSignatures,
         1.f,    // speed, todo custom
-        0.f,    // randomness
         false,  // reversed
-        true,   // chord-bound
         false,  // undoable
         false); // shouldCheckpoint
 

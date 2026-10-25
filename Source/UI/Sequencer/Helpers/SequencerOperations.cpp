@@ -871,8 +871,7 @@ bool SequencerOperations::arpeggiate(const NoteListBase &notes,
     const Temperament::Ptr temperament,
     WeakReference<KeySignaturesSequence> harmonicContext,
     WeakReference<TimeSignaturesAggregator> timeContext,
-    float durationMultiplier, float randomness,
-    bool isReversed, bool isLimitedToChord,
+    float durationMultiplier, bool isReversed,
     bool undoable, bool shouldCheckpoint)
 {
     jassert(undoable || !shouldCheckpoint);
@@ -946,17 +945,50 @@ bool SequencerOperations::arpeggiate(const NoteListBase &notes,
         }
     }
 
+    // join adjacent duplicates so that long arpeggiators work better
+    for (int i = 0; i < chords.size() - 1; )
+    {
+        const auto &chord = chords.getReference(i);
+        auto &nextChord = chords.getReference(i + 1);
+
+        bool isDuplicate = false;
+        if (chord.size() == nextChord.size())
+        {
+            isDuplicate = true;
+            for (int j = 0; j < chord.size(); ++j)
+            {
+                const auto &note = chord.getReference(j);
+                const auto &nextNote = nextChord.getReference(j);
+                if (note.getKey() != nextNote.getKey() ||
+                    (note.getBeat() + note.getLength()) != nextNote.getBeat())
+                {
+                    isDuplicate = false;
+                    break;
+                }
+            }
+        }
+
+        if (isDuplicate)
+        {
+            jassert(chord.size() == nextChord.size());
+            for (int j = 0; j < nextChord.size(); ++j)
+            {
+                const auto &startNote = chord.getReference(j);
+                nextChord.set(j, nextChord.getUnchecked(j).
+                    withDeltaBeat(-startNote.getLength()).
+                    withDeltaLength(startNote.getLength()));
+            }
+
+            chords.remove(i);
+            continue;
+        }
+
+        ++i;
+    }
+
     // arpeggiate every chord
-    int arpKeyIndex = 0;
-    float arpBeatOffset = 0.f;
     const float selectionStartBeat =
         SequencerOperations::findStartBeat(sortedRemovals) + clip.getBeat();
-
-    const auto getAbsoluteBeatOffset =
-        [&selectionStartBeat, &arpBeatOffset, &durationMultiplier]()
-    {
-        return selectionStartBeat + (arpBeatOffset * durationMultiplier);
-    };
 
     Scale::Ptr scale = Scale::makeNaturalMajorScale();
     Note::Key scaleRootKey = 0;
@@ -974,39 +1006,50 @@ bool SequencerOperations::arpeggiate(const NoteListBase &notes,
         SequencerOperations::findHarmonicContext(chordStart, chordStart,
             harmonicContext, scale, scaleRootKey, scaleRootKeyName);
 
-        while (1)
+        int arpKeyIndex = 0;
+        float arpBeatOffset = (chordStart - selectionStartBeat) / durationMultiplier;
+        const auto getAbsoluteBeatOffset =
+            [&selectionStartBeat, &arpBeatOffset, &durationMultiplier]()
         {
-            const float nextNoteBeat = getAbsoluteBeatOffset() +
-                (arp->getBeatFor(arpKeyIndex) * durationMultiplier);
+            return selectionStartBeat + (arpBeatOffset * durationMultiplier);
+        };
 
-            if (SequencerOperations::isBarStart(nextNoteBeat, timeContext))
+        bool hitsChordEnd = false;
+        do
+        {
+            for (int j = 0; j < arp->getNumKeys(); ++j)
             {
-                // try to be smarter about time signatures
-                arp->skipToBarStart(arpKeyIndex, arpBeatOffset);
-            }
+                const float nextNoteBeat = getAbsoluteBeatOffset() +
+                    (arp->getBeatFor(arpKeyIndex) * durationMultiplier);
 
-            if (nextNoteBeat >= chordEnd)
-            {
-                if (isLimitedToChord)
+                if (SequencerOperations::isBarStart(nextNoteBeat, timeContext))
                 {
-                    // arpeggiate every chord from the start of the arp's sequence
-                    arpKeyIndex = 0;
-                    arpBeatOffset = (chordEnd - selectionStartBeat) / durationMultiplier;
+                    // try to be smarter about time signatures
+                    arp->skipToBarStart(arpKeyIndex, arpBeatOffset);
                 }
 
-                break;
+                if (nextNoteBeat >= chordEnd)
+                {
+                    hitsChordEnd = true;
+                }
+                else
+                {
+                    // see the comment above about clip's key/beat offsets
+                    const float sequenceBeatOffset = getAbsoluteBeatOffset() - clip.getBeat();
+                    const float maxLength = chordEnd - nextNoteBeat;
+                    jassert(maxLength >= Globals::minNoteLength);
+                    constexpr float randomness = 0.f;
+                    insertions.add(arp->mapArpKeyIntoChordSpace(temperament,
+                        arpKeyIndex, sequenceBeatOffset,
+                        chord, scale, scaleRootKey,
+                        isReversed, durationMultiplier, randomness)
+                            .withDeltaKey(-clip.getKey())
+                            .withMaxLength(maxLength));
+                }
+
+                arp->proceedToNextKey(arpKeyIndex, arpBeatOffset);
             }
-
-            // see the comment above about clip's key/beat offsets
-            const float sequenceBeatOffset = getAbsoluteBeatOffset() - clip.getBeat();
-            insertions.add(arp->mapArpKeyIntoChordSpace(temperament,
-                arpKeyIndex, sequenceBeatOffset,
-                chord, scale, scaleRootKey,
-                isReversed, durationMultiplier, randomness)
-                    .withDeltaKey(-clip.getKey()));
-
-            arp->proceedToNextKey(arpKeyIndex, arpBeatOffset);
-        }
+        } while (!hitsChordEnd);
     }
 
     // remove the selection and add result

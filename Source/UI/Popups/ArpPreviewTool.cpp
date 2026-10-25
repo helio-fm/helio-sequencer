@@ -131,9 +131,7 @@ void ArpPreviewTool::previewArp(Arpeggiator::Ptr arp, const Options options, boo
             this->harmonicContext,
             this->timeContext,
             options.durationMultiplier,
-            options.randomness,
             options.reversed,
-            options.limitToChord,
             true,
             needsCheckpoint);
 

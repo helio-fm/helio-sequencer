@@ -67,7 +67,7 @@ float Arpeggiator::DiatonicMapper::getChordVelocity(const Array<Note> &chord, in
 // 4                        2nd note + 1 step in current scale
 // 5                        3rd note
 // 6                        3rd note + 1 step in current scale
-// 7                        4th note, if any, or wraps back to 1st
+// 7                        4th note, if any, or 3rd + 2 steps in current scale
 // 8                        1st note + period
 // etc, so basically the target chord is treated as a diatonic triad
 
@@ -86,7 +86,7 @@ Note::Key Arpeggiator::DiatonicMapper::mapArpKeyIntoChord(const Arpeggiator::Key
     case 4: return periodOffset + this->getChordKey(chord, 2, chordScale, scaleRootKey, scaleOffset);
     case 5: return periodOffset + this->getChordKey(chord, 2, chordScale, scaleRootKey, scaleOffset + 1);
     case 6: return (chord.size() <= 3) ?
-        periodOffset + this->getChordKey(chord, 2, chordScale, scaleRootKey, 2) :
+        periodOffset + this->getChordKey(chord, 2, chordScale, scaleRootKey, scaleOffset + 2) :
         periodOffset + this->getChordKey(chord, 3, chordScale, scaleRootKey, 0);
     default: jassertfalse; return periodOffset + scaleRootKey;
     }
@@ -179,7 +179,10 @@ void Arpeggiator::proceedToNextKey(int &arpKeyIndex, float &arpBeatOffset) const
     if (!this->isKeyIndexValid(arpKeyIndex))
     {
         arpKeyIndex = 0;
-        arpBeatOffset += this->getSequenceLength();
+        // aligning the with ceilf to the nearest beat here:
+        // if an arpeggiator ends half-beat, it's most likely made of
+        // many short notes and is supposed to be beat-aligned anyway
+        arpBeatOffset += ceilf(this->getSequenceLength());
     }
 }
 
