@@ -31,6 +31,7 @@ public:
     static void closeAllCurrentlyOpenWindows();
 
     void closeButtonPressed() override;
+    bool keyPressed(const KeyPress &key) override;
 
 private:
 

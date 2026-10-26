@@ -44,6 +44,8 @@ public:
         AudioProcessorEditor(soundFontPlugin),
         audioPlugin(soundFontPlugin)
     {
+        this->setWantsKeyboardFocus(false);
+
         this->filePathEditor = HelioTheme::makeSingleLineTextEditor(false);
         this->addAndMakeVisible(this->filePathEditor.get());
 
@@ -60,8 +62,9 @@ public:
         this->programsComboBox = make<MobileComboBox::Container>();
         this->addAndMakeVisible(this->programsComboBox.get());
 
+        this->setSize(640, 125);
+
         this->syncDataWithAudioPlugin();
-        this->setSize(640, 120);
     }
 
     void syncDataWithAudioPlugin()
@@ -127,7 +130,7 @@ public:
         this->browseButton->setBounds(browseFileArea.removeFromRight(buttonWidth).translated(buttonMarginX, 0));
         this->filePathEditor->setBounds(browseFileArea.reduced(paddingX, 0));
 
-        auto selectProgramArea = getRowArea(0.7f, rowHeight);
+        auto selectProgramArea = getRowArea(0.75f, rowHeight);
         this->programNameLabel->setBounds(selectProgramArea.reduced(paddingX, 0));
         this->programsComboBox->setBounds(this->getLocalBounds().reduced(2));
     }

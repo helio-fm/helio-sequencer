@@ -42,6 +42,8 @@ public:
         AudioProcessorEditor(metronomePlugin),
         metronomePlugin(metronomePlugin)
     {
+        this->setWantsKeyboardFocus(false);
+
         for (int i = 0; i < this->allSyllables.size(); ++i)
         {
             const auto syllable = this->allSyllables[i];

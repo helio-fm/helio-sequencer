@@ -77,6 +77,17 @@ void PluginWindow::closeButtonPressed()
     UniquePointer<PluginWindow> deleter(this);
 }
 
+bool PluginWindow::keyPressed(const KeyPress &key)
+{
+    if (key == KeyPress::escapeKey)
+    {
+        this->closeButtonPressed();
+        return true;
+    }
+
+    return false;
+}
+
 void PluginWindow::closeCurrentlyOpenWindowsFor(const AudioProcessorGraph::NodeID nodeId)
 {
     for (const auto *window : activePluginWindows)
