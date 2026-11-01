@@ -1346,13 +1346,19 @@ float PatternRoll::findPreviousPlayheadAnchorBeat(float beat) const
 
 Range<float> PatternRoll::findPlayheadHomeEndRange() const
 {
-    if (this->selection.getNumSelected() == 1)
+    if (!this->selection.isEmpty())
     {
-        auto *cc = this->selection.getFirstAs<ClipComponent>();
-        auto *sequence = cc->getClip().getPattern()->getTrack()->getSequence();
-        const float sequenceStart = sequence->getFirstBeat();
-        return { cc->getBeat() + sequence->getFirstBeat(),
-            cc->getBeat() + sequence->getLastBeat() };
+        auto firstBeat = std::numeric_limits<float>::max();
+        auto lastBeat = std::numeric_limits<float>::lowest();
+        for (int i = 0; i < this->selection.size(); ++i)
+        {
+            auto *cc = this->selection.getItemAs<ClipComponent>(i);
+            auto *sequence = cc->getClip().getPattern()->getTrack()->getSequence();
+            firstBeat = jmin(firstBeat, cc->getBeat() + sequence->getFirstBeat());
+            lastBeat = jmax(lastBeat, cc->getBeat() + sequence->getLastBeat());
+        }
+
+        return { firstBeat, lastBeat };
     }
 
     return { this->projectFirstBeat, this->projectLastBeat };
