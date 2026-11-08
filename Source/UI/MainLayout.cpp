@@ -85,7 +85,7 @@ private:
 
     void timerCallback() override
     {
-        const auto newFill = this->fillColour.interpolatedWith(Colours::transparentBlack, 0.69f);
+        const auto newFill = this->fillColour.interpolatedWith(Colours::transparentBlack, 0.75f);
 
         if (this->fillColour == newFill)
         {

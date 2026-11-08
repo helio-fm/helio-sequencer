@@ -260,7 +260,7 @@ private:
         static const char *const keywords6Char[] =
             { "define", "lambda", "filter", "reduce", "modulo", nullptr };
         static const char *const keywordsOther[] =
-            { "map-indexed", "filter-indexed", nullptr };
+            { "map-indexed", "filter-indexed", "for-each", nullptr };
 
         const char *const *k;
         switch (tokenLength)
@@ -296,18 +296,18 @@ private:
         static const char *const keywords3Char[] =
             { "abs", "min", "max", "sin", "cos", "nth", nullptr };
         static const char *const keywords4Char[] =
-            { "list", "head", "tail", "last", "push", "seed", "sus2", "sus4", nullptr };
+            { "list", "head", "tail", "last", "push", "seed", "load", "sus2", "sus4", nullptr };
         static const char *const keywords5Char[] =
             { "empty", "first", "range", "round", "floor", "triad", "tonic", nullptr };
         static const char *const keywords6Char[] =
-            { "append", "insert", "length", "random", "remove", nullptr };
+            { "append", "insert", "length", "random", "remove", "repeat", nullptr };
         static const char *const keywordsOther[] =
-            { "reverse", "index-of",
+            { "reverse", "index-of", "contains",
               "supertonic", "mediant", "subdominant",
               "dominant", "submediant", "subtonic",
               "project:period-size", "project:reset",
               "timeline:reset", "timeline:add-key",
-              "track:make", "track:add-notes",
+              "track:remove", "track:make", "track:add-notes",
               "scale:find", "scale:render-key",
               "refactor:align-to-scale", "refactor:arpeggiate", 
               "refactor:cleanup-overlaps", "refactor:invert-chord",

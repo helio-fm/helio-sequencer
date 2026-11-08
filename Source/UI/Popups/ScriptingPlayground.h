@@ -137,6 +137,7 @@ public:
 
     void resetProject() override;
     void resetTimeline() override;
+    void removeTracks(const String &wildcard) override;
     void addKeySignature(const KeySignatureEvent &event) override;
     String makePianoTrack(const String &trackName) override;
     MidiTrack *findPianoTrackById(const String &trackId) override;

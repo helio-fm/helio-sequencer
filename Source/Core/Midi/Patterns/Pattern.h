@@ -58,7 +58,7 @@ public:
 
     // This one is for import and checkout procedures.
     // Does not notify anybody to prevent notification hell.
-    // Always call notifyLayerChanged() when you're done using it.
+    // Always call notifyClipAdded/whatever when you're done using it.
     void silentImport(const Clip &clipToImport);
 
     bool insert(const Clip &clip, bool undoable);

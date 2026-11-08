@@ -52,6 +52,7 @@ public:
         // may be called from a separate thread, do locks when needed:
         virtual void resetProject() = 0;
         virtual void resetTimeline() = 0;
+        virtual void removeTracks(const String &wildcard) = 0;
         virtual void addKeySignature(const KeySignatureEvent &event) = 0;
         virtual String makePianoTrack(const String &trackName) = 0;
         virtual MidiTrack *findPianoTrackById(const String &trackId) = 0;
@@ -146,7 +147,6 @@ public:
     //===------------------------------------------------------------------===//
 
     bool isPlayground() const noexcept;
-    script::Scope &getRootScope() noexcept;
     StringArray getTopLevelFunctionNames() const;
     const Array<Range<int>> &getBlockRanges() const;
     const script::Value &getParsingResult() const;
@@ -275,6 +275,23 @@ private:
                 if (this->hostSideEffects != nullptr)
                 {
                     this->hostSideEffects->onProgramTerminated(true);
+                }
+            }
+        }
+        catch (script::ParsingError error) // (load) might have called parse during evaluation
+        {
+            this->parsingError = error;
+            DBG("Parsing failed in " +
+                String(Time::getMillisecondCounter() - this->startTime.get()) + " ms");
+
+            const MessageManagerLock mmLock(Thread::getCurrentThread());
+            //jassert(mmLock.lockWasGained());
+            if (mmLock.lockWasGained())
+            {
+                const ScopedWriteLock lock(this->hostLock);
+                if (this->hostSideEffects != nullptr)
+                {
+                    this->hostSideEffects->onProgramTerminated(false);
                 }
             }
         }

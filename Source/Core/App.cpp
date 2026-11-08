@@ -162,7 +162,7 @@ public:
     }
 
     // Overridden to avoid assertions in ResizableWindow:
-#if JUCE_DEBUG
+#if DEBUG
     void addChildComponent(Component *child, int zOrder = -1)
     {
         Component::addChildComponent(child, zOrder);

@@ -620,14 +620,14 @@ Value round(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext 
 {
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
     checkNumArgs(args, 1);
-    return Value(std::round(args.getReference(0).castToFloat()));
+    return Value(Value::Integer(roundf(args.getReference(0).castToFloat())));
 }
 
 Value floor(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
 {
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
     checkNumArgs(args, 1);
-    return Value(std::floor(args.getReference(0).castToFloat()));
+    return Value(Value::Integer(floorf(args.getReference(0).castToFloat())));
 }
 
 } // namespace math
@@ -717,6 +717,11 @@ Value indexOf(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContex
     return Value(list.indexOf(item));
 }
 
+Value contains(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
+{
+    return Value(indexOf(unevaluatedArgs, scope, context).castToInteger() >= 0);
+}
+
 Value insert(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
 {
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
@@ -795,6 +800,28 @@ Value reverse(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContex
     for (int i = list.size(); i --> 0 ;)
     {
         result.add(list.getUnchecked(i));
+    }
+
+    return Value(move(result));
+}
+
+Value repeat(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
+{
+    auto args = evaluateArgs(unevaluatedArgs, scope, context);
+    checkNumArgs(args, 2);
+
+    const auto numRepeats = args.getReference(0).castToInteger();
+    if (numRepeats < 2)
+    {
+        throw args.getReference(0).makeError(EvaluationError::Type::InvalidArgument);
+    }
+
+    const auto &value = args.getReference(1);
+
+    Value::List result;
+    for (int i = 0; i < numRepeats; i++)
+    {
+        result.add(value);
     }
 
     return Value(move(result));
@@ -986,6 +1013,36 @@ Value map(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &c
     return Value(move(result));
 }
 
+Value forEach(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
+{
+    const auto args = evaluateArgs(unevaluatedArgs, scope, context);
+    if (args.size() < 2)
+    {
+        throw EvaluationError(EvaluationError::Type::TooFewArguments);
+    }
+
+    Value::List tmp;
+    int loopLength = INT_MAX;
+    for (int l = 1; l < args.size(); ++l)
+    {
+        loopLength = jmin(loopLength, args.getReference(l).asList().size());
+    }
+
+    for (int i = 0; i < loopLength; i++)
+    {
+        for (int l = 1; l < args.size(); ++l)
+        {
+            const auto &list = args.getReference(l).asList();
+            tmp.add(list.getUnchecked(i));
+        }
+
+        args.getReference(0).apply(tmp, scope, context);
+        tmp.clear();
+    }
+
+    return {};
+}
+
 Value filterIndexed(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
 {
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
@@ -1139,11 +1196,13 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
     if (name == "insert") return Value::makeBuiltInFunction(name, list::insert);
     if (name == "nth") return Value::makeBuiltInFunction(name, list::nth);
     if (name == "index-of") return Value::makeBuiltInFunction(name, list::indexOf);
+    if (name == "contains") return Value::makeBuiltInFunction(name, list::contains);
     if (name == "remove") return Value::makeBuiltInFunction(name, list::remove);
     if (name == "length") return Value::makeBuiltInFunction(name, list::length);
     if (name == "empty") return Value::makeBuiltInFunction(name, list::empty);
     if (name == "append") return Value::makeBuiltInFunction(name, list::append);
     if (name == "reverse") return Value::makeBuiltInFunction(name, list::reverse);
+    if (name == "repeat") return Value::makeBuiltInFunction(name, list::repeat);
     if (name == "head") return Value::makeBuiltInFunction(name, list::head);
     if (name == "tail") return Value::makeBuiltInFunction(name, list::tail);
     if (name == "first") return Value::makeBuiltInFunction(name, list::first);
@@ -1152,6 +1211,7 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
 
     if (name == "map") return Value::makeBuiltInFunction(name, functional::map);
     if (name == "map-indexed") return Value::makeBuiltInFunction(name, functional::mapIndexed);
+    if (name == "for-each") return Value::makeBuiltInFunction(name, functional::forEach);
     if (name == "filter") return Value::makeBuiltInFunction(name, functional::filter);
     if (name == "filter-indexed") return Value::makeBuiltInFunction(name, functional::filterIndexed);
     if (name == "reduce") return Value::makeBuiltInFunction(name, functional::reduce);
@@ -1733,7 +1793,8 @@ static Value parseNumber(CharPointer &t, bool isNegative)
 
 bool isSymbolBody(juce_wchar ch) noexcept
 {
-    return CharacterFunctions::isLetterOrDigit(ch) || ch == '_' || ch == '~' ||
+    return CharacterFunctions::isLetterOrDigit(ch) ||
+        ch == '_' || ch == '~' || ch == '!' ||
         (ch >= 35 && ch <= 38) || (ch >= 42 && ch <= 47) || (ch >= 58 && ch <= 64);
         //(ch >= '#' && ch <= '&') || (ch >= '*' && ch <= '/') || (ch >= ':' && ch <= '@');
 };

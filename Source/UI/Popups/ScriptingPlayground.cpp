@@ -30,6 +30,7 @@
 #include "TimeSignaturesSequence.h"
 #include "AnnotationsSequence.h"
 #include "PianoSequence.h"
+#include "PianoTrackNode.h"
 #include "SequencerOperations.h"
 #include "ScriptEngine.h"
 #include "ScriptTokeniser.h"
@@ -1299,6 +1300,17 @@ void ScriptingPlayground::addKeySignature(const KeySignatureEvent &parameters)
     sequence->insert(ownedEvent, true);
 }
 
+void ScriptingPlayground::removeTracks(const String &wildcard)
+{
+    for (auto *track : this->project.getTracks())
+    {
+        if (track->getTrackName().matchesWildcard(wildcard, true))
+        {
+            this->project.removeTrack(*track);
+        }
+    }
+}
+
 static SerializedData makePianoTrackTemplate(const String &name,
     const String &instrumentId, String &outTrackId)
 {
@@ -1309,7 +1321,7 @@ static SerializedData makePianoTrackTemplate(const String &name,
 
     Random r;
     const auto colours = ColourIDs::getColoursList();
-    const auto index = r.nextInt({ int(colours.size() * 0.420), colours.size() });
+    const auto index = r.nextInt({ (colours.size() / 2), colours.size() });
     newNode->setTrackColour(colours[index], false, dontSendNotification);
     newNode->setTrackInstrumentId(instrumentId, false, dontSendNotification);
 
@@ -1319,16 +1331,6 @@ static SerializedData makePianoTrackTemplate(const String &name,
 
 String ScriptingPlayground::makePianoTrack(const String &trackName)
 {
-    // if a track of the same name exists, replace it
-    for (auto *track : this->project.getTracks())
-    {
-        if (track->getTrackName() == trackName)
-        {
-            this->project.removeTrack(*track);
-            break;
-        }
-    }
-
     String instrumentId;
     for (auto *instrument : App::Workspace().getAudioCore().getInstrumentsExceptInternal())
     {

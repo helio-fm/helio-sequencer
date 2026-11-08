@@ -164,7 +164,7 @@ public:
 
         for (int i = 0; i < this->sequences.size(); ++i)
         {
-            const auto *wrapper = this->sequences.getObjectPointer(i);
+            const auto *wrapper = this->sequences.getObjectPointerUnchecked(i);
             if (wrapper->currentIndex < wrapper->midiMessages.getNumEvents())
             {
                 const auto &message = wrapper->midiMessages.getEventPointer(wrapper->currentIndex)->message;

@@ -36,7 +36,7 @@ public:
 
     struct ScriptEditorSettings final : public Serializable
     {
-        static constexpr Point<int> minSize = { 690, 690 };
+        static constexpr Point<int> minSize = { 690, 230 };
         static constexpr Point<int> defaultSize = { 900, 960 };
         Point<int> size = defaultSize;
         String fontName = Font::getDefaultMonospacedFontName();

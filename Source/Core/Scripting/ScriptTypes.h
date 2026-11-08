@@ -203,7 +203,7 @@ Arpeggiator::Key makeArpeggiatorKey(const Value &value)
     key.key = Scale::wrapKey((inScaleKey - 1), 0, 7);
     key.period = (inScaleKey - 1) / 7;
     key.length = length;
-    key.velocity = velocity;
+    key.velocity = jlimit(0.f, 1.f, velocity);
 
     return key;
 }

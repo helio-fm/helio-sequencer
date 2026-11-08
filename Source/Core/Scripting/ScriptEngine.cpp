@@ -108,6 +108,12 @@ bool ScriptEngine::evaluate(const String &code,
                 this->hostSideEffects->onProgramTerminated(true);
             }
         }
+        catch (script::ParsingError error) // (load) might have called parse during evaluation
+        {
+            this->parsingError = error;
+            // DBG("Parsing failed in " + String(Time::getMillisecondCounter() - parseStartMs) + " ms");
+            return false;
+        }
         catch (script::EvaluationError error)
         {
             {
@@ -128,11 +134,6 @@ bool ScriptEngine::evaluate(const String &code,
     }
 
     return true;
-}
-
-script::Scope &ScriptEngine::getRootScope() noexcept
-{
-    return this->rootScope;
 }
 
 bool ScriptEngine::isPlayground() const noexcept
@@ -272,7 +273,6 @@ script::Value load(const script::Value::List &unevaluatedArgs,
     }
 
     auto *self = castToSelf(context);
-    const ScopedReadLock lock(self->hostLock);
 
     // no caching here, everything is hopefully fast enough
     script::Value result;
@@ -286,7 +286,7 @@ script::Value load(const script::Value::List &unevaluatedArgs,
 
         Array<Range<int>> codeBlockRanges;
         const auto program = script::parse(file.loadFileAsString(), codeBlockRanges);
-        result = program.evaluate(self->getRootScope(), *self);
+        result = program.evaluate(scope, *self);
     }
 
     return result;
@@ -433,6 +433,43 @@ script::Value addKeySignature(const script::Value::List &unevaluatedArgs,
 namespace track
 {
 
+script::Value remove(const script::Value::List &unevaluatedArgs,
+    script::Scope &scope, script::EvaluationContext &context)
+{
+    const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
+    if (args.isEmpty())
+    {
+        throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
+            "(track:remove wildcard wildcard ...)", "expected track name wildcards");
+    }
+
+    StringArray wildcards;
+    for (const auto &wildcardValue : args)
+    {
+        if (!wildcardValue.isString())
+        {
+            throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
+                "(track:remove wildcard wildcard ...)", "expected track name wildcards");
+        }
+
+        wildcards.add(wildcardValue.asString());
+    }
+
+    if (!isPlaygroundMode(context))
+    {
+        JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
+        auto *self = castToSelf(context);
+        const ScopedWriteLock lock(self->hostLock);
+
+        for (const auto &wildcard : wildcards)
+        {
+            self->hostSideEffects->removeTracks(wildcard);
+        }
+    }
+
+    return {};
+}
+
 script::Value make(const script::Value::List &unevaluatedArgs,
     script::Scope &scope, script::EvaluationContext &context)
 {
@@ -473,7 +510,8 @@ script::Value make(const script::Value::List &unevaluatedArgs,
     JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
     auto *self = castToSelf(context);
     const ScopedWriteLock lock(self->hostLock);
-    const auto trackId = self->hostSideEffects->makePianoTrack(args.getReference(0).asString());
+    const auto trackId =
+        self->hostSideEffects->makePianoTrack(args.getReference(0).asString());
 
     if (!notes.isEmpty())
     {
@@ -615,7 +653,7 @@ script::Value renderKey(const script::Value::List &unevaluatedArgs,
     const auto scale =
         script::interop::makeScale(args.getReference(0),
             {}, self->hostContext.temperament->getPeriodSize());
-    const auto row = scale->getChromaticKey(args.getReference(1).castToInteger() - 1, 0, true);
+    const auto row = scale->getChromaticKey(args.getReference(1).castToInteger() - 1, 0, false);
     return script::Value(row);
 }
 
@@ -963,6 +1001,7 @@ Optional<script::Value> ScriptEngine::makeLanguageExtension(const String &name) 
 
     if (name == "track:make") return Value::makeBuiltInFunction(name, extensions::track::make);
     if (name == "track:add-notes") return Value::makeBuiltInFunction(name, extensions::track::addNotes);
+    if (name == "track:remove") return Value::makeBuiltInFunction(name, extensions::track::remove);
 
     if (name == "scale:find") return Value::makeBuiltInFunction(name, extensions::scale::find);
     if (name == "scale:render-key") return Value::makeBuiltInFunction(name, extensions::scale::renderKey);
