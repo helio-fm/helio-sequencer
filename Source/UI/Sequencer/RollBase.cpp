@@ -522,9 +522,9 @@ void RollBase::zoomRelative(const Point<float> &origin,
 
     float newBeatWidth = this->beatWidth + (factor.getX() * this->beatWidth);
     const float estimatedNewWidth = newBeatWidth * this->getNumBeats();
-
-    const auto hitsMinZoomThreshold = estimatedNewWidth < float(this->viewport.getViewWidth());
-    const auto shouldAutoFitViewRange = hitsMinZoomThreshold && !isInertialZoom;
+    const bool hitsMinZoomThreshold = estimatedNewWidth < float(this->viewport.getViewWidth());
+    const bool wasCloseToMinZoom = this->getWidth() <= (this->viewport.getViewWidth() + 1);
+    const bool shouldAutoFitViewRange = !isInertialZoom && wasCloseToMinZoom && hitsMinZoomThreshold;
 
     if (hitsMinZoomThreshold)
     {
@@ -538,7 +538,6 @@ void RollBase::zoomRelative(const Point<float> &origin,
     this->viewport.setViewPosition(int(newViewPositionX + 0.5f), int(oldViewPosition.getY()));
 
     this->resetDraggingAnchors();
-    this->updateChildrenPositions();
 
     if (shouldAutoFitViewRange)
     {
@@ -568,6 +567,8 @@ void RollBase::zoomRelative(const Point<float> &origin,
             }
         }
     }
+
+    this->updateChildrenPositions();
 }
 
 void RollBase::zoomAbsolute(const Rectangle<float> &proportion)

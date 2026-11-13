@@ -23,7 +23,7 @@ class SmoothZoomController final : private Timer
 {
 public:
 
-    explicit SmoothZoomController(SmoothZoomListener &parent) :
+    explicit SmoothZoomController(SmoothZoomListener &parent) noexcept :
         listener(parent) {}
 
     ~SmoothZoomController() override
@@ -43,26 +43,32 @@ public:
         this->stopTimer();
     }
 
-    void setAnimationsEnabled(bool enabled)
+    void setAnimationsEnabled(bool enabled) noexcept
     {
-        this->animationDelay = enabled ?
-            Defaults::timerDelay : Defaults::timerDelayNoAnim;
-
-        this->zoomDecay = enabled ?
-            Defaults::zoomDecayFactor : Defaults::zoomDecayFactorNoAnim;
+        this->animated = enabled;
     }
 
     void zoomRelative(const Point<float> &from, const Point<float> &zoom) noexcept
     {
-        this->inertialZoom =
-            juce_hypot(this->factorX, this->factorY) >= (Defaults::zoomStopFactor * 10.f);
+        if (this->animated)
+        {
+            this->inertialZoom =
+                juce_hypot(this->factorX, this->factorY) >= (Defaults::zoomStopFactor * 10.f);
 
-        this->factorX += zoom.getX();
-        this->factorY += zoom.getY();
-        this->originX = from.getX();
-        this->originY = from.getY();
+            this->factorX += zoom.getX();
+            this->factorY += zoom.getY();
+            this->originX = from.getX();
+            this->originY = from.getY();
 
-        this->startTimer(this->animationDelay);
+            this->startTimer(Defaults::timerDelay);
+        }
+        else
+        {
+            this->listener.zoomRelative(
+                { from.getX(), from.getY() },
+                { zoom.getX(), zoom.getY() },
+                false);
+        }
     }
 
 private:
@@ -76,8 +82,8 @@ private:
     {
         if (this->stillNeedsZoom())
         {
-            this->factorX = this->factorX * this->zoomDecay;
-            this->factorY = this->factorY * this->zoomDecay;
+            this->factorX = this->factorX * Defaults::zoomDecayFactor;
+            this->factorY = this->factorY * Defaults::zoomDecayFactor;
 
             this->listener.zoomRelative(
                 { this->originX, this->originY },
@@ -99,11 +105,9 @@ private:
     struct Defaults
     {
         static constexpr auto timerDelay = 6;
-        static constexpr auto timerDelayNoAnim = 1;
-        static constexpr auto zoomDecayFactor = 0.72f;
-        static constexpr auto zoomDecayFactorNoAnim = 0.8f;
-        static constexpr auto zoomStopFactor = 0.0005f;
-        static constexpr auto initialZoomSpeed = 0.33f;
+        static constexpr auto zoomDecayFactor = 0.71f;
+        static constexpr auto zoomStopFactor = 0.001f;
+        static constexpr auto initialZoomSpeed = 0.35f;
     };
 
     float factorX = 0.f;
@@ -111,9 +115,7 @@ private:
     float originX = 0.f;
     float originY = 0.f;
     bool inertialZoom = false;
-
-    int animationDelay = Defaults::timerDelay;
-    float zoomDecay = Defaults::zoomDecayFactor;
+    bool animated = true;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SmoothZoomController)
 };

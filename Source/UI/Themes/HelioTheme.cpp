@@ -21,7 +21,7 @@
 #include "ColourIDs.h"
 #include "Config.h"
 #include "SerializationKeys.h"
-
+#include "UserInterfaceFlags.h"
 #include "PageBackgroundA.h"
 #include "PageBackgroundB.h"
 #include "PanelBackground.h"
@@ -203,27 +203,56 @@ void HelioTheme::drawStretchableLayoutResizerBar(Graphics &g,
 // Text Editor
 //===----------------------------------------------------------------------===//
 
-class CodeEditorCaretComponent final : public CaretComponent
+class TextEditorCaretComponent final : public CaretComponent
 {
 public:
 
-    CodeEditorCaretComponent(Component *keyFocusOwner) :
-        CaretComponent(keyFocusOwner) {}
+    TextEditorCaretComponent(Component *keyFocusOwner,
+        bool isBlinking = true, int heightToExpand = 0) noexcept :
+        CaretComponent(keyFocusOwner),
+        isBlinking(isBlinking),
+        heightToExpand(heightToExpand),
+        keyFocusOwner(keyFocusOwner) {}
 
-    void setCaretPosition(const Rectangle<int> &area) override
+    void setCaretPosition(const Rectangle<int> &area) noexcept override
     {
-        CaretComponent::setCaretPosition(area.expanded(0, 2));
+        const auto characterArea =
+            area.withWidth(2).expanded(0, this->heightToExpand);
+
+        if (this->isBlinking)
+        {
+            CaretComponent::setCaretPosition(characterArea); // starts the timer
+        }
+        else
+        {
+            this->setVisible(this->shouldBeShown());
+            this->setBounds(characterArea);
+        }
     }
+
+    bool shouldBeShown() const noexcept
+    {
+        return this->keyFocusOwner == nullptr ||
+            (this->keyFocusOwner->hasKeyboardFocus(false) &&
+                !this->keyFocusOwner->isCurrentlyBlockedByAnotherModalComponent());
+    }
+
+    const bool isBlinking = false;
+    const int heightToExpand = 0;
+    Component *keyFocusOwner = nullptr;
 };
 
 CaretComponent *HelioTheme::createCaretComponent(Component *keyFocusOwner)
 {
     if (dynamic_cast<CodeEditorComponent *>(keyFocusOwner))
     {
-        return new CodeEditorCaretComponent(keyFocusOwner);
+        // false = don't blink even if the animations flag is on
+        // (blinking caret in the code editor is somehow annoying)
+        return new TextEditorCaretComponent(keyFocusOwner, false, 2);
     }
 
-    return new CaretComponent(keyFocusOwner);
+    return new TextEditorCaretComponent(keyFocusOwner,
+        App::Config().getUiFlags()->areUiAnimationsEnabled());
 }
 
 void HelioTheme::fillTextEditorBackground(Graphics &g, int w, int h, TextEditor &ed)

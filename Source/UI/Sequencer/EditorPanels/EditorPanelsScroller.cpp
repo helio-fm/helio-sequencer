@@ -144,6 +144,14 @@ void EditorPanelsScroller::paint(Graphics &g)
     g.fillRect(0, 1, this->getWidth(), 1);
 }
 
+void EditorPanelsScroller::visibilityChanged()
+{
+    if (!this->animationsEnabled && this->isShowing())
+    {
+        this->updateAllChildrenBounds();
+    }
+}
+
 //===----------------------------------------------------------------------===//
 // RollListener
 //===----------------------------------------------------------------------===//

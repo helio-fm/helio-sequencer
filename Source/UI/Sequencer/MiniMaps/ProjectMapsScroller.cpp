@@ -69,53 +69,15 @@ void ProjectMapsScroller::disconnectPlayhead()
     }
 }
 
-//===----------------------------------------------------------------------===//
-// TrackScroller
-//===----------------------------------------------------------------------===//
-
 void ProjectMapsScroller::horizontalDragByUser(Component *component)
 {
-    this->screenRangeRectangle->setRealBounds(this->screenRangeRectangle->getRealBounds()
-        .withX(float(component->getX())));
-
-    this->xMoveByUser();
-}
-
-void ProjectMapsScroller::xyMoveByUser()
-{
-    const auto screenRangeBounds = this->screenRangeRectangle->getRealBounds();
+    const auto screenRangeBounds =
+        this->screenRangeRectangle->getRealBounds().withX(float(component->getX()));
 
     const float mw = float(this->getWidth()) - screenRangeBounds.getWidth();
-    const float propX = screenRangeBounds.getTopLeft().getX() / mw;
-    const float mh = float(this->getHeight()) - screenRangeBounds.getHeight();
-    const float propY = screenRangeBounds.getTopLeft().getY() / mh;
-
-    // fixes for header height delta
-    const float hh = float(Globals::UI::rollHeaderHeight);
-    const float rollHeight = float(this->roll->getHeight());
-    const float propY2 = roundf(((rollHeight - hh) * propY) - hh) / rollHeight;
-    this->roll->panProportionally(propX, propY2);
-
-    const auto p = this->getIndicatorBounds();
-    const auto hp = p.toNearestInt();
-    this->horizontalRangeRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
-    this->screenRangeRectangle->setRealBounds(p);
-
-    const auto mapBounds = this->getMapBounds();
-    for (auto *map : this->trackMaps)
-    {
-        map->setBounds(mapBounds);
-    }
-}
-
-void ProjectMapsScroller::xMoveByUser()
-{
-    const auto screenRangeBounds = this->screenRangeRectangle->getRealBounds();
-
-    const float mw = float(this->getWidth()) - screenRangeBounds.getWidth();
-    const float propX = screenRangeBounds.getTopLeft().getX() / mw;
+    const float propX = screenRangeBounds.getTopLeft().getX() / jmax(1.f, mw);
     const float propY = float(this->roll->getViewport().getViewPositionY()) /
-        float(this->roll->getHeight() - this->roll->getViewport().getViewHeight());
+        jmax(1.f, float(this->roll->getHeight() - this->roll->getViewport().getViewHeight()));
 
     this->roll->panProportionally(propX, propY);
 

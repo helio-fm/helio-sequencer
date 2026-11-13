@@ -68,6 +68,7 @@ public:
 
     void resized() override;
     void paint(Graphics &g) override;
+    void visibilityChanged() override;
 
     //===------------------------------------------------------------------===//
     // RollListener

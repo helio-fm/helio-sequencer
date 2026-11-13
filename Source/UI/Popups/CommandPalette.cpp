@@ -106,6 +106,7 @@ CommandPalette::CommandPalette(ProjectNode *project,
     this->textEditor->setCaretVisible(true);
     this->textEditor->setMultiLine(false);
     this->textEditor->setReadOnly(false);
+    this->textEditor->setIndents(4, 6);
     this->textEditor->setFont(Globals::UI::Fonts::M);
     this->textEditor->addListener(this);
     this->textEditor->setText(defaultText, false);
