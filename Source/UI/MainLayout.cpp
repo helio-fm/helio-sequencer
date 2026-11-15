@@ -381,11 +381,10 @@ void MainLayout::hideTooltipIfAny()
 Rectangle<int> MainLayout::getBoundsForPopups() const
 {
     Rectangle<int> r(this->getLocalBounds());
-
-#if PLATFORM_DESKTOP
     r.removeFromLeft(Globals::UI::sidebarWidth);
     r.removeFromRight(Globals::UI::sidebarWidth);
 
+#if PLATFORM_DESKTOP
     if (App::isUsingNativeTitleBar())
     {
         r.removeFromTop(Globals::UI::headlineHeight);

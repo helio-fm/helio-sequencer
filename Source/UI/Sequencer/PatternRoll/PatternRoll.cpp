@@ -1283,7 +1283,7 @@ void PatternRoll::paint(Graphics &g) noexcept
 
     const auto viewArea = this->viewport.getViewArea();
     g.setFillType({ this->rowPattern, AffineTransform::translation(0.f, float(Globals::UI::rollHeaderHeight)) });
-    g.fillRect(viewArea.getX(), Globals::UI::rollHeaderHeight, viewArea.getWidth(), viewArea.getHeight());
+    g.fillRect(viewArea.getX(), Globals::UI::rollHeaderHeight, viewArea.getWidth(), this->getHeight());
 
     g.setFont(Globals::UI::Fonts::XS); // so that clips don't have to do it
     RollBase::paint(g);

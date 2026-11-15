@@ -36,8 +36,14 @@ public:
 
     struct ScriptEditorSettings final : public Serializable
     {
+        #if PLATFORM_DESKTOP
         static constexpr Point<int> minSize = { 690, 230 };
         static constexpr Point<int> defaultSize = { 900, 960 };
+        #elif PLATFORM_MOBILE
+        static constexpr Point<int> minSize = { 690, 100 };
+        static constexpr Point<int> defaultSize = { 690, 230 };
+        #endif
+
         Point<int> size = defaultSize;
         String fontName = Font::getDefaultMonospacedFontName();
         float fontSize = Globals::UI::Fonts::S - 1;

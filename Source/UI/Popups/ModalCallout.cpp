@@ -240,7 +240,7 @@ void ModalCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo, const R
         }
     }
 
-    this->setBounds(newBounds);
+    this->setBounds(newBounds.constrainedWithin(this->areaToFitIn));
 }
 
 void ModalCallout::updateShape()
