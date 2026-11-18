@@ -11,7 +11,7 @@ default-theme = "navy"
 smart-punctuation = true
 sidebar-header-nav = false
 
-[output.html.playpen]
+[output.html.playground]
 editable = false
 runnable = false
 copy-js = false

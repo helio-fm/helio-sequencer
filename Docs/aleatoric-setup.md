@@ -12,7 +12,7 @@ The non-goals are anything related to audio processing or sound generation, or e
 
 The syntax was more of an artistic choice for the sake of [timeless vibes](https://xkcd.com/297/), but under the hood it's a toy language that tries to be easier to read (no car/cdr/cddadr/cadddr) and encourages an old-school fp style (data is mostly immutable, functions are mostly pure, use map/filter/reduce instead of for loops), which is again for the sake of timeless vibes.
 
-Here will be a short overview for details, but the [code examples](#example-1) are the best way to get a grasp of a language.
+Here will be a short overview for details, but the code examples ([(1)](#example-1), [(2)](#example-2)) are the best way to get a grasp of a language.
 
 ```lisp
 ; TODO: describe how it differs from Scheme and list the built-in symbols;
@@ -228,6 +228,9 @@ See the rendered examples in [this YouTube video](https://youtu.be/z_EVqsC3XoY).
 (define (get-last-beat notes)
   (if (empty notes) 0 (+ (nth 0 (last notes)) (nth 2 (last notes)))))
 
+; (track:remove
+;   "Contrabass" "Cellos" "Violas" "Violins" "Choir" "Brass" "Woodwinds")
+
 ; bass will be the simplest track: long notes, always at tonic
 (track:make "Contrabass"
   (->> harmony-base
@@ -363,6 +366,381 @@ See the rendered examples in [this YouTube video](https://youtu.be/z_EVqsC3XoY).
         (+ result note-a note-b))
       ())
     (refactor:join-adjacent)))
+```
+
+### Example 2
+
+This script generates tracks with hard-coded structure. See the rendered examples [in this video](https://youtu.be/6Kv_5TGt4iQ).
+
+```lisp
+; let's try to make a spacesynth-inspired chiptune track
+; with ZX Spectrum sound using wtbeep for all instruments:
+; https://github.com/utz82/ZX-Spectrum-1-Bit-Routines/tree/master/wtbeep
+; (SoundFont version here: https://shiru.untergrund.net/software.shtml)
+
+; my recipe will be this: follow the structure of a pop song
+; (e.g. intro - chorus - verse - chorus - bridge - chorus - etc),
+; the chorus will be made out of some generic progressions in minor,
+; and verses will try to be spacey by using major chords jumping over
+; what they call chromatic mediants (e.g. a tritone or a third apart);
+; is this a good idea? maybe not, let's do it anyway and see what happens
+
+; -------------------------------------------------------------------
+; structure & helpers
+
+; shorthands for chords (not including scale but assuming using minor later):
+(define i triad:tonic)
+(define ii triad:supertonic)
+(define iii triad:mediant)
+(define iv triad:subdominant)
+(define v triad:dominant)
+(define v7 seventh:dominant)
+(define vi triad:submediant)
+(define vii triad:subtonic)
+
+(define (make-progression-a)
+  (list ii ii
+    (random (list iv v v7))
+    (random (list iii vii))))
+
+(define (make-progression-b)
+  (list ii
+    (random (list ii ii iii vii))
+    (random (list iv v v7))
+    (random (list i iii))))
+
+(define chorus-scale (scale:find "Dorian"))
+(define chorus-key (+ (/ project:period-size 3) (random 0 7)))
+(define verse-scale (scale:find "Mixolydian"))
+
+; loosely following the definition in wikipedia.org/wiki/Chromatic_mediant
+; (roots are related by a M3 or m3 (or in between in larger temperaments))
+(define (pick-random-mediant (from-key 0))
+  (define minor-3 (round (* project:period-size (/ 294.0 1200.0))))
+  (define major-3 (round (* project:period-size (/ 407.0 1200.0))))
+  (define key-delta (* (if (random d8) 1 -1) (random minor-3 (+ 1 major-3))))
+  (modulo (+ from-key key-delta) project:period-size))
+
+; makes a list of key jumps (the instruments will pick chords on their own)
+(define (make-verse (from-key chorus-key))
+  (define a from-key)
+  (define b (pick-random-mediant a))
+  (define c (pick-random-mediant b))
+  (append
+    (random (list (list a a b b) (list a b b c)))
+    (random (list (list c c b a) (list c b b a)))))
+
+(define (variate-chorus chorus)
+  (define (maybe-suspended i x)
+    (if (and (= i 1) (random d3)) (+ x (random '(-1 1))) x))
+  (map (λ (chord) (map-indexed maybe-suspended chord)) chorus))
+
+(define (simplify-chorus chorus)
+  (map-indexed (λ (i x) (if (= i 3) (nth (- i 1) chorus) x)) chorus))
+
+(define (make-intro chorus)
+  (first (/ (length chorus) 2) (simplify-chorus chorus)))
+
+(define (make-bridge chorus)
+  (last (/ (length chorus) 2) chorus))
+
+(define bar-length 4)
+
+; append starting beats for later use:
+; (key key key) -> ((beat key) (beat key) (beat key)), or
+; (chord chord chord) -> ((beat chord) (beat chord) (beat chord))
+(define (add-timestamps progression (from-bar 0) (chord-length bar-length))
+  (map-indexed
+    (λ (i x) (list (+ (* from-bar chord-length) (* i chord-length)) x))
+    progression))
+
+(define verse-base-a (make-verse))
+(define verse-base-b (make-verse))
+(define chorus-base-a (append (make-progression-a) (make-progression-b)))
+(define chorus-base-b (append (make-progression-a) (make-progression-b)))
+
+(define intro (-> chorus-base-a (make-intro) (add-timestamps)))
+(define chorus-a (-> chorus-base-a (add-timestamps 4)))
+(define chorus-b (-> chorus-base-b (add-timestamps 12)))
+(define verse-a (-> verse-base-a (add-timestamps 20)))
+(define chorus-c (-> chorus-base-b (variate-chorus) (add-timestamps 28)))
+(define bridge (-> chorus-base-b (make-bridge) (add-timestamps 36)))
+(define chorus-d (-> chorus-base-a (variate-chorus) (add-timestamps 40)))
+(define chorus-e (-> chorus-base-b (variate-chorus) (add-timestamps 48)))
+(define verse-b (-> verse-base-a (add-timestamps 56)))
+(define verse-c (-> verse-base-b (add-timestamps 64)))
+(define chorus-f (-> chorus-base-a (variate-chorus) (add-timestamps 72)))
+(define chorus-g (-> chorus-base-b (variate-chorus) (add-timestamps 80)))
+(define chorus-h (-> chorus-base-a (variate-chorus) (add-timestamps 88)))
+(define chorus-i (-> chorus-base-a (simplify-chorus) (add-timestamps 96)))
+
+; -------------------------------------------------------------------
+; arpeggiators
+
+; generate tons and tons of notes with arpeggiators
+; (borrowed them from various spacesynth tunes I liked
+; (all your arps are belong to us (sorry not sorry)))
+
+; first, the absolutely obligatory disco bass pattern:
+(define bass-arp (list
+  (list 0.00 tonic 0.2 0.35)
+  (list 0.25 tonic 0.25 0.15)
+  (list 0.50 (+ 7 tonic) 0.2 0.25)
+  (list 0.75 (+ 7 tonic) 0.25 0.05)))
+
+(define plucks-arp (list
+  (list 0.25 subtonic 0.05 0.4)
+  (list 0.50 (+ 7 tonic) 0.05 0.5)
+  (list 0.75 (+ 7 subdominant) 0.05 0.2)))
+
+(define riffs-arp (list
+  (list 0.75 tonic 0.25 0.2)
+  (list 0.75 subdominant 0.25 0.1)
+  (list 1.50 tonic 0.2 0.1)
+  (list 1.50 subdominant 0.2 0.05)))
+
+(define rhythm-arp (list
+  (list 0.00 dominant 0.2 0.3)
+  (list 0.25 mediant 0.1 0.2)
+  (list 0.50 tonic 0.3 0.1)
+  (list 0.75 dominant 0.15 0.2)
+  (list 1.00 mediant 0.1 0.1)
+  (list 1.25 tonic 0.25 0.2)
+  (list 1.50 dominant 0.35 0.1)
+  (list 1.75 subdominant 0.1 0.3)))
+
+(define lead-arp (list
+  (list 0.00 supertonic 0.45 0.25)
+  (list 0.75 tonic 0.15 0.15)
+  (list 1.50 supertonic 0.5 0.25)
+  (list 2.25 tonic 0.2 0.2)
+  (list 3.00 mediant 0.45 0.3)
+  (list 3.50 supertonic 0.15 0.2)
+  (list 3.75 tonic 0.2 0.1)))
+
+(define accents-arp (list
+  (list 0.25 mediant 0.05 0.1)
+  (list 0.50 subdominant 0.25 0.3)
+  (list 0.75 dominant 0.1 0.2)
+  (list 1.00 (+ 7 tonic) 0.25 0.1)
+  (list 1.25 dominant 0.05 0.2)
+  (list 1.50 subdominant 0.1 0.1)
+  (list 1.75 mediant 0.05 0.2)))
+
+; but just writing arpeggiators is boring, let's shuffle them randomly:
+(define (arp-note:beat arp-note) (nth 0 arp-note))
+(define (arp-note:with-delta-beat arp-note delta)
+  (map-indexed (λ (i x) (if (= i 0) (+ delta x) x)) arp-note))
+(define (arp-note:with-delta-degree arp-note delta)
+  (map-indexed (λ (i x) (if (= i 1) (+ delta x) x)) arp-note))
+(define (arp-note:with-delta-length arp-note delta)
+  (map-indexed (λ (i x) (if (= i 2) (+ delta x) x)) arp-note))
+(define (arp-note:with-multiplied-velocity arp-note factor)
+  (map-indexed (λ (i x) (if (= i 3) (* factor x) x)) arp-note))
+
+(define (arp:with-syncopations arp (chance d10) (beat-delta 0.5))
+  (map (λ (x)
+    (define seems-strong-beat (= 0 (% (arp-note:beat x) 1)))
+    (if (and seems-strong-beat (random chance))
+      (arp-note:with-delta-beat x beat-delta)
+      x))
+  arp))
+
+(define (arp:with-echo arp (interval 2) (beat-delta 0) (velocity-factor 1.0))
+  (append arp
+    (map
+      (λ (x) (-> x
+        (arp-note:with-delta-degree interval)
+        (arp-note:with-delta-beat beat-delta)
+        (arp-note:with-multiplied-velocity velocity-factor)))
+      arp)))
+
+(define (arp:with-length-variations arp (deltas '(-0.1 0.2)))
+  (map (λ (x) (arp-note:with-delta-length x (random deltas))) arp))
+
+; -------------------------------------------------------------------
+; generating tracks
+
+(define (make-voice-base root-key scale period progression (length bar-length))
+  (reduce
+    (λ (result x)
+      (define beat (first x))
+      (define chord (last x))
+      (append result
+        (map
+          (λ (degree)
+            (define chromatic-key (+ root-key (scale:render-key scale degree)))
+            (define key (+ chromatic-key (* project:period-size period)))
+            (list beat key length 0.69))
+          chord)))
+    ()
+    progression))
+
+(define (make-bass-voice key scale progression arp (skip-end-chance d8))
+  ; for a bit more dramatic effect:
+  (define (maybe-skip-last-beats chance notes)
+    (if (random chance) (first (- (length notes) 8) notes) notes))
+  (->> progression
+    (make-voice-base key scale 2)
+    (refactor:arpeggiate arp)
+    (maybe-skip-last-beats skip-end-chance)))
+
+(define (make-voice key scale progression arp (period 5)
+  (drop-start-chance d99) (drop-end-chance drop-start-chance))
+  (->> progression
+    (make-voice-base key scale period)
+    (refactor:arpeggiate arp)
+    (refactor:cleanup-overlaps)
+    ; a hack to treat the sequence as a number of 8-beat phrases,
+    ; and drop notes with different chances at the start and
+    ; at the end of each, so that repeats are more varied:
+    (filter (λ (x)
+      (define beat (first x))
+      (define d (if (>= (% beat 8) 6) drop-end-chance drop-start-chance))
+      (or (not (random d)) (= 0 (% beat 2)))))
+    (refactor:join-adjacent)))
+
+(define (track:make-chorus progression modulation voices)
+  (define beat (first (first progression)))
+  (define key (+ modulation chorus-key))
+  (timeline:add-key beat key chorus-scale)
+  (for-each
+    (λ (voice)
+      (define simple-triads
+        (add-timestamps (repeat (length progression) triad) (/ beat 4)))
+      (cond
+        ((= voice 'bass)
+          (track:make "wtbeep 19% square bass"
+            (make-bass-voice key chorus-scale progression bass-arp d2)))
+        ((= voice 'bass-muted)
+          (track:make "wtbeep 6.25% square bass"
+            (make-bass-voice key chorus-scale progression bass-arp d1)))
+        ((= voice 'plucks)
+          (define arp (-> plucks-arp
+            (arp:with-echo 0 1.0)
+            (arp:with-echo 0 2.0 0.75)
+            (arp:with-echo -5 0.0 0.3)))
+          (track:make "wtbeep 50% square plucks"
+            (make-voice key chorus-scale progression arp 3 d6 d3)))
+        ((= voice 'plucks-high)
+          (define arp (-> plucks-arp
+            (arp:with-echo 0 1.0 0.75)
+            (arp:with-echo 0 2.0)
+            (arp:with-echo -5 0.0 0.5)))
+          (track:make "wtbeep 50% square plucks"
+            (make-voice key chorus-scale progression arp 4 d6)))
+        ((= voice 'rhythm)
+          (define arp (-> rhythm-arp
+            (arp:with-echo (random '(-4 -5 -7)) 2.0 0.5)
+            (arp:with-echo (random '(-5 -7)) 4.0)
+            (arp:with-syncopations d10 1.0)))
+          (track:make "wtbeep 19% square rhythm"
+            (make-voice key chorus-scale progression arp 3 d7 d5)))
+        ((= voice 'accents)
+          (define arp (-> accents-arp
+            (arp:with-echo (random '(2 3)) 4.0 0.5)))
+          (track:make "wtbeep 12.5% square accents"
+            (make-voice key chorus-scale progression arp 2)))
+        ((= voice 'lead)
+          (define arp (-> lead-arp
+            (arp:with-echo (random '(3 4)) 0.0 0.75)
+            (arp:with-echo (random '(0 2 3 4)) (if (random d4) 4.5 4.0))
+            (arp:with-echo (random '(0 -2 -3 -4)) 8.0)
+            (arp:with-syncopations d30 0.75)
+            (arp:with-echo (random '(0 -1)) 16.0)))
+          (track:make "wtbeep 50% square lead"
+            (make-voice key chorus-scale simple-triads arp 4 d16 d4)))
+        ((= voice 'lead-alt)
+          (define arp (-> lead-arp
+            (arp:with-echo 9 0.0 0.01)
+            (arp:with-echo (random '(3 -3 0)) 4.0)))
+          (track:make "wtbeep 25% square lead"
+            (make-voice key chorus-scale simple-triads arp 4)))
+        ((= voice 'riffs)
+          (define arp (-> riffs-arp
+            (arp:with-echo (random '(-13 -15)) 0.0 0.1)
+            (arp:with-echo (random '(-2 -3)) 2.0)
+            (arp:with-echo (random '(-5 -6 -7)) 4.0 0.5)
+            (arp:with-echo (random '(2 3)) 8.0 0.1)
+            (arp:with-syncopations d4)))
+          (track:make "wtbeep 12.5% square riffs"
+            (make-voice key chorus-scale simple-triads arp 5 d12)))))
+    voices))
+
+(define (track:make-verse key-jumps modulation voices)
+  (map-indexed
+    (λ (index x)
+      (define beat (first x))
+      (define key (+ modulation (last x)))
+      (define period-delta (modulo index 2))
+      (timeline:add-key beat key verse-scale)
+      (for-each
+        (λ (voice)
+          ; pick from suspended and 7/9 chords for more Mixolydian vibes
+          (define chord (random (list sus4 '(1 3 7) '(1 3 9))))
+          (define sequence (list (list beat chord)))
+          (define bass-tonic (list (list beat triad)))
+          (cond
+            ((= voice 'bass)
+              (track:make
+                (if (or (> index 4) (= 0 (% index 2)))
+                  "wtbeep 19% square bass"
+                  "wtbeep 6.25% square bass")
+                (make-bass-voice key verse-scale bass-tonic bass-arp d6)))
+            ((= voice 'plucks)
+              (track:make "wtbeep 50% square plucks"
+                (make-voice key verse-scale sequence plucks-arp (- 4 period-delta) d6)))
+            ((= voice 'rhythm)
+              (define arp (-> rhythm-arp
+                (arp:with-echo -4 0.0 0.25)
+                (arp:with-echo -4 2.0 0.1)))
+              (track:make "wtbeep 19% square rhythm"
+                (make-voice key verse-scale sequence arp 3 d3)))
+            ((= voice 'accents)
+              (define arp (-> accents-arp (arp:with-echo -4 2.0 0.5)))
+              (track:make "wtbeep 12.5% square accents"
+                (make-voice key verse-scale sequence arp (- 3 period-delta) d12)))
+            ((= voice 'lead)
+              (define arp (-> lead-arp
+                (arp:with-length-variations)
+                (arp:with-echo -9 0.0 0.1)
+                (arp:with-syncopations d7 0.75)))
+              (if (or (> index 4) (= 0 (% index 2)))
+                (track:make "wtbeep 25% square lead"
+                  (make-voice key verse-scale sequence arp 4 d16))
+                nil))
+            ((= voice 'riffs)
+              (define arp (-> riffs-arp
+                (arp:with-echo (random '(-2 -3)) 0.0 0.5)
+                (arp:with-echo (random '(-9 -11)) 2.0 0.1)))
+              (track:make "wtbeep 12.5% square riffs"
+                (make-voice key verse-scale sequence arp (- 5 period-delta))))))
+        voices))
+    key-jumps))
+
+; update the project
+(timeline:reset)
+
+; track:remove supports wildcards and/or several names
+(track:remove "wtbeep *")
+
+(define cent (/ project:period-size 12))
+(define modulation (random cent (* 3 cent)))
+(track:make-chorus intro 0 (list 'bass-muted 'plucks 'rhythm 'lead-alt))
+(track:make-chorus chorus-a 0 (list 'bass 'plucks 'rhythm 'lead))
+(track:make-chorus chorus-b 0 (list 'bass 'plucks-high 'lead 'riffs))
+(track:make-verse verse-a 0 (list 'bass 'plucks 'rhythm 'accents 'riffs))
+(track:make-chorus chorus-c 0 (list 'bass 'plucks-high 'rhythm 'accents 'riffs))
+(track:make-chorus bridge modulation (list 'bass-muted 'plucks 'rhythm 'lead))
+(track:make-chorus chorus-d modulation (list 'bass 'rhythm 'accents 'lead))
+(track:make-chorus chorus-e modulation (list 'bass 'plucks-high 'rhythm 'riffs))
+(track:make-verse verse-b modulation (list 'bass 'plucks 'accents 'lead 'riffs))
+(track:make-verse verse-c modulation (list 'bass 'plucks 'rhythm 'lead 'riffs))
+(track:make-chorus chorus-f modulation (list 'bass 'plucks 'rhythm 'lead-alt 'riffs))
+(track:make-chorus chorus-g modulation (list 'bass 'plucks-high 'rhythm 'lead))
+(track:make-chorus chorus-h modulation (list 'bass 'plucks-high 'rhythm 'riffs))
+(track:make-chorus chorus-i modulation (list 'bass-muted 'plucks 'rhythm))
+; (no drums here, drums are drawn manually in my project)
 ```
 
 ## Writing parametric modifiers
